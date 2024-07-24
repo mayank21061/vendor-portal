@@ -1,0 +1,23 @@
+.searchField {
+  width: 95%;
+  outline: none !important;
+  border: none !important;
+  margin: 1rem;
+}
+
+.searchBar {
+  display: flex;
+  margin: 1rem 0;
+  width: 100%;
+  border: 1px solid gray;
+  border-radius: 1.5rem;
+}
+
+.searchBar > input {
+  background: none;
+}
+
+.customheader {
+  background-color: #d6e7ee;
+  color: #000000c5;
+}

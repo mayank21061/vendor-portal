@@ -51,16 +51,6 @@ const UploadInvoice = props => {
   const [files, setFiles] = useState(null)
   const [fileError, setFileError] = useState('')
 
-  // const handleChange = e => {
-  //   const { name, value } = e.target;
-  //   setState({ ...state, [name]: value });
-  // };
-  // const handlePoNumberChange = newValue => {
-  //   const poNumber = newValue?.label || newValue || '';
-  //   setState({ ...state, poNumber });
-  //   dispatch(getPoNumberAction({ poNumber }));
-  // };
-
   const handleChange = (name, value) => {
     // If the name is 'poNumber', handle it separately
     if (name === 'poNumber') {
@@ -94,7 +84,7 @@ const UploadInvoice = props => {
     setFiles(null)
     setFileError('')
     if (props && props.onClose) {
-      props.onClose();
+      props.onClose()
     }
   }
 
@@ -202,7 +192,7 @@ const UploadInvoice = props => {
                 {...config}
                 options={[]}
                 value={deliveryPlant || getInvoiceUserData.deliveryPlant || ''}
-                onChange={e => handleChange(e.target.name, e.target.value)} 
+                onChange={e => handleChange(e.target.name, e.target.value)}
                 renderInput={params => (
                   <TextField {...params} label='DELIVERY PLANT' name='deliveryPlant' variant='outlined' />
                 )}

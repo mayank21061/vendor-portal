@@ -133,8 +133,8 @@ const AppBarContent = props => {
           variant='body1'
           sx={{ textTransform: 'uppercase', fontWeight: 600, color: settings.mode === 'dark' ? '' : '#ffffffd6' }}
         >
-          {router.pathname.split('/')[1] == 'aisearch'
-            ? 'Search'
+          {router.pathname.split('/')[1] == 'poSummary'
+            ? 'PO SUMMARY'
             : router.pathname.split('/')[1] == 'latestinfo'
             ? ''
             : router.pathname.split('/')[1] == 'geopolitical'
@@ -209,9 +209,7 @@ const AppBarContent = props => {
       <div>
         <div>
           <Drawer open={state} anchor='right' onClose={notifactionClose} sx={{ width: '100px' }}>
-            <Box sx={{ width: '190px' }}>
-              {/* <NotificationBar /> */}
-            </Box>
+            <Box sx={{ width: '190px' }}>{/* <NotificationBar /> */}</Box>
           </Drawer>
         </div>
       </div>

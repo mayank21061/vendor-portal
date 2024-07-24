@@ -52,7 +52,7 @@ const Drawer = props => {
 
   // Drawer Props for Laptop & Desktop screens
   const DesktopDrawerProps = {
-    open: true,
+    open: false,
     onOpen: () => null,
     onClose: () => null,
     onMouseEnter: () => {
