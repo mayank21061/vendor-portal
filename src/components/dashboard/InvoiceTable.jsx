@@ -29,6 +29,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import { Receipt } from '@mui/icons-material'
 import styles from './invoice.module.css'
+import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
 
 const renderName = row => {
   if (row.avatar) {
@@ -58,23 +59,24 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const CustomTable = props => {
-  // const data = useSelector(state => state.poSummary.poSummaryData)
-  const data = [
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    }
-  ]
+  const data = useSelector(state => state.invoice.invoicesData)
+  console.log(data)
+  // const data = [
+  //   {
+  //     id: '23',
+  //     number: 1,
+  //     date: '123123',
+  //     dueDate: '2341232',
+  //     description: 'yubtynhbyujhbt',
+  //     eic: 'trg4wer',
+  //     status: 'wwref',
+  //     amount: '2341234',
+  //     docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
+  //   }
+  // ]
 
   const { poSummaryDataIsLoading, poSummaryDataIsError, poSummaryDataError, poSummaryDataIsSuccess } = useSelector(
-    state => state.poSummary
+    state => state.invoice
   )
 
   const dispatch = useDispatch()
@@ -96,15 +98,19 @@ const CustomTable = props => {
     return formattedDate
   }
 
+  // useEffect(() => {
+  //   const payload = {
+  //     search: value,
+  //     fromDate: moment(startDateRange).format('YYYY-MM-DD'),
+  //     toDate: moment(endDateRange).format('YYYY-MM-DD'),
+  //     filterBy: filterType
+  //   }
+  //   if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
+  // }, [value, endDateRange, startDateRange, filterType])
+
   useEffect(() => {
-    const payload = {
-      search: value,
-      fromDate: moment(startDateRange).format('YYYY-MM-DD'),
-      toDate: moment(endDateRange).format('YYYY-MM-DD'),
-      filterBy: filterType
-    }
-    if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
-  }, [value, endDateRange, startDateRange, filterType])
+    dispatch(getInvoicesAction())
+  }, [])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates

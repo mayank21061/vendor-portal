@@ -4,12 +4,12 @@ import { toast } from 'react-toastify'
 import { createAsyncThunkWithTokenRefresh, createAxiosConfig } from '../common/commonFunctions'
 
 const initialState = {
-  // getInvoicesData
-  getInvoicesData: '',
-  getInvoicesDataIsLoading: false,
-  getInvoicesDataIsError: false,
-  getInvoicesDataError: '',
-  getInvoicesDataIsSuccess: false,
+  // invoicesData
+  invoicesData: '',
+  invoicesDataIsLoading: false,
+  invoicesDataIsError: false,
+  invoicesDataError: '',
+  invoicesDataIsSuccess: false,
 
   //getEicdata
   getEicData: '',
@@ -68,9 +68,12 @@ export const getDeliveryAction = createAsyncThunkWithTokenRefresh(
 )
 export const getInvoiceUserAction = createAsyncThunkWithTokenRefresh(
   'dashboardSlice/getInvoiceUserAction',
-  async (token, currentUser, poNumber ) => {
+  async (token, currentUser, poNumber) => {
     const headers = {} // Adjust the value as needed
-    return axios.get(`/call/vendor/uploadInvoice/get?poNumber=${poNumber}`, createAxiosConfig(token, currentUser, headers))
+    return axios.get(
+      `/call/vendor/uploadInvoice/get?poNumber=${poNumber}`,
+      createAxiosConfig(token, currentUser, headers)
+    )
   }
 )
 export const getPoNumberAction = createAsyncThunkWithTokenRefresh(
@@ -89,11 +92,11 @@ export const dashboardSlice = createSlice({
   initialState,
   reducers: {
     resetGetInvoiceAction(state) {
-      ;(state.getInvoicesData = ''),
-        (state.getInvoicesDataIsLoading = false),
-        (state.getInvoicesDataIsError = false),
-        (state.getInvoicesDataError = ''),
-        (state.getInvoicesDataIsSuccess = false)
+      ;(state.invoicesData = ''),
+        (state.invoicesDataIsLoading = false),
+        (state.invoicesDataIsError = false),
+        (state.invoicesDataError = ''),
+        (state.invoicesDataIsSuccess = false)
     },
     resetGetEicAction(state) {
       ;(state.getEicData = ''),
@@ -127,27 +130,27 @@ export const dashboardSlice = createSlice({
   extraReducers(builder) {
     builder
 
-      // getInvoicesData
+      // invoicesData
       .addCase(getInvoicesAction.pending, state => {
-        ;(state.getInvoicesData = ''),
-          (state.getInvoicesDataIsLoading = true),
-          (state.getInvoicesDataIsError = false),
-          (state.getInvoicesDataError = ''),
-          (state.getInvoicesDataIsSuccess = false)
+        ;(state.invoicesData = ''),
+          (state.invoicesDataIsLoading = true),
+          (state.invoicesDataIsError = false),
+          (state.invoicesDataError = ''),
+          (state.invoicesDataIsSuccess = false)
       })
       .addCase(getInvoicesAction.fulfilled, (state, action) => {
-        ;(state.getInvoicesData = action.payload),
-          (state.getInvoicesDataIsLoading = false),
-          (state.getInvoicesDataIsError = false),
-          (state.getInvoicesDataError = ''),
-          (state.getInvoicesDataIsSuccess = true)
+        ;(state.invoicesData = action.payload),
+          (state.invoicesDataIsLoading = false),
+          (state.invoicesDataIsError = false),
+          (state.invoicesDataError = ''),
+          (state.invoicesDataIsSuccess = true)
       })
       .addCase(getInvoicesAction.rejected, (state, action) => {
-        ;(state.getInvoicesData = ''),
-          (state.getInvoicesDataIsLoading = false),
-          (state.getInvoicesDataIsError = true),
-          (state.getInvoicesDataError = action.error.message),
-          (state.getInvoicesDataIsSuccess = false)
+        ;(state.invoicesData = ''),
+          (state.invoicesDataIsLoading = false),
+          (state.invoicesDataIsError = true),
+          (state.invoicesDataError = action.error.message),
+          (state.invoicesDataIsSuccess = false)
       })
 
       // getEicData
