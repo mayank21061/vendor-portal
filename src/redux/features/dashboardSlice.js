@@ -11,33 +11,33 @@ const initialState = {
   invoicesDataError: '',
   invoicesDataIsSuccess: false,
 
-  //getEicdata
-  getEicData: '',
-  getEicDataIsLoading: false,
-  getEicDataIsError: false,
-  getEicDataError: '',
-  getEicDataIsSuccess: false,
+  //eicdata
+  eicData: '',
+  eicDataIsLoading: false,
+  eicDataIsError: false,
+  eicDataError: '',
+  eicDataIsSuccess: false,
 
-  //getDeliverydata
-  getDeliveryData: '',
-  getDeliveryDataIsLoading: false,
-  getDeliveryDataIsError: false,
-  getDeliveryDataError: '',
-  getDeliveryDataIsSuccess: false,
+  //deliverydata
+  deliveryData: '',
+  deliveryDataIsLoading: false,
+  deliveryDataIsError: false,
+  deliveryDataError: '',
+  deliveryDataIsSuccess: false,
 
-  //getInvoiceUserdata
-  getInvoiceUserData: '',
-  getInvoiceUserDataIsLoading: false,
-  getInvoiceUserDataIsError: false,
-  getInvoiceUserDataError: '',
-  getInvoiceUserDataIsSuccess: false,
+  //invoiceUserdata
+  invoiceUserData: '',
+  invoiceUserDataIsLoading: false,
+  invoiceUserDataIsError: false,
+  invoiceUserDataError: '',
+  invoiceUserDataIsSuccess: false,
 
-  //getPoNumberdata
-  getPoNumberData: '',
-  getPoNumberDataIsLoading: false,
-  getPoNumberDataIsError: false,
-  getPoNumberDataError: '',
-  getPoNumberDataIsSuccess: false
+  //poNumberdata
+  poNumberData: '',
+  poNumberDataIsLoading: false,
+  poNumberDataIsError: false,
+  poNumberDataError: '',
+  poNumberDataIsSuccess: false
 }
 
 export const getInvoicesAction = createAsyncThunkWithTokenRefresh(
@@ -99,32 +99,32 @@ export const dashboardSlice = createSlice({
         (state.invoicesDataIsSuccess = false)
     },
     resetGetEicAction(state) {
-      ;(state.getEicData = ''),
-        (state.getEicDataIsLoading = false),
-        (state.getEicDataIsError = false),
-        (state.getEicDataError = ''),
-        (state.getEicDataIsSuccess = false)
+      ;(state.eicData = ''),
+        (state.eicDataIsLoading = false),
+        (state.eicDataIsError = false),
+        (state.eicDataError = ''),
+        (state.eicDataIsSuccess = false)
     },
     resetGetDeliveryAction(state) {
-      ;(state.getDeliveryData = ''),
-        (state.getDeliveryDataIsLoading = false),
-        (state.getDeliveryDataIsError = false),
-        (state.getDeliveryDataError = ''),
-        (state.getDeliveryDataIsSuccess = false)
+      ;(state.deliveryData = ''),
+        (state.deliveryDataIsLoading = false),
+        (state.deliveryDataIsError = false),
+        (state.deliveryDataError = ''),
+        (state.deliveryDataIsSuccess = false)
     },
     resetGetInvoiceUserAction(state) {
-      ;(state.getInvoiceUserData = ''),
-        (state.getInvoiceUserDataIsLoading = false),
-        (state.getInvoiceUserDataIsError = false),
-        (state.getInvoiceUserDataError = ''),
-        (state.getInvoiceUserDataIsSuccess = false)
+      ;(state.invoiceUserData = ''),
+        (state.invoiceUserDataIsLoading = false),
+        (state.invoiceUserDataIsError = false),
+        (state.invoiceUserDataError = ''),
+        (state.invoiceUserDataIsSuccess = false)
     },
     resetGetPoNumberAction(state) {
-      ;(state.getInvoiceUserData = ''),
-        (state.getInvoiceUserDataIsLoading = false),
-        (state.getInvoiceUserDataIsError = false),
-        (state.getInvoiceUserDataError = ''),
-        (state.getInvoiceUserDataIsSuccess = false)
+      ;(state.invoiceUserData = ''),
+        (state.invoiceUserDataIsLoading = false),
+        (state.invoiceUserDataIsError = false),
+        (state.invoiceUserDataError = ''),
+        (state.invoiceUserDataIsSuccess = false)
     }
   },
   extraReducers(builder) {
@@ -153,96 +153,96 @@ export const dashboardSlice = createSlice({
           (state.invoicesDataIsSuccess = false)
       })
 
-      // getEicData
+      // eicData
       .addCase(getEicAction.pending, state => {
-        ;(state.getEicData = ''),
-          (state.getEicDataIsLoading = true),
-          (state.getEicDataIsError = false),
-          (state.getEicDataError = ''),
-          (state.getEicDataIsSuccess = false)
+        ;(state.eicData = ''),
+          (state.eicDataIsLoading = true),
+          (state.eicDataIsError = false),
+          (state.eicDataError = ''),
+          (state.eicDataIsSuccess = false)
       })
       .addCase(getEicAction.fulfilled, (state, action) => {
-        ;(state.getEicData = action.payload),
-          (state.getEicDataIsLoading = false),
-          (state.getEicDataIsError = false),
-          (state.getEicDataError = ''),
-          (state.getEicDataIsSuccess = true)
+        ;(state.eicData = action.payload),
+          (state.eicDataIsLoading = false),
+          (state.eicDataIsError = false),
+          (state.eicDataError = ''),
+          (state.eicDataIsSuccess = true)
       })
       .addCase(getEicAction.rejected, (state, action) => {
-        ;(state.getEicData = ''),
-          (state.getEicDataIsLoading = false),
-          (state.getEicDataIsError = true),
-          (state.getEicDataError = action.error.message),
-          (state.getEicDataIsSuccess = false)
+        ;(state.eicData = ''),
+          (state.eicDataIsLoading = false),
+          (state.eicDataIsError = true),
+          (state.eicDataError = action.error.message),
+          (state.eicDataIsSuccess = false)
       })
 
-      // getDeliveryData
+      // deliveryData
       .addCase(getDeliveryAction.pending, state => {
-        ;(state.getDeliveryData = ''),
-          (state.getDeliveryDataIsLoading = true),
-          (state.getDeliveryDataIsError = false),
-          (state.getDeliveryDataError = ''),
-          (state.getDeliveryDataIsSuccess = false)
+        ;(state.deliveryData = ''),
+          (state.deliveryDataIsLoading = true),
+          (state.deliveryDataIsError = false),
+          (state.deliveryDataError = ''),
+          (state.deliveryDataIsSuccess = false)
       })
       .addCase(getDeliveryAction.fulfilled, (state, action) => {
-        ;(state.getDeliveryData = action.payload),
-          (state.getDeliveryDataIsLoading = false),
-          (state.getDeliveryDataIsError = false),
-          (state.getDeliveryDataError = ''),
-          (state.getDeliveryDataIsSuccess = true)
+        ;(state.deliveryData = action.payload),
+          (state.deliveryDataIsLoading = false),
+          (state.deliveryDataIsError = false),
+          (state.deliveryDataError = ''),
+          (state.deliveryDataIsSuccess = true)
       })
       .addCase(getDeliveryAction.rejected, (state, action) => {
-        ;(state.getDeliveryData = ''),
-          (state.getDeliveryDataIsLoading = false),
-          (state.getDeliveryDataIsError = true),
-          (state.getDeliveryDataError = action.error.message),
-          (state.getDeliveryDataIsSuccess = false)
+        ;(state.deliveryData = ''),
+          (state.deliveryDataIsLoading = false),
+          (state.deliveryDataIsError = true),
+          (state.deliveryDataError = action.error.message),
+          (state.deliveryDataIsSuccess = false)
       })
 
-      // getInvoiceUserData
+      // invoiceUserData
       .addCase(getInvoiceUserAction.pending, state => {
-        ;(state.getInvoiceUserData = ''),
-          (state.getInvoiceUserDataIsLoading = true),
-          (state.getInvoiceUserDataIsError = false),
-          (state.getInvoiceUserDataError = ''),
-          (state.getInvoiceUserDataIsSuccess = false)
+        ;(state.invoiceUserData = ''),
+          (state.invoiceUserDataIsLoading = true),
+          (state.invoiceUserDataIsError = false),
+          (state.invoiceUserDataError = ''),
+          (state.invoiceUserDataIsSuccess = false)
       })
       .addCase(getInvoiceUserAction.fulfilled, (state, action) => {
-        ;(state.getInvoiceUserData = action.payload),
-          (state.getInvoiceUserDataIsLoading = false),
-          (state.getInvoiceUserDataIsError = false),
-          (state.getInvoiceUserDataError = ''),
-          (state.getInvoiceUserDataIsSuccess = true)
+        ;(state.invoiceUserData = action.payload),
+          (state.invoiceUserDataIsLoading = false),
+          (state.invoiceUserDataIsError = false),
+          (state.invoiceUserDataError = ''),
+          (state.invoiceUserDataIsSuccess = true)
       })
       .addCase(getInvoiceUserAction.rejected, (state, action) => {
-        ;(state.getInvoiceUserData = ''),
-          (state.getInvoiceUserDataIsLoading = false),
-          (state.getInvoiceUserDataIsError = true),
-          (state.getInvoiceUserDataError = action.error.message),
-          (state.getInvoiceUserDataIsSuccess = false)
+        ;(state.invoiceUserData = ''),
+          (state.invoiceUserDataIsLoading = false),
+          (state.invoiceUserDataIsError = true),
+          (state.invoiceUserDataError = action.error.message),
+          (state.invoiceUserDataIsSuccess = false)
       })
 
-      // getPoNumberData
+      // poNumberData
       .addCase(getPoNumberAction.pending, state => {
-        ;(state.getPoNumberData = ''),
-          (state.getPoNumberDataIsLoading = true),
-          (state.getPoNumberDataIsError = false),
-          (state.getPoNumberDataError = ''),
-          (state.getPoNumberDataIsSuccess = false)
+        ;(state.poNumberData = ''),
+          (state.poNumberDataIsLoading = true),
+          (state.poNumberDataIsError = false),
+          (state.poNumberDataError = ''),
+          (state.poNumberDataIsSuccess = false)
       })
       .addCase(getPoNumberAction.fulfilled, (state, action) => {
-        ;(state.getPoNumberData = action.payload),
-          (state.getPoNumberDataIsLoading = false),
-          (state.getPoNumberDataIsError = false),
-          (state.getPoNumberDataError = ''),
-          (state.getPoNumberDataIsSuccess = true)
+        ;(state.poNumberData = action.payload),
+          (state.poNumberDataIsLoading = false),
+          (state.poNumberDataIsError = false),
+          (state.poNumberDataError = ''),
+          (state.poNumberDataIsSuccess = true)
       })
       .addCase(getPoNumberAction.rejected, (state, action) => {
-        ;(state.getPoNumberData = ''),
-          (state.getPoNumberDataIsLoading = false),
-          (state.getPoNumberDataIsError = true),
-          (state.getPoNumberDataError = action.error.message),
-          (state.getPoNumberDataIsSuccess = false)
+        ;(state.poNumberData = ''),
+          (state.poNumberDataIsLoading = false),
+          (state.poNumberDataIsError = true),
+          (state.poNumberDataError = action.error.message),
+          (state.poNumberDataIsSuccess = false)
       })
   }
 })
