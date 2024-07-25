@@ -21,3 +21,7 @@
   background-color: #d6e7ee;
   color: #000000c5;
 }
+
+.dialog {
+  overflow: unset !important;
+}

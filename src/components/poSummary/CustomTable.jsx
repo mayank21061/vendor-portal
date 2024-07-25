@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Fab,
   FormControl,
   Grid,
   IconButton,
@@ -28,8 +29,9 @@ import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
-import { Receipt } from '@mui/icons-material'
+import { Add, Receipt } from '@mui/icons-material'
 import InvoicesTable from './InvoicesTable'
+import PoSummaryForm from './PoSummaryForm'
 
 const renderName = row => {
   if (row.avatar) {
@@ -91,6 +93,7 @@ const CustomTable = props => {
   const [previewPO, setPreviewPO] = useState(false)
   const [fileUrl, setFileUrl] = useState(null)
   const [previewInvoices, setPreviewInvoices] = useState(false)
+  const [showPoForm, setShowPoForm] = useState(false)
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -393,6 +396,11 @@ const CustomTable = props => {
                   ))}
                 </Select>
               </FormControl>
+              <Tooltip title='CREATE PO'>
+                <Fab color='primary' aria-label='add' size='small' onClick={() => setShowPoForm(true)}>
+                  <Add />
+                </Fab>
+              </Tooltip>
             </div>
           </Grid>
           {poSummaryDataIsLoading ? (
@@ -477,6 +485,7 @@ const CustomTable = props => {
           <InvoicesTable />
         </DialogContent>
       </Dialog>
+      <PoSummaryForm open={showPoForm} setOpen={setShowPoForm} />
     </>
   )
 }
