@@ -28,7 +28,7 @@ import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import { Receipt } from '@mui/icons-material'
-import styles from './invoice.module.css'
+import styles from './posummary.module.css'
 import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
 
 const renderName = row => {
@@ -58,28 +58,23 @@ const CustomInput = forwardRef((props, ref) => {
   return <CustomTextField fullWidth inputRef={ref} {...updatedProps} label={props.label || ''} value={value} />
 })
 
-const CustomTable = props => {
-  const data = useSelector(state => state.invoice.invoicesData)
-  console.log(data)
-  // const data = [
-  //   {
-  //     id: '23',
-  //     number: 1,
-  //     date: '123123',
-  //     dueDate: '2341232',
-  //     description: 'yubtynhbyujhbt',
-  //     eic: 'trg4wer',
-  //     status: 'wwref',
-  //     amount: '2341234',
-  //     docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-  //   }
-  // ]
+const InvoicesTable = props => {
+  //   const data = useSelector(state => state.invoice.invoicesData)
+  //   console.log(data)
 
-  const { poSummaryDataIsLoading, poSummaryDataIsError, poSummaryDataError, poSummaryDataIsSuccess } = useSelector(
-    state => state.invoice
-  )
-
-  const dispatch = useDispatch()
+  const data = [
+    {
+      id: '23',
+      number: 1,
+      date: '123123',
+      dueDate: '2341232',
+      description: 'yubtynhbyujhbt',
+      eic: 'trg4wer',
+      status: 'wwref',
+      amount: '2341234',
+      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
+    }
+  ]
 
   const [dates, setDates] = useState([])
   const [endDateRange, setEndDateRange] = useState(new Date())
@@ -108,18 +103,9 @@ const CustomTable = props => {
   //   if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
   // }, [value, endDateRange, startDateRange, filterType])
 
-  useEffect(() => {
-    dispatch(getInvoicesAction())
-  }, [])
-
-  const handleOnChangeRange = dates => {
-    const [start, end] = dates
-    if (start !== null && end !== null) {
-      setDates(dates)
-    }
-    setStartDateRange(start)
-    setEndDateRange(end)
-  }
+  //   useEffect(() => {
+  //     dispatch(getInvoicesAction())
+  //   }, [])
 
   const handleFilter = val => {
     setValue(val)
@@ -163,23 +149,6 @@ const CustomTable = props => {
       flex: 0.1,
       field: 'date',
       headerName: 'DATE',
-      renderCell: ({ row }) => {
-        // const date = new Date(row.date)
-        // const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
-        // const formattedDate = date.toLocaleDateString('en-US', options)
-
-        return (
-          <Typography sx={{ color: 'text.secondary', whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-            {row.date}
-          </Typography>
-        )
-      },
-      headerClassName: styles.customheader
-    },
-    {
-      flex: 0.1,
-      field: 'po',
-      headerName: 'PO Number',
       renderCell: ({ row }) => {
         // const date = new Date(row.date)
         // const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
@@ -302,194 +271,37 @@ const CustomTable = props => {
 
   return (
     <>
-      <Paper elevation={24} sx={{ height: '85vh', overflowY: 'auto' }}>
-        <Grid container spacing={2} sx={{ padding: '0rem 1rem 0.5rem 1rem' }}>
-          <Grid
-            item
-            xs={12}
-            style={{
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'space-between'
+      <Paper elevation={24} sx={{ height: '75vh', overflowY: 'auto' }}>
+        <Grid item xs={12}>
+          <DataGrid
+            autoHeight
+            rows={data || []}
+            rowHeight={62}
+            columnHeaderHeight={40}
+            columns={columns}
+            disableRowSelectionOnClick
+            onRowSelectionModelChange={newRowSelectionModel => {
+              setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
             }}
-          >
-            <Typography variant='h4' fontWeight='bold' sx={{ mt: 4 }}>
-              Invoices
-            </Typography>
-            {/* <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'end',
-                gap: '10px',
-                flexWrap: 'wrap',
-                marginTop: '.5rem'
-              }}
-            >
-              <div style={{ minWidth: '18vw' }}>
-                <DatePickerWrapper>
-                  <ReactDatePicker
-                    showYearDropdown
-                    isClearable
-                    selectsRange
-                    monthsShown={2}
-                    endDate={endDateRange}
-                    selected={startDateRange}
-                    startDate={startDateRange}
-                    shouldCloseOnSelect={false}
-                    id='date-range-picker-months'
-                    onChange={handleOnChangeRange}
-                    customInput={
-                      <CustomInput
-                        dates={dates}
-                        setDates={setDates}
-                        label='Select Date Range'
-                        end={endDateRange}
-                        start={startDateRange}
-                      />
-                    }
-                  />
-                </DatePickerWrapper>
-              </div>
-              <div style={{ minWidth: '20vw' }}>
-                <CustomTextField
-                  fullWidth
-                  value={value}
-                  placeholder='Search'
-                  onChange={e => handleFilter(e.target.value)}
-                  style={{ marginTop: '18px' }}
-                />
-              </div>
-              <FormControl sx={{ borderRadius: '.8rem', width: '10vw' }} size='small'>
-                <Select
-                  labelId='demo-select-small-label'
-                  id='demo-select-small'
-                  value={filterType}
-                  onChange={handleChangeFilter}
-                >
-                  {filters.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div> */}
-          </Grid>
-          {poSummaryDataIsLoading ? (
-            <Box sx={{ width: '100%', marginTop: '40px' }}>
-              <LinearProgress />
-            </Box>
-          ) : poSummaryDataIsError ? (
-            <>
-              <h1>{poSummaryDataError}</h1>
-            </>
-          ) : poSummaryDataIsSuccess ? (
-            <Grid item xs={12}>
-              <DataGrid
-                autoHeight
-                rows={data || []}
-                rowHeight={62}
-                columnHeaderHeight={40}
-                columns={columns}
-                disableRowSelectionOnClick
-                onRowSelectionModelChange={newRowSelectionModel => {
-                  setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
-                }}
-                getRowId={row => row.id}
-                componentsProps={{
-                  row: {
-                    onMouseEnter: event => {
-                      const id = event.currentTarget.dataset.id
-                      const hoveredRow = data || [].find(row => row.id === Number(id))
-                      setHoveredId(id)
-                    },
-                    onMouseLeave: event => {
-                      setHoveredId(null)
-                    }
-                  }
-                }}
-                hideFooter
-              />
-            </Grid>
-          ) : (
-            ''
-          )}
+            getRowId={row => row.id}
+            componentsProps={{
+              row: {
+                onMouseEnter: event => {
+                  const id = event.currentTarget.dataset.id
+                  const hoveredRow = data || [].find(row => row.id === Number(id))
+                  setHoveredId(id)
+                },
+                onMouseLeave: event => {
+                  setHoveredId(null)
+                }
+              }
+            }}
+            hideFooter
+          />
         </Grid>
       </Paper>
-      {/* ---------- view events  detail dialog */}
-      <Dialog
-        open={showeventDetail}
-        onClose={handleRowViewClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle id='customized-dialog-title'>Events Detail</DialogTitle>
-        <Tooltip title='CLOSE'>
-          <IconButton
-            aria-label='close'
-            onClick={handleRowViewClose}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: theme => theme.palette.grey[500]
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Tooltip>
-
-        <DialogContent dividers>
-          <Grid container spacing={6}>
-            <Grid item xs={4}>
-              <Typography variant='h6'>DATE : </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant='inherit'>{formatDate(eventData?.date)}</Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant='h6'> TYPE : </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant='inherit'>{eventData?.type}</Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant='h6'> POI : </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant='inherit'>{eventData?.userNames}</Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant='h6'> DESCRIPTION : </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant='inherit'>{eventData?.description}</Typography>
-            </Grid>
-          </Grid>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={previewPO} onClose={() => setPreviewPO(false)} fullWidth maxWidth='md'>
-        <DialogTitle id='customized-dialog-title'>PO Details</DialogTitle>
-        <Tooltip title='CLOSE'>
-          <IconButton
-            aria-label='close'
-            onClick={() => setPreviewPO(false)}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: theme => theme.palette.grey[500]
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Tooltip>
-
-        <DialogContent dividers></DialogContent>
-      </Dialog>
     </>
   )
 }
 
-export default CustomTable
+export default InvoicesTable

@@ -29,6 +29,7 @@ import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import { Receipt } from '@mui/icons-material'
+import InvoicesTable from './InvoicesTable'
 
 const renderName = row => {
   if (row.avatar) {
@@ -89,6 +90,7 @@ const CustomTable = props => {
   const [filterType, setFilterType] = useState('All')
   const [previewPO, setPreviewPO] = useState(false)
   const [fileUrl, setFileUrl] = useState(null)
+  const [previewInvoices, setPreviewInvoices] = useState(false)
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -131,6 +133,11 @@ const CustomTable = props => {
 
   const handleChangeFilter = e => {
     setFilterType(e.target.value)
+  }
+
+  const handleViewInvoices = (e, rowData) => {
+    setPreviewInvoices(true)
+    console.log(rowData)
   }
 
   const filters = ['All', 'New', 'Pending', 'Closed']
@@ -298,7 +305,7 @@ const CustomTable = props => {
             <Tooltip title='Invoices'>
               <IconButton
                 onClick={event => {
-                  handleViewPDF(event, row)
+                  handleViewInvoices(event, row)
                 }}
               >
                 <Receipt
@@ -317,7 +324,7 @@ const CustomTable = props => {
 
   return (
     <>
-      <Paper elevation={24} sx={{ height: '75vh', overflowY: 'auto' }}>
+      <Paper elevation={24} sx={{ height: '85vh', overflowY: 'auto' }}>
         <Grid container spacing={2} sx={{ padding: '0rem 1rem 0.5rem 1rem' }}>
           <Grid
             item
@@ -430,57 +437,6 @@ const CustomTable = props => {
         </Grid>
       </Paper>
       {/* ---------- view events  detail dialog */}
-      <Dialog
-        open={showeventDetail}
-        onClose={handleRowViewClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle id='customized-dialog-title'>Events Detail</DialogTitle>
-        <Tooltip title='CLOSE'>
-          <IconButton
-            aria-label='close'
-            onClick={handleRowViewClose}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: theme => theme.palette.grey[500]
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Tooltip>
-
-        <DialogContent dividers>
-          <Grid container spacing={6}>
-            <Grid item xs={4}>
-              <Typography variant='h6'>DATE : </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant='inherit'>{formatDate(eventData?.date)}</Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant='h6'> TYPE : </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant='inherit'>{eventData?.type}</Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant='h6'> POI : </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant='inherit'>{eventData?.userNames}</Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant='h6'> DESCRIPTION : </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant='inherit'>{eventData?.description}</Typography>
-            </Grid>
-          </Grid>
-        </DialogContent>
-      </Dialog>
       <Dialog open={previewPO} onClose={() => setPreviewPO(false)} fullWidth maxWidth='md'>
         <DialogTitle id='customized-dialog-title'>PO Details</DialogTitle>
         <Tooltip title='CLOSE'>
@@ -499,6 +455,27 @@ const CustomTable = props => {
         </Tooltip>
 
         <DialogContent dividers></DialogContent>
+      </Dialog>
+      <Dialog open={previewInvoices} onClose={() => setPreviewInvoices(false)} fullWidth maxWidth='md'>
+        <DialogTitle id='customized-dialog-title'>Invoices Details</DialogTitle>
+        <Tooltip title='CLOSE'>
+          <IconButton
+            aria-label='close'
+            onClick={() => setPreviewInvoices(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: theme => theme.palette.grey[500]
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Tooltip>
+
+        <DialogContent dividers>
+          <InvoicesTable />
+        </DialogContent>
       </Dialog>
     </>
   )

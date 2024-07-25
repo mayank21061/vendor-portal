@@ -14,7 +14,8 @@ const initialState = {
 export const getPoSummaryAction = createAsyncThunkWithTokenRefresh(
   'poSummarySlice/getPoSummaryAction',
   async (token, currentUser, payload) => {
-    const headers = {} // Adjust the value as needed
+    console.log(payload)
+    const headers = { ...payload } // Adjust the value as needed
     const username = JSON.parse(localStorage.getItem('userData')).username
     return axios.get(
       `/call/vendor/poSummary/getSummary?username=${username}`,
