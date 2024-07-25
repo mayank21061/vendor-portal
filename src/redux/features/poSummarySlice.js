@@ -4,63 +4,65 @@ import { toast } from 'react-toastify'
 import { createAsyncThunkWithTokenRefresh, createAxiosConfig } from '../common/commonFunctions'
 
 const initialState = {
-    // getPoSummaryData
-    getPoSummaryData: '',
-    getPoSummaryDataIsLoading: false,
-    getPoSummaryDataIsError: false,
-    getPoSummaryDataError: '',
-    getPoSummaryDataIsSuccess: false,
-  }
+  poSummaryData: '',
+  poSummaryDataIsLoading: false,
+  poSummaryDataIsError: false,
+  poSummaryDataError: '',
+  poSummaryDataIsSuccess: false
+}
 
-  export const getPoSummaryAction = createAsyncThunkWithTokenRefresh('poSummarySlice/getPoSummaryAction', async (token, currentUser, payload) => {
-    const headers = {} // Adjust the value as needed
+export const getPoSummaryAction = createAsyncThunkWithTokenRefresh(
+  'poSummarySlice/getPoSummaryAction',
+  async (token, currentUser, payload) => {
+    console.log(payload)
+    const headers = { ...payload } // Adjust the value as needed
     const username = JSON.parse(localStorage.getItem('userData')).username
-    return axios.get(`/call/vendor/poSummary/getSummary?username=${username}`, createAxiosConfig(token, currentUser, headers))
-  })
+    return axios.get(
+      `/call/vendor/poSummary/getSummary?username=${username}`,
+      createAxiosConfig(token, currentUser, headers)
+    )
+  }
+)
 
-  export const poSummarySlice = createSlice({
-    name: 'poSummary',
-    initialState,
-    reducers: {
-       resetGetPoSummaryAction(state){
-        state.getPoSummaryData='',
-        state.getPoSummaryDataIsLoading=false,
-        state.getPoSummaryDataIsError=false,
-        state.getPoSummaryDataError='',
-        state.getPoSummaryDataIsSuccess=false
-       }
-    },
-    extraReducers(builder) {
-        builder
-
-      // getPoSummaryData
+export const poSummarySlice = createSlice({
+  name: 'poSummary',
+  initialState,
+  reducers: {
+    resetGetPoSummaryAction(state) {
+      state.poSummaryData = ''
+      state.poSummaryDataIsLoading = false
+      state.poSummaryDataIsError = false
+      state.poSummaryDataError = ''
+      state.poSummaryDataIsSuccess = false
+    }
+  },
+  extraReducers(builder) {
+    builder
       .addCase(getPoSummaryAction.pending, state => {
-        state.getPoSummaryData='',
-        state.getPoSummaryDataIsLoading=true,
-        state.getPoSummaryDataIsError=false,
-        state.getPoSummaryDataError='',
-        state.getPoSummaryDataIsSuccess=false
+        state.poSummaryData = ''
+        state.poSummaryDataIsLoading = true
+        state.poSummaryDataIsError = false
+        state.poSummaryDataError = ''
+        state.poSummaryDataIsSuccess = false
       })
       .addCase(getPoSummaryAction.fulfilled, (state, action) => {
-        state.getPoSummaryData= action.payload,
-        state.getPoSummaryDataIsLoading=false,
-        state.getPoSummaryDataIsError=false,
-        state.getPoSummaryDataError='',
-        state.getPoSummaryDataIsSuccess=true
+        state.poSummaryData = action.payload
+        state.poSummaryDataIsLoading = false
+        state.poSummaryDataIsError = false
+        state.poSummaryDataError = ''
+        state.poSummaryDataIsSuccess = true
       })
       .addCase(getPoSummaryAction.rejected, (state, action) => {
-        state.getPoSummaryData='',
-        state.getPoSummaryDataIsLoading=false,
-        state.getPoSummaryDataIsError=true,
-        state.getPoSummaryDataError=action.error.message,
-        state.getPoSummaryDataIsSuccess=false
+        state.poSummaryData = ''
+        state.poSummaryDataIsLoading = false
+        state.poSummaryDataIsError = true
+        state.poSummaryDataError = action.error.message
+        state.poSummaryDataIsSuccess = false
       })
 
-       // 
-    }
+    //
+  }
+})
 
-  })
-
-  export const {resetGetPoSummaryAction} = poSummarySlice.actions;
-  export default poSummarySlice.reducer
-
+export const { resetGetPoSummaryAction } = poSummarySlice.actions
+export default poSummarySlice.reducer
