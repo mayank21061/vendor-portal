@@ -30,7 +30,7 @@ import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import { Add, Receipt } from '@mui/icons-material'
-import InvoicesTable from './InvoicesTable'
+import PoInvoicesTable from './PoInvoicesTable'
 import PoSummaryForm from './PoSummaryForm'
 
 const renderName = row => {
@@ -469,8 +469,10 @@ const CustomTable = props => {
 
         <DialogContent dividers></DialogContent>
       </Dialog>
-      <Dialog open={previewInvoices} onClose={() => setPreviewInvoices(false)} fullWidth maxWidth='md'>
-        <DialogTitle id='customized-dialog-title'>Invoices Details</DialogTitle>
+      <Dialog open={previewInvoices} onClose={() => setPreviewInvoices(false)} fullWidth maxWidth='sm'>
+        <DialogTitle id='customized-dialog-title' variant='h5'>
+          Invoices Details
+        </DialogTitle>
         <Tooltip title='CLOSE'>
           <IconButton
             aria-label='close'
@@ -487,7 +489,7 @@ const CustomTable = props => {
         </Tooltip>
 
         <DialogContent dividers>
-          <InvoicesTable />
+          <PoInvoicesTable />
         </DialogContent>
       </Dialog>
       <PoSummaryForm open={showPoForm} setOpen={setShowPoForm} />

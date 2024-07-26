@@ -58,7 +58,7 @@ const CustomInput = forwardRef((props, ref) => {
   return <CustomTextField fullWidth inputRef={ref} {...updatedProps} label={props.label || ''} value={value} />
 })
 
-const InvoicesTable = props => {
+const PoInvoicesTable = props => {
   //   const data = useSelector(state => state.invoice.invoicesData)
   //   console.log(data)
 
@@ -304,4 +304,4 @@ const InvoicesTable = props => {
   )
 }
 
-export default InvoicesTable
+export default PoInvoicesTable
