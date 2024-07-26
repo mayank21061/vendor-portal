@@ -8,6 +8,7 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  InputAdornment,
   TextField,
   Tooltip
 } from '@mui/material'
@@ -170,11 +171,15 @@ const PoSummaryForm = ({ open, setOpen }) => {
                       name='poAmount'
                       label='Amount'
                       size='small'
+                      type='number'
                       fullWidth
                       value={values.poAmount}
                       onChange={handleChange}
                       error={touched.poAmount && Boolean(errors.poAmount)}
                       helperText={touched.poAmount && errors.poAmount}
+                      InputProps={{
+                        startAdornment: <InputAdornment position='start'>Rs.</InputAdornment>
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>

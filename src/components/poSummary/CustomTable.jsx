@@ -94,6 +94,7 @@ const CustomTable = props => {
   const [fileUrl, setFileUrl] = useState(null)
   const [previewInvoices, setPreviewInvoices] = useState(false)
   const [showPoForm, setShowPoForm] = useState(false)
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -109,7 +110,7 @@ const CustomTable = props => {
       filterBy: filterType
     }
     if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
-  }, [value, endDateRange, startDateRange, filterType])
+  }, [value, endDateRange, startDateRange, filterType, paginationModel])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -413,31 +414,35 @@ const CustomTable = props => {
             </>
           ) : poSummaryDataIsSuccess ? (
             <Grid item xs={12}>
-              <DataGrid
-                autoHeight
-                rows={data || []}
-                rowHeight={62}
-                columnHeaderHeight={40}
-                columns={columns}
-                disableRowSelectionOnClick
-                onRowSelectionModelChange={newRowSelectionModel => {
-                  setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
-                }}
-                getRowId={row => row.id}
-                componentsProps={{
-                  row: {
-                    onMouseEnter: event => {
-                      const id = event.currentTarget.dataset.id
-                      const hoveredRow = data || [].find(row => row.id === Number(id))
-                      setHoveredId(id)
-                    },
-                    onMouseLeave: event => {
-                      setHoveredId(null)
+              <Paper elevation={10}>
+                <DataGrid
+                  sx={{ height: '70vh' }}
+                  rows={data || []}
+                  rowHeight={62}
+                  columnHeaderHeight={40}
+                  columns={columns}
+                  disableRowSelectionOnClick
+                  onRowSelectionModelChange={newRowSelectionModel => {
+                    setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
+                  }}
+                  getRowId={row => row.id}
+                  componentsProps={{
+                    row: {
+                      onMouseEnter: event => {
+                        const id = event.currentTarget.dataset.id
+                        const hoveredRow = data || [].find(row => row.id === Number(id))
+                        setHoveredId(id)
+                      },
+                      onMouseLeave: event => {
+                        setHoveredId(null)
+                      }
                     }
-                  }
-                }}
-                hideFooter
-              />
+                  }}
+                  pageSizeOptions={[7, 10, 25, 50]}
+                  paginationModel={paginationModel}
+                  onPaginationModelChange={setPaginationModel}
+                />
+              </Paper>
             </Grid>
           ) : (
             ''
