@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useCallback } from 'react'
 import { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -7,9 +7,12 @@ import CloseIcon from '@mui/icons-material/Close'
 import LinearProgress from '@mui/material/LinearProgress'
 import moment from 'moment'
 import {
+  Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
+  Fab,
   FormControl,
   Grid,
   IconButton,
@@ -27,9 +30,11 @@ import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
-import { Receipt } from '@mui/icons-material'
+import { Add, Receipt } from '@mui/icons-material'
 import styles from './invoice.module.css'
 import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
+import UploadInvoices from './UploadInvoices'
+import _debounce from 'lodash/debounce'
 
 const renderName = row => {
   if (row.avatar) {
@@ -60,143 +65,8 @@ const CustomInput = forwardRef((props, ref) => {
 
 const CustomTable = props => {
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
-
-  // const data = useSelector(state => state.invoice.invoicesData)
-  // console.log(data)
-  const data = [
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    },
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    }
-  ]
+  const [showInvoicesForm, setShowInvoicesForm] = useState(false)
+  const data = useSelector(state => state.invoice.invoicesData)
 
   const { invoicesDataIsLoading, invoicesDataIsError, invoicesDataError, invoicesDataIsSuccess } = useSelector(
     state => state.invoice
@@ -231,9 +101,16 @@ const CustomTable = props => {
   //   if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
   // }, [value, endDateRange, startDateRange, filterType])
 
+  const getInvoicesDataDebounce = useCallback(
+    _debounce((value, filterType) => {
+      dispatch(getInvoicesAction(value, filterType))
+    }, 1000),
+    []
+  )
+
   useEffect(() => {
-    dispatch(getInvoicesAction())
-  }, [])
+    getInvoicesDataDebounce()
+  }, [value, filterType])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -244,9 +121,12 @@ const CustomTable = props => {
     setEndDateRange(end)
   }
 
-  const handleFilter = val => {
-    setValue(val)
-  }
+  // const handleFilter = useCallback(
+  //   _debounce(searchText => {
+  //     setValue(searchText)
+  //   }, 1000),
+  //   []
+  // )
 
   const handleViewPDF = (e, rowData) => {
     setFileUrl(rowData.docUrl)
@@ -489,7 +369,7 @@ const CustomTable = props => {
                   fullWidth
                   value={value}
                   placeholder='Search'
-                  onChange={e => handleFilter(e.target.value)}
+                  onChange={e => setValue(e.target.value)}
                   style={{ marginTop: '18px' }}
                 />
               </div>
@@ -507,6 +387,11 @@ const CustomTable = props => {
                   ))}
                 </Select>
               </FormControl>
+              <Tooltip title='CREATE INVOICE'>
+                <Fab color='primary' aria-label='add' size='small' onClick={() => setShowInvoicesForm(true)}>
+                  <Add />
+                </Fab>
+              </Tooltip>
             </div>
           </Grid>
           {/* {invoicesDataIsLoading ? (
@@ -607,25 +492,7 @@ const CustomTable = props => {
           </Grid>
         </DialogContent>
       </Dialog>
-      <Dialog open={previewPO} onClose={() => setPreviewPO(false)} fullWidth maxWidth='md'>
-        <DialogTitle id='customized-dialog-title'>PO Details</DialogTitle>
-        <Tooltip title='CLOSE'>
-          <IconButton
-            aria-label='close'
-            onClick={() => setPreviewPO(false)}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: theme => theme.palette.grey[500]
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Tooltip>
-
-        <DialogContent dividers></DialogContent>
-      </Dialog>
+      <UploadInvoices open={showInvoicesForm} setOpen={setShowInvoicesForm} />
     </>
   )
 }

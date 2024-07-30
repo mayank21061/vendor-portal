@@ -37,7 +37,13 @@ const initialState = {
   poNumberDataIsLoading: false,
   poNumberDataIsError: false,
   poNumberDataError: '',
-  poNumberDataIsSuccess: false
+  poNumberDataIsSuccess: false,
+
+  uploadInvoiceData: '',
+  uploadInvoiceDataIsLoading: false,
+  uploadInvoiceDataIsError: false,
+  uploadInvoiceDataError: '',
+  uploadInvoiceDataIsSuccess: false
 }
 
 export const getInvoicesAction = createAsyncThunkWithTokenRefresh(
@@ -53,21 +59,21 @@ export const getInvoicesAction = createAsyncThunkWithTokenRefresh(
 )
 
 export const getEicAction = createAsyncThunkWithTokenRefresh(
-  'dashboardSlice/getEicAction',
+  'dashboard/getEicAction',
   async (token, currentUser, payload) => {
     const headers = {} // Adjust the value as needed
     return axios.get(`/call/vendor/uploadInvoice/getAllRoles`, createAxiosConfig(token, currentUser, headers))
   }
 )
 export const getDeliveryAction = createAsyncThunkWithTokenRefresh(
-  'dashboardSlice/getDeliveryAction',
+  'dashboard/getDeliveryAction',
   async (token, currentUser, payload) => {
     const headers = {} // Adjust the value as needed
     return axios.get(`/call/vendor/uploadInvoice/deliveryPlants`, createAxiosConfig(token, currentUser, headers))
   }
 )
 export const getInvoiceUserAction = createAsyncThunkWithTokenRefresh(
-  'dashboardSlice/getInvoiceUserAction',
+  'dashboard/getInvoiceUserAction',
   async (token, currentUser, poNumber) => {
     const headers = {} // Adjust the value as needed
     return axios.get(
@@ -77,11 +83,24 @@ export const getInvoiceUserAction = createAsyncThunkWithTokenRefresh(
   }
 )
 export const getPoNumberAction = createAsyncThunkWithTokenRefresh(
-  'dashboardSlice/getPoNumberAction',
-  async (token, currentUser, { poNumber }) => {
+  'dashboard/getPoNumberAction',
+  async (token, currentUser, payload) => {
+    console.log(payload)
     const headers = {} // Adjust the value as needed
     return axios.get(
-      `/call/vendor/uploadInvoice/poSearch?poNumber=${poNumber}`,
+      `/call/vendor/uploadInvoice/poSearch?poNumber=${payload.poNumber}`,
+      createAxiosConfig(token, currentUser, headers)
+    )
+  }
+)
+
+export const uploadInvoiceAction = createAsyncThunkWithTokenRefresh(
+  'dashboard/uploadInvoice',
+  async (token, currentUser, payload) => {
+    const headers = {} // Adjust the value as needed
+    return axios.post(
+      `/call/vendor/Vendorportal/uploadInvoice`,
+      payload,
       createAxiosConfig(token, currentUser, headers)
     )
   }
@@ -125,6 +144,13 @@ export const dashboardSlice = createSlice({
         (state.invoiceUserDataIsError = false),
         (state.invoiceUserDataError = ''),
         (state.invoiceUserDataIsSuccess = false)
+    },
+    resetUploadInvoicesAction(state) {
+      ;(state.uploadInvoiceData = ''),
+        (state.uploadInvoiceDataIsLoading = false),
+        (state.uploadInvoiceDataIsError = false),
+        (state.uploadInvoiceDataError = ''),
+        (state.uploadInvoiceDataIsSuccess = false)
     }
   },
   extraReducers(builder) {
@@ -243,6 +269,28 @@ export const dashboardSlice = createSlice({
           (state.poNumberDataIsError = true),
           (state.poNumberDataError = action.error.message),
           (state.poNumberDataIsSuccess = false)
+      })
+
+      .addCase(uploadInvoiceAction.pending, state => {
+        ;(state.uploadInvoiceData = ''),
+          (state.uploadInvoiceDataIsLoading = true),
+          (state.uploadInvoiceDataIsError = false),
+          (state.uploadInvoiceDataError = ''),
+          (state.uploadInvoiceDataIsSuccess = false)
+      })
+      .addCase(uploadInvoiceAction.fulfilled, (state, action) => {
+        ;(state.uploadInvoiceData = action.payload),
+          (state.uploadInvoiceDataIsLoading = false),
+          (state.uploadInvoiceDataIsError = false),
+          (state.uploadInvoiceDataError = ''),
+          (state.uploadInvoiceDataIsSuccess = true)
+      })
+      .addCase(uploadInvoiceAction.rejected, (state, action) => {
+        ;(state.uploadInvoiceData = ''),
+          (state.uploadInvoiceDataIsLoading = false),
+          (state.uploadInvoiceDataIsError = true),
+          (state.uploadInvoiceDataError = action.error.message),
+          (state.uploadInvoiceDataIsSuccess = false)
       })
   }
 })

@@ -19,8 +19,11 @@ import DatePicker from 'react-datepicker'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import dayjs from 'dayjs'
 import styles from './posummary.module.css'
+import { uploadPoAction } from 'src/redux/features/poSummarySlice'
+import { useDispatch } from 'react-redux'
 
 const PoSummaryForm = ({ open, setOpen }) => {
+  const dispatch = useDispatch()
   const [file, setFile] = useState(null)
   const formikRef = useRef(null)
 
@@ -60,27 +63,25 @@ const PoSummaryForm = ({ open, setOpen }) => {
             eic: '',
             description: '',
             status: '',
-            poAmount: ''
+            poAmount: '',
+            noOfInvoices: '',
+            receiver: ''
           }}
           innerRef={formikRef}
           onSubmit={values => {
             console.log(values)
             const formData = new FormData()
             formData.append('name', values.poNumber)
-            formData.append('issueDate', values.issueDate)
+            formData.append('issueDate', dayjs(values.issueDate).format('DD/MM/YYYY'))
             formData.append('description', values.description)
-            formData.append('deliveryDate', values.deliveryDate)
+            formData.append('deliveryDate', dayjs(values.deliveryDate).format('DD/MM/YYYY'))
             formData.append('eic', values.eic)
             formData.append('status', values.status)
             formData.append('poAmount', values.poAmount)
+            formData.append('noOfInvoices', values.noOfInvoices)
+            formData.append('receiver', values.receiver)
             formData.append('file', file)
-            const payload = {
-              DOB: outputDate,
-              body: formData,
-              setOpen,
-              formikRef
-            }
-            // dispatch(registerPoiAction(payload))
+            dispatch(uploadPoAction(formData))
           }}
           //   validationSchema={validationSchema}
         >
@@ -135,7 +136,7 @@ const PoSummaryForm = ({ open, setOpen }) => {
                       />
                     </DatePickerWrapper>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={6}>
                     <TextField
                       name='eic'
                       label='EIC'
@@ -145,6 +146,47 @@ const PoSummaryForm = ({ open, setOpen }) => {
                       onChange={handleChange}
                       error={touched.eic && Boolean(errors.eic)}
                       helperText={touched.eic && errors.eic}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      name='poAmount'
+                      label='Amount'
+                      size='small'
+                      type='number'
+                      fullWidth
+                      value={values.poAmount}
+                      onChange={handleChange}
+                      error={touched.poAmount && Boolean(errors.poAmount)}
+                      helperText={touched.poAmount && errors.poAmount}
+                      InputProps={{
+                        startAdornment: <InputAdornment position='start'>Rs.</InputAdornment>
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField
+                      name='noOfInvoices'
+                      label='Number of Invoices'
+                      size='small'
+                      type='number'
+                      fullWidth
+                      value={values.noOfInvoices}
+                      onChange={handleChange}
+                      error={touched.noOfInvoices && Boolean(errors.noOfInvoices)}
+                      helperText={touched.noOfInvoices && errors.noOfInvoices}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField
+                      name='deliveryTimelines'
+                      label='Delivery Timelines'
+                      size='small'
+                      fullWidth
+                      value={values.deliveryTimelines}
+                      onChange={handleChange}
+                      error={touched.deliveryTimelines && Boolean(errors.deliveryTimelines)}
+                      helperText={touched.deliveryTimelines && errors.deliveryTimelines}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -164,22 +206,6 @@ const PoSummaryForm = ({ open, setOpen }) => {
                           helperText={touched.status && errors.status}
                         />
                       )}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      name='poAmount'
-                      label='Amount'
-                      size='small'
-                      type='number'
-                      fullWidth
-                      value={values.poAmount}
-                      onChange={handleChange}
-                      error={touched.poAmount && Boolean(errors.poAmount)}
-                      helperText={touched.poAmount && errors.poAmount}
-                      InputProps={{
-                        startAdornment: <InputAdornment position='start'>Rs.</InputAdornment>
-                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>

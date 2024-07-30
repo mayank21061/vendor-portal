@@ -61,20 +61,7 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const CustomTable = props => {
-  // const data = useSelector(state => state.poSummary.poSummaryData)
-  const data = [
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      deliveryDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    }
-  ]
+  const data = useSelector(state => state.poSummary.poSummaryData)
 
   const { poSummaryDataIsLoading, poSummaryDataIsError, poSummaryDataError, poSummaryDataIsSuccess } = useSelector(
     state => state.poSummary
