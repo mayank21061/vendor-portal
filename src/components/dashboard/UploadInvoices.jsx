@@ -247,59 +247,6 @@ const UploadInvoice = ({ open, setOpen }) => {
                     )}
                   />
                 </Grid>
-
-                <Grid item xs={12} className='fileupload' sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                  <Button
-                    component='label'
-                    role={undefined}
-                    variant='contained'
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon />}
-                  >
-                    Add Invoice
-                    <VisuallyHiddenInput type='file' />
-                  </Button>
-                  {formik.values.invoiceFile.map(item => (
-                    <Chip label={item.name} />
-                  ))}
-                  <span style={{ display: 'none' }}>
-                    <input
-                      style={{ display: 'none' }}
-                      id='invoice-upload'
-                      // multiple
-                      type='file'
-                      accept='.pdf, .doc, .docx'
-                      name='Uploadfile'
-                      onChange={e => handleInputInvoices(e.target.files)}
-                    />
-                  </span>
-                </Grid>
-                <Grid item xs={12} className='fileupload'>
-                  <label htmlFor='file-upload' style={{ width: '100%' }}>
-                    <span style={{ display: 'flex', justifyContent: 'flex-start', gap: '4px' }}>
-                      SUPPORTING DOCUMENTS
-                      <CloudUploadIcon style={{ color: '#070707' }} />
-                      {supportingDocuments && `${supportingDocuments.length} Files`}
-                    </span>
-                  </label>
-                  <span style={{ display: 'none' }}>
-                    <input
-                      style={{ display: 'none' }}
-                      id='file-upload'
-                      multiple
-                      type='file'
-                      accept='.pdf, .doc, .docx'
-                      name='supportingDocument'
-                      onChange={e => handleSupportingFile(e.target.files)}
-                    />
-                  </span>
-
-                  {supportingDocuments.length > 0 && (
-                    <Typography variant='body1' component='div'>
-                      <ul></ul>
-                    </Typography>
-                  )}
-                </Grid>
                 <Grid item xs={12}>
                   <TextField
                     {...config}
@@ -308,6 +255,38 @@ const UploadInvoice = ({ open, setOpen }) => {
                     name='remarks'
                     onChange={formik.handleChange}
                   />
+                </Grid>
+                <Grid item xs={12} className='fileupload' sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  <Button
+                    component='label'
+                    role={undefined}
+                    variant='contained'
+                    tabIndex={-1}
+                    startIcon={<CloudUploadIcon />}
+                    size='small'
+                  >
+                    Add Invoice
+                    <VisuallyHiddenInput type='file' onChange={e => handleInputInvoices(e.target.files)} />
+                  </Button>
+                  {formik.values.invoiceFile.map(item => (
+                    <Chip label={item.name} />
+                  ))}
+                </Grid>
+                <Grid item xs={12} className='fileupload'>
+                  <Button
+                    component='label'
+                    role={undefined}
+                    variant='contained'
+                    tabIndex={-1}
+                    startIcon={<CloudUploadIcon />}
+                    size='small'
+                  >
+                    Add Supporting Docs
+                    <VisuallyHiddenInput type='file' multiple onChange={e => handleSupportingFile(e.target.files)} />
+                  </Button>
+                  {formik.values.supportingDocuments.map(item => (
+                    <Chip label={item.name} />
+                  ))}
                 </Grid>
               </Grid>
 
