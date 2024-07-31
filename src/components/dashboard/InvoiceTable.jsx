@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useCallback } from 'react'
 import { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -7,7 +7,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import LinearProgress from '@mui/material/LinearProgress'
 import moment from 'moment'
 import {
+  Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Fab,
@@ -22,7 +24,6 @@ import {
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 import { useDispatch, useSelector } from 'react-redux'
-import styles from './posummary.module.css'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import ReactDatePicker from 'react-datepicker'
@@ -30,8 +31,10 @@ import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import { Add, Receipt } from '@mui/icons-material'
-import PoInvoicesTable from './PoInvoicesTable'
-import PoSummaryForm from './PoSummaryForm'
+import styles from './invoice.module.css'
+import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
+import UploadInvoices from './UploadInvoices'
+import _debounce from 'lodash/debounce'
 
 const renderName = row => {
   if (row.avatar) {
@@ -61,10 +64,12 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const CustomTable = props => {
-  const data = useSelector(state => state.poSummary.poSummaryData)
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
+  const [showInvoicesForm, setShowInvoicesForm] = useState(false)
+  const data = useSelector(state => state.invoice.invoicesData)
 
-  const { poSummaryDataIsLoading, poSummaryDataIsError, poSummaryDataError, poSummaryDataIsSuccess } = useSelector(
-    state => state.poSummary
+  const { invoicesDataIsLoading, invoicesDataIsError, invoicesDataError, invoicesDataIsSuccess } = useSelector(
+    state => state.invoice
   )
 
   const dispatch = useDispatch()
@@ -79,9 +84,6 @@ const CustomTable = props => {
   const [filterType, setFilterType] = useState('All')
   const [previewPO, setPreviewPO] = useState(false)
   const [fileUrl, setFileUrl] = useState(null)
-  const [previewInvoices, setPreviewInvoices] = useState(false)
-  const [showPoForm, setShowPoForm] = useState(false)
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -89,15 +91,26 @@ const CustomTable = props => {
     return formattedDate
   }
 
+  // useEffect(() => {
+  //   const payload = {
+  //     search: value,
+  //     fromDate: moment(startDateRange).format('YYYY-MM-DD'),
+  //     toDate: moment(endDateRange).format('YYYY-MM-DD'),
+  //     filterBy: filterType
+  //   }
+  //   if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
+  // }, [value, endDateRange, startDateRange, filterType])
+
+  const getInvoicesDataDebounce = useCallback(
+    _debounce((value, filterType) => {
+      dispatch(getInvoicesAction(value, filterType))
+    }, 1000),
+    []
+  )
+
   useEffect(() => {
-    const payload = {
-      search: value,
-      fromDate: moment(startDateRange).format('YYYY-MM-DD'),
-      toDate: moment(endDateRange).format('YYYY-MM-DD'),
-      filterBy: filterType
-    }
-    if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
-  }, [value, endDateRange, startDateRange, filterType, paginationModel])
+    getInvoicesDataDebounce()
+  }, [value, filterType])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -108,9 +121,12 @@ const CustomTable = props => {
     setEndDateRange(end)
   }
 
-  const handleFilter = val => {
-    setValue(val)
-  }
+  // const handleFilter = useCallback(
+  //   _debounce(searchText => {
+  //     setValue(searchText)
+  //   }, 1000),
+  //   []
+  // )
 
   const handleViewPDF = (e, rowData) => {
     setFileUrl(rowData.docUrl)
@@ -126,12 +142,16 @@ const CustomTable = props => {
     setFilterType(e.target.value)
   }
 
-  const handleViewInvoices = (e, rowData) => {
-    setPreviewInvoices(true)
-    console.log(rowData)
-  }
-
-  const filters = ['All', 'New', 'Pending', 'Closed']
+  const filters = [
+    'All',
+    'Submitted',
+    'With EIC',
+    'EIC Approved',
+    'With Finance',
+    'Finance Approved',
+    'With Bank',
+    'Paid'
+  ]
 
   const columns = [
     {
@@ -169,30 +189,28 @@ const CustomTable = props => {
       headerClassName: styles.customheader
     },
     {
-      flex: 0.2,
-      field: 'description',
-      headerName: 'DESCRIPTION',
-      renderCell: ({ row }) => (
-        <>
-          <Typography
-            sx={{
-              color: 'text.secondary',
-              whiteSpace: 'pre-line',
-              overflowWrap: 'break-word'
-            }}
-          >{`${row.description}`}</Typography>
-        </>
-      ),
+      flex: 0.1,
+      field: 'po',
+      headerName: 'PO Number',
+      renderCell: ({ row }) => {
+        // const date = new Date(row.date)
+        // const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
+        // const formattedDate = date.toLocaleDateString('en-US', options)
+
+        return (
+          <Typography sx={{ color: 'text.secondary', whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
+            {row.date}
+          </Typography>
+        )
+      },
       headerClassName: styles.customheader
     },
     {
-      flex: 0.15,
-      field: 'deliveryDate',
-      headerName: 'DELIVERY DATE',
+      flex: 0.1,
+      field: 'amount',
+      headerName: 'AMOUNT',
       headerClassName: styles.customheader,
       renderCell: ({ row }) => {
-        const { deliveryDate } = row
-
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -200,7 +218,7 @@ const CustomTable = props => {
                 noWrap
                 sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
               >
-                {deliveryDate}
+                {row.amount}
               </Typography>
             </Box>
           </Box>
@@ -209,8 +227,8 @@ const CustomTable = props => {
     },
     {
       flex: 0.15,
-      field: 'eic',
-      headerName: 'EIC',
+      field: 'dueDate',
+      headerName: 'DUE DATE',
       headerClassName: styles.customheader,
       renderCell: ({ row }) => {
         return (
@@ -220,7 +238,7 @@ const CustomTable = props => {
                 noWrap
                 sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
               >
-                {row.eic}
+                {row.dueDate}
               </Typography>
             </Box>
           </Box>
@@ -246,71 +264,52 @@ const CustomTable = props => {
           </Box>
         )
       }
-    },
-    {
-      flex: 0.1,
-      field: 'amount',
-      headerName: 'AMOUNT',
-      headerClassName: styles.customheader,
-      renderCell: ({ row }) => {
-        return (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography
-                noWrap
-                sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
-              >
-                {row.amount}
-              </Typography>
-            </Box>
-          </Box>
-        )
-      }
-    },
-    {
-      sortable: false,
-      field: 'actions',
-      headerName: '',
-      headerAlign: 'center',
-      align: 'center',
-      headerClassName: styles.customheader,
-      renderCell: ({ row }) =>
-        hoverdRowId !== null &&
-        hoverdRowId === row.id && (
-          <>
-            <Tooltip title='Preview'>
-              <IconButton
-                onClick={event => {
-                  handleViewPDF(event, row)
-                }}
-              >
-                <VisibilityIcon
-                  style={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
-                  }}
-                />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title='Invoices'>
-              <IconButton
-                onClick={event => {
-                  handleViewInvoices(event, row)
-                }}
-              >
-                <Receipt
-                  style={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
-                  }}
-                />
-              </IconButton>
-            </Tooltip>
-          </>
-        )
     }
+
+    // {
+    //   sortable: false,
+    //   field: 'actions',
+    //   headerName: '',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   headerClassName: styles.customheader,
+    //   renderCell: ({ row }) =>
+    //     hoverdRowId !== null &&
+    //     hoverdRowId === row.id && (
+    //       <>
+    //         <Tooltip title='Preview'>
+    //           <IconButton
+    //             onClick={event => {
+    //               handleViewPDF(event, row)
+    //             }}
+    //           >
+    //             <VisibilityIcon
+    //               style={{
+    //                 width: '1.2rem',
+    //                 height: '1.2rem',
+    //                 color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
+    //               }}
+    //             />
+    //           </IconButton>
+    //         </Tooltip>
+    //         <Tooltip title='Invoices'>
+    //           <IconButton
+    //             onClick={event => {
+    //               handleViewPDF(event, row)
+    //             }}
+    //           >
+    //             <Receipt
+    //               style={{
+    //                 width: '1.2rem',
+    //                 height: '1.2rem',
+    //                 color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
+    //               }}
+    //             />
+    //           </IconButton>
+    //         </Tooltip>
+    //       </>
+    //     )
+    // }
   ]
 
   return (
@@ -323,20 +322,24 @@ const CustomTable = props => {
             style={{
               display: 'flex',
               width: '100%',
-              justifyContent: 'flex-end'
+              justifyContent: 'space-between',
+              alignItems: 'center'
             }}
           >
+            <Typography variant='h4' fontWeight='bold' sx={{ mt: 4 }}>
+              Invoices
+            </Typography>
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
                 alignItems: 'end',
                 gap: '10px',
                 flexWrap: 'wrap',
                 marginTop: '.5rem'
               }}
             >
-              <div style={{ minWidth: '18vw' }}>
+              {/* <div style={{ minWidth: '18vw' }}>
                 <DatePickerWrapper>
                   <ReactDatePicker
                     showYearDropdown
@@ -360,13 +363,13 @@ const CustomTable = props => {
                     }
                   />
                 </DatePickerWrapper>
-              </div>
+              </div> */}
               <div style={{ minWidth: '20vw' }}>
                 <CustomTextField
                   fullWidth
                   value={value}
                   placeholder='Search'
-                  onChange={e => handleFilter(e.target.value)}
+                  onChange={e => setValue(e.target.value)}
                   style={{ marginTop: '18px' }}
                 />
               </div>
@@ -384,86 +387,71 @@ const CustomTable = props => {
                   ))}
                 </Select>
               </FormControl>
-              <Tooltip title='CREATE PO'>
-                <Fab color='primary' aria-label='add' size='small' onClick={() => setShowPoForm(true)}>
+              <Tooltip title='CREATE INVOICE'>
+                <Fab color='primary' aria-label='add' size='small' onClick={() => setShowInvoicesForm(true)}>
                   <Add />
                 </Fab>
               </Tooltip>
             </div>
           </Grid>
-          {poSummaryDataIsLoading ? (
+          {/* {invoicesDataIsLoading ? (
             <Box sx={{ width: '100%', marginTop: '40px' }}>
               <LinearProgress />
             </Box>
-          ) : poSummaryDataIsError ? (
+          ) : invoicesDataIsError ? (
             <>
-              <h1>{poSummaryDataError}</h1>
+              <h1>{invoicesDataError}</h1>
             </>
-          ) : poSummaryDataIsSuccess ? (
-            <Grid item xs={12}>
-              <Paper elevation={10}>
-                <DataGrid
-                  sx={{ height: '70vh' }}
-                  rows={data || []}
-                  rowHeight={62}
-                  columnHeaderHeight={40}
-                  columns={columns}
-                  disableRowSelectionOnClick
-                  onRowSelectionModelChange={newRowSelectionModel => {
-                    setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
-                  }}
-                  getRowId={row => row.id}
-                  componentsProps={{
-                    row: {
-                      onMouseEnter: event => {
-                        const id = event.currentTarget.dataset.id
-                        const hoveredRow = data || [].find(row => row.id === Number(id))
-                        setHoveredId(id)
-                      },
-                      onMouseLeave: event => {
-                        setHoveredId(null)
-                      }
+          ) : invoicesDataIsSuccess ? ( */}
+          <Grid item xs={12}>
+            <Paper elevation={10}>
+              <DataGrid
+                sx={{ height: '70vh' }}
+                rows={data || []}
+                rowHeight={62}
+                columnHeaderHeight={40}
+                columns={columns}
+                disableRowSelectionOnClick
+                onRowSelectionModelChange={newRowSelectionModel => {
+                  setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
+                }}
+                getRowId={row => row.id}
+                componentsProps={{
+                  row: {
+                    onMouseEnter: event => {
+                      const id = event.currentTarget.dataset.id
+                      const hoveredRow = data || [].find(row => row.id === Number(id))
+                      setHoveredId(id)
+                    },
+                    onMouseLeave: event => {
+                      setHoveredId(null)
                     }
-                  }}
-                  pageSizeOptions={[7, 10, 25, 50]}
-                  paginationModel={paginationModel}
-                  onPaginationModelChange={setPaginationModel}
-                />
-              </Paper>
-            </Grid>
-          ) : (
-            ''
-          )}
+                  }
+                }}
+                pageSizeOptions={[7, 10, 25, 50]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+              />
+            </Paper>
+          </Grid>
+
+          {/*// ) : (
+          //   ''
+          // )}*/}
         </Grid>
       </Paper>
       {/* ---------- view events  detail dialog */}
-      <Dialog open={previewPO} onClose={() => setPreviewPO(false)} fullWidth maxWidth='md'>
-        <DialogTitle id='customized-dialog-title'>PO Details</DialogTitle>
+      <Dialog
+        open={showeventDetail}
+        onClose={handleRowViewClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='customized-dialog-title'>Events Detail</DialogTitle>
         <Tooltip title='CLOSE'>
           <IconButton
             aria-label='close'
-            onClick={() => setPreviewPO(false)}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: theme => theme.palette.grey[500]
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Tooltip>
-
-        <DialogContent dividers></DialogContent>
-      </Dialog>
-      <Dialog open={previewInvoices} onClose={() => setPreviewInvoices(false)} fullWidth maxWidth='sm'>
-        <DialogTitle id='customized-dialog-title' variant='h5'>
-          Invoices Details
-        </DialogTitle>
-        <Tooltip title='CLOSE'>
-          <IconButton
-            aria-label='close'
-            onClick={() => setPreviewInvoices(false)}
+            onClick={handleRowViewClose}
             sx={{
               position: 'absolute',
               right: 8,
@@ -476,10 +464,35 @@ const CustomTable = props => {
         </Tooltip>
 
         <DialogContent dividers>
-          <PoInvoicesTable />
+          <Grid container spacing={6}>
+            <Grid item xs={4}>
+              <Typography variant='h6'>DATE : </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Typography variant='inherit'>{formatDate(eventData?.date)}</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant='h6'> TYPE : </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Typography variant='inherit'>{eventData?.type}</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant='h6'> POI : </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Typography variant='inherit'>{eventData?.userNames}</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant='h6'> DESCRIPTION : </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Typography variant='inherit'>{eventData?.description}</Typography>
+            </Grid>
+          </Grid>
         </DialogContent>
       </Dialog>
-      <PoSummaryForm open={showPoForm} setOpen={setShowPoForm} />
+      <UploadInvoices open={showInvoicesForm} setOpen={setShowInvoicesForm} />
     </>
   )
 }

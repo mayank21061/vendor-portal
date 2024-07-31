@@ -124,8 +124,8 @@ const AppBarContent = props => {
       >
         <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
           {hidden ? (
-            <IconButton color='inherit' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
-              <Icon fontSize='1.5rem' icon='tabler:menu-2' />
+            <IconButton sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
+              <Icon fontSize='1.5rem' icon='tabler:menu-2' color={settings.mode === 'dark' ? '' : '#fff'} />
             </IconButton>
           ) : null}
         </Box>

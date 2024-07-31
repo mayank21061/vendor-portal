@@ -148,13 +148,13 @@ export default function MonthlyBarChart() {
     <div
       style={{
         width: '100%',
-        background: 'linear-gradient(94deg, #a3c6e8 39%, #b0cdef 60%, #c7e4ff 89%)',
+        // background: 'linear-gradient(94deg, #a3c6e8 39%, #b0cdef 60%, #c7e4ff 89%)',
         padding: '20px',
         borderRadius: '10px'
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <h2 style={{ margin: '0', color: '#333' }}>Monthly Data Overview</h2>
+        <h2 style={{ margin: '0', color: '#333' }}>Monthly Overview</h2>
         <FormControl>
           <Select
             labelId='month-select-label'
