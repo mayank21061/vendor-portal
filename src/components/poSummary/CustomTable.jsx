@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Fab,
   FormControl,
   Grid,
   IconButton,
@@ -28,8 +29,9 @@ import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
-import { Receipt } from '@mui/icons-material'
-import InvoicesTable from './InvoicesTable'
+import { Add, Receipt } from '@mui/icons-material'
+import PoInvoicesTable from './PoInvoicesTable'
+import PoSummaryForm from './PoSummaryForm'
 
 const renderName = row => {
   if (row.avatar) {
@@ -59,20 +61,7 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const CustomTable = props => {
-  // const data = useSelector(state => state.poSummary.poSummaryData)
-  const data = [
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      deliveryDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    }
-  ]
+  const data = useSelector(state => state.poSummary.poSummaryData)
 
   const { poSummaryDataIsLoading, poSummaryDataIsError, poSummaryDataError, poSummaryDataIsSuccess } = useSelector(
     state => state.poSummary
@@ -91,6 +80,8 @@ const CustomTable = props => {
   const [previewPO, setPreviewPO] = useState(false)
   const [fileUrl, setFileUrl] = useState(null)
   const [previewInvoices, setPreviewInvoices] = useState(false)
+  const [showPoForm, setShowPoForm] = useState(false)
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -106,7 +97,7 @@ const CustomTable = props => {
       filterBy: filterType
     }
     if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
-  }, [value, endDateRange, startDateRange, filterType])
+  }, [value, endDateRange, startDateRange, filterType, paginationModel])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -393,6 +384,11 @@ const CustomTable = props => {
                   ))}
                 </Select>
               </FormControl>
+              <Tooltip title='CREATE PO'>
+                <Fab color='primary' aria-label='add' size='small' onClick={() => setShowPoForm(true)}>
+                  <Add />
+                </Fab>
+              </Tooltip>
             </div>
           </Grid>
           {poSummaryDataIsLoading ? (
@@ -405,31 +401,35 @@ const CustomTable = props => {
             </>
           ) : poSummaryDataIsSuccess ? (
             <Grid item xs={12}>
-              <DataGrid
-                autoHeight
-                rows={data || []}
-                rowHeight={62}
-                columnHeaderHeight={40}
-                columns={columns}
-                disableRowSelectionOnClick
-                onRowSelectionModelChange={newRowSelectionModel => {
-                  setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
-                }}
-                getRowId={row => row.id}
-                componentsProps={{
-                  row: {
-                    onMouseEnter: event => {
-                      const id = event.currentTarget.dataset.id
-                      const hoveredRow = data || [].find(row => row.id === Number(id))
-                      setHoveredId(id)
-                    },
-                    onMouseLeave: event => {
-                      setHoveredId(null)
+              <Paper elevation={10}>
+                <DataGrid
+                  sx={{ height: '70vh' }}
+                  rows={data || []}
+                  rowHeight={62}
+                  columnHeaderHeight={40}
+                  columns={columns}
+                  disableRowSelectionOnClick
+                  onRowSelectionModelChange={newRowSelectionModel => {
+                    setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
+                  }}
+                  getRowId={row => row.id}
+                  componentsProps={{
+                    row: {
+                      onMouseEnter: event => {
+                        const id = event.currentTarget.dataset.id
+                        const hoveredRow = data || [].find(row => row.id === Number(id))
+                        setHoveredId(id)
+                      },
+                      onMouseLeave: event => {
+                        setHoveredId(null)
+                      }
                     }
-                  }
-                }}
-                hideFooter
-              />
+                  }}
+                  pageSizeOptions={[7, 10, 25, 50]}
+                  paginationModel={paginationModel}
+                  onPaginationModelChange={setPaginationModel}
+                />
+              </Paper>
             </Grid>
           ) : (
             ''
@@ -456,8 +456,10 @@ const CustomTable = props => {
 
         <DialogContent dividers></DialogContent>
       </Dialog>
-      <Dialog open={previewInvoices} onClose={() => setPreviewInvoices(false)} fullWidth maxWidth='md'>
-        <DialogTitle id='customized-dialog-title'>Invoices Details</DialogTitle>
+      <Dialog open={previewInvoices} onClose={() => setPreviewInvoices(false)} fullWidth maxWidth='sm'>
+        <DialogTitle id='customized-dialog-title' variant='h5'>
+          Invoices Details
+        </DialogTitle>
         <Tooltip title='CLOSE'>
           <IconButton
             aria-label='close'
@@ -474,9 +476,10 @@ const CustomTable = props => {
         </Tooltip>
 
         <DialogContent dividers>
-          <InvoicesTable />
+          <PoInvoicesTable />
         </DialogContent>
       </Dialog>
+      <PoSummaryForm open={showPoForm} setOpen={setShowPoForm} />
     </>
   )
 }

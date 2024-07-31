@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useCallback } from 'react'
 import { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -7,9 +7,12 @@ import CloseIcon from '@mui/icons-material/Close'
 import LinearProgress from '@mui/material/LinearProgress'
 import moment from 'moment'
 import {
+  Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
+  Fab,
   FormControl,
   Grid,
   IconButton,
@@ -27,9 +30,11 @@ import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
-import { Receipt } from '@mui/icons-material'
+import { Add, Receipt } from '@mui/icons-material'
 import styles from './invoice.module.css'
 import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
+import UploadInvoices from './UploadInvoices'
+import _debounce from 'lodash/debounce'
 
 const renderName = row => {
   if (row.avatar) {
@@ -59,23 +64,11 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const CustomTable = props => {
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
+  const [showInvoicesForm, setShowInvoicesForm] = useState(false)
   const data = useSelector(state => state.invoice.invoicesData)
-  console.log(data)
-  // const data = [
-  //   {
-  //     id: '23',
-  //     number: 1,
-  //     date: '123123',
-  //     dueDate: '2341232',
-  //     description: 'yubtynhbyujhbt',
-  //     eic: 'trg4wer',
-  //     status: 'wwref',
-  //     amount: '2341234',
-  //     docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-  //   }
-  // ]
 
-  const { poSummaryDataIsLoading, poSummaryDataIsError, poSummaryDataError, poSummaryDataIsSuccess } = useSelector(
+  const { invoicesDataIsLoading, invoicesDataIsError, invoicesDataError, invoicesDataIsSuccess } = useSelector(
     state => state.invoice
   )
 
@@ -108,9 +101,16 @@ const CustomTable = props => {
   //   if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
   // }, [value, endDateRange, startDateRange, filterType])
 
+  const getInvoicesDataDebounce = useCallback(
+    _debounce((value, filterType) => {
+      dispatch(getInvoicesAction(value, filterType))
+    }, 1000),
+    []
+  )
+
   useEffect(() => {
-    dispatch(getInvoicesAction())
-  }, [])
+    getInvoicesDataDebounce()
+  }, [value, filterType])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -121,9 +121,12 @@ const CustomTable = props => {
     setEndDateRange(end)
   }
 
-  const handleFilter = val => {
-    setValue(val)
-  }
+  // const handleFilter = useCallback(
+  //   _debounce(searchText => {
+  //     setValue(searchText)
+  //   }, 1000),
+  //   []
+  // )
 
   const handleViewPDF = (e, rowData) => {
     setFileUrl(rowData.docUrl)
@@ -139,7 +142,16 @@ const CustomTable = props => {
     setFilterType(e.target.value)
   }
 
-  const filters = ['All', 'New', 'Pending', 'Closed']
+  const filters = [
+    'All',
+    'Submitted',
+    'With EIC',
+    'EIC Approved',
+    'With Finance',
+    'Finance Approved',
+    'With Bank',
+    'Paid'
+  ]
 
   const columns = [
     {
@@ -310,13 +322,14 @@ const CustomTable = props => {
             style={{
               display: 'flex',
               width: '100%',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              alignItems: 'center'
             }}
           >
             <Typography variant='h4' fontWeight='bold' sx={{ mt: 4 }}>
               Invoices
             </Typography>
-            {/* <div
+            <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -326,7 +339,7 @@ const CustomTable = props => {
                 marginTop: '.5rem'
               }}
             >
-              <div style={{ minWidth: '18vw' }}>
+              {/* <div style={{ minWidth: '18vw' }}>
                 <DatePickerWrapper>
                   <ReactDatePicker
                     showYearDropdown
@@ -350,13 +363,13 @@ const CustomTable = props => {
                     }
                   />
                 </DatePickerWrapper>
-              </div>
+              </div> */}
               <div style={{ minWidth: '20vw' }}>
                 <CustomTextField
                   fullWidth
                   value={value}
                   placeholder='Search'
-                  onChange={e => handleFilter(e.target.value)}
+                  onChange={e => setValue(e.target.value)}
                   style={{ marginTop: '18px' }}
                 />
               </div>
@@ -374,20 +387,26 @@ const CustomTable = props => {
                   ))}
                 </Select>
               </FormControl>
-            </div> */}
+              <Tooltip title='CREATE INVOICE'>
+                <Fab color='primary' aria-label='add' size='small' onClick={() => setShowInvoicesForm(true)}>
+                  <Add />
+                </Fab>
+              </Tooltip>
+            </div>
           </Grid>
-          {poSummaryDataIsLoading ? (
+          {/* {invoicesDataIsLoading ? (
             <Box sx={{ width: '100%', marginTop: '40px' }}>
               <LinearProgress />
             </Box>
-          ) : poSummaryDataIsError ? (
+          ) : invoicesDataIsError ? (
             <>
-              <h1>{poSummaryDataError}</h1>
+              <h1>{invoicesDataError}</h1>
             </>
-          ) : poSummaryDataIsSuccess ? (
-            <Grid item xs={12}>
+          ) : invoicesDataIsSuccess ? ( */}
+          <Grid item xs={12}>
+            <Paper elevation={10}>
               <DataGrid
-                autoHeight
+                sx={{ height: '70vh' }}
                 rows={data || []}
                 rowHeight={62}
                 columnHeaderHeight={40}
@@ -409,12 +428,16 @@ const CustomTable = props => {
                     }
                   }
                 }}
-                hideFooter
+                pageSizeOptions={[7, 10, 25, 50]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
               />
-            </Grid>
-          ) : (
-            ''
-          )}
+            </Paper>
+          </Grid>
+
+          {/*// ) : (
+          //   ''
+          // )}*/}
         </Grid>
       </Paper>
       {/* ---------- view events  detail dialog */}
@@ -469,25 +492,7 @@ const CustomTable = props => {
           </Grid>
         </DialogContent>
       </Dialog>
-      <Dialog open={previewPO} onClose={() => setPreviewPO(false)} fullWidth maxWidth='md'>
-        <DialogTitle id='customized-dialog-title'>PO Details</DialogTitle>
-        <Tooltip title='CLOSE'>
-          <IconButton
-            aria-label='close'
-            onClick={() => setPreviewPO(false)}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: theme => theme.palette.grey[500]
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Tooltip>
-
-        <DialogContent dividers></DialogContent>
-      </Dialog>
+      <UploadInvoices open={showInvoicesForm} setOpen={setShowInvoicesForm} />
     </>
   )
 }

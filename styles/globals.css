@@ -22,3 +22,20 @@ code:not([class*='language-']):after {
 code[class*='language-'] {
   padding: 0;
 }
+
+/* .MuiDataGrid-virtualScroller::-webkit-scrollbar {
+  width: 3px;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb {
+  background-color: #a7d9ee;
+  border-radius: 5px;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+.MuiDataGrid-columnHeaders {
+  background-color: #d6e7ee;
+} */

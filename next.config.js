@@ -90,6 +90,18 @@ module.exports = {
           ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/user_service/api/version`
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/user_service/api/version`
       },
+      {
+        source: '/call/vendor/Vendorportal/createPO',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/createPO`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/createPO`
+      },
+      {
+        source: '/call/vendor/Vendorportal/uploadInvoice',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/uploadInvoice`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/uploadInvoice`
+      }
     ]
   }
 }
