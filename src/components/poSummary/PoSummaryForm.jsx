@@ -129,7 +129,7 @@ const PoSummaryForm = ({ open, setOpen }) => {
                         value={dayjs(values.deliveryDate).format('DD/MM/YYYY')}
                         selected={new Date(values.deliveryDate)}
                         dateFormat='dd MMMM yyyy'
-                        customInput={<TextField label='Issue Date' size='small' />}
+                        customInput={<TextField label='Delivery Date' size='small' />}
                         onChange={date => {
                           setFieldValue('deliveryDate', date)
                         }}

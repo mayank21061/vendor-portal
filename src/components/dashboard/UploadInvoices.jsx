@@ -4,6 +4,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import {
   Autocomplete,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,6 +13,7 @@ import {
   Grid,
   IconButton,
   Paper,
+  styled,
   TextField,
   Tooltip,
   Typography
@@ -49,23 +51,17 @@ const UploadInvoice = ({ open, setOpen }) => {
   // const { getPoNumberData } = useSelector(state => state.poNumber)
   // const { getInvoiceUserData } = useSelector(state => state.invoiceUser)
 
-  const [state, setState] = useState(initialState)
-  const {
-    poNumber,
-    paymentType,
-    eic,
-    deliveryPlant,
-    type,
-    mobileNumber,
-    email,
-    invoiceNumber,
-    invoiceDate,
-    invoiceAmount,
-    alternateMobileNumber,
-    alternateEmail,
-    remarks,
-    msmeCategory
-  } = state
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1
+  })
 
   const formik = useFormik({
     initialValues: {
@@ -84,7 +80,9 @@ const UploadInvoice = ({ open, setOpen }) => {
       alternateEmail: '',
       remarks: '',
       msmeCategory: '',
-      search: ''
+      search: '',
+      invoiceFile: [],
+      supportingDocuments: []
     },
     onSubmit: values => {
       dispatch(uploadInvoiceAction(values))
@@ -92,22 +90,19 @@ const UploadInvoice = ({ open, setOpen }) => {
   })
 
   const [supportingDocuments, setSupportingDocuments] = useState([])
-  const [files, setFiles] = useState(null)
   const [fileError, setFileError] = useState('')
 
-  const handleFile = e => {
-    setFileError('')
-    setFiles(e.target.files)
+  const handleInputInvoices = files => {
+    formik.setFieldValue('invoiceFile', Array.from(files))
   }
 
-  const handleSupportingFile = e => {
-    setSupportingDocuments(e.target.files)
+  const handleSupportingFile = files => {
+    formik.setFieldValue('supportingDocuments', Array.from(files))
   }
 
   const handleClose = () => {
-    setState(initialState)
-    setSupportingDocuments([])
-    setFiles(null)
+    // setSupportingDocuments([])
+    // setFiles(null)
     setFileError('')
     if (props && props.onClose) {
       props.onClose()
@@ -253,34 +248,35 @@ const UploadInvoice = ({ open, setOpen }) => {
                   />
                 </Grid>
 
-                <Grid item xs={6} className='fileupload'>
-                  <label htmlFor='invoice-upload' style={{ width: '100%' }}>
-                    <span style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                      UPLOAD INVOICE
-                      <CloudUploadIcon style={{ color: '#070707' }} />
-                      {files && `${files.length} File`}
-                    </span>
-                  </label>
+                <Grid item xs={12} className='fileupload' sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  <Button
+                    component='label'
+                    role={undefined}
+                    variant='contained'
+                    tabIndex={-1}
+                    startIcon={<CloudUploadIcon />}
+                  >
+                    Add Invoice
+                    <VisuallyHiddenInput type='file' />
+                  </Button>
+                  {formik.values.invoiceFile.map(item => (
+                    <Chip label={item.name} />
+                  ))}
                   <span style={{ display: 'none' }}>
                     <input
                       style={{ display: 'none' }}
                       id='invoice-upload'
-                      multiple
+                      // multiple
                       type='file'
                       accept='.pdf, .doc, .docx'
                       name='Uploadfile'
-                      onChange={handleFile}
+                      onChange={e => handleInputInvoices(e.target.files)}
                     />
                   </span>
-                  {fileError && (
-                    <Typography variant='caption' color='error'>
-                      {fileError}
-                    </Typography>
-                  )}
                 </Grid>
-                <Grid item xs={6} className='fileupload'>
+                <Grid item xs={12} className='fileupload'>
                   <label htmlFor='file-upload' style={{ width: '100%' }}>
-                    <span style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                    <span style={{ display: 'flex', justifyContent: 'flex-start', gap: '4px' }}>
                       SUPPORTING DOCUMENTS
                       <CloudUploadIcon style={{ color: '#070707' }} />
                       {supportingDocuments && `${supportingDocuments.length} Files`}
@@ -294,7 +290,7 @@ const UploadInvoice = ({ open, setOpen }) => {
                       type='file'
                       accept='.pdf, .doc, .docx'
                       name='supportingDocument'
-                      onChange={handleSupportingFile}
+                      onChange={e => handleSupportingFile(e.target.files)}
                     />
                   </span>
 
