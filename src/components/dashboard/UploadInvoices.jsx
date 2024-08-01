@@ -126,7 +126,7 @@ const UploadInvoice = ({ open, setOpen }) => {
       open={open}
       onClose={() => setOpen(false)}
       fullWidth
-      maxWidth='md'
+      maxWidth='lg'
       sx={{ '.MuiPaper-root': { overflowY: 'visible' } }}
     >
       <DialogTitle id='customized-dialog-title'>UPLOAD INVOICE</DialogTitle>
@@ -159,8 +159,26 @@ const UploadInvoice = ({ open, setOpen }) => {
                     renderInput={params => <TextField {...params} label='PO NUMBER' variant='outlined' size='small' />}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
+                  <Autocomplete
+                    size='small'
+                    {...config}
+                    options={[]}
+                    value={formik.values.deliveryPlant}
+                    onChange={formik.handleChange}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label='DELIVERY PLANT'
+                        name='deliveryPlant'
+                        variant='outlined'
+                        size='small'
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={4}>
                   <TextField
                     {...config}
                     size='small'
@@ -182,7 +200,7 @@ const UploadInvoice = ({ open, setOpen }) => {
                   />
                 </Grid>
 
-                <Grid item xs={4}>
+                {/* <Grid item xs={4}>
                   <Autocomplete
                     {...config}
                     options={[]}
@@ -192,11 +210,11 @@ const UploadInvoice = ({ open, setOpen }) => {
                       <TextField {...params} label='ENGINEER INCHARGE' name='eic' variant='outlined' size='small' />
                     )}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={4}>
                   <DatePickerWrapper>
                     <DatePicker
-                      placeholderText='Invoice Date'
+                      placeholderText='Payment Date'
                       fullWidth
                       showYearDropdown
                       id='issue-date'
@@ -204,12 +222,24 @@ const UploadInvoice = ({ open, setOpen }) => {
                       value={dayjs(formik.values.invoiceDate).format('DD/MM/YYYY')}
                       selected={new Date(formik.values.invoiceDate)}
                       dateFormat='dd MMMM yyyy'
-                      customInput={<TextField label='Issue Date' size='small' />}
+                      customInput={<TextField label='Payment Date' size='small' />}
                       onChange={date => formik.setFieldValue('invoiceDate', date)}
                     />
                   </DatePickerWrapper>
                 </Grid>
-                <Grid item xs={4}>
+
+                <Grid item xs={12}>
+                  <TextField
+                    {...config}
+                    multiline
+                    minRows={3}
+                    label='REMARKS'
+                    value={formik.values.remarks}
+                    name='remarks'
+                    onChange={formik.handleChange}
+                  />
+                </Grid>
+                <Grid item xs={6}>
                   <TextField
                     {...config}
                     size='small'
@@ -219,7 +249,7 @@ const UploadInvoice = ({ open, setOpen }) => {
                     onChange={formik.handleChange}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                   <TextField
                     {...config}
                     size='small'
@@ -229,61 +259,16 @@ const UploadInvoice = ({ open, setOpen }) => {
                     onChange={formik.handleChange}
                   />
                 </Grid>
-                <Grid item xs={4}>
-                  <Autocomplete
-                    size='small'
-                    {...config}
-                    options={[]}
-                    value={formik.values.deliveryPlant}
-                    onChange={formik.handleChange}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        label='DELIVERY PLANT'
-                        name='deliveryPlant'
-                        variant='outlined'
-                        size='small'
-                      />
-                    )}
-                  />
-                </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    {...config}
-                    label='REMARKS'
-                    value={formik.values.remarks}
-                    name='remarks'
-                    onChange={formik.handleChange}
-                  />
-                </Grid>
-                <Grid item xs={12} className='fileupload' sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                  <Button
-                    component='label'
-                    role={undefined}
-                    variant='contained'
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon />}
-                    size='small'
-                  >
-                    Add Invoice
-                    <VisuallyHiddenInput type='file' onChange={e => handleInputInvoices(e.target.files)} />
-                  </Button>
+                  <b>Invoice File: </b>
+                  {`${formik.values.invoiceFile.length == 0 ? ' No File selected' : ''}`}
                   {formik.values.invoiceFile.map(item => (
                     <Chip label={item.name} />
                   ))}
                 </Grid>
-                <Grid item xs={12} className='fileupload'>
-                  <Button
-                    component='label'
-                    role={undefined}
-                    variant='contained'
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon />}
-                    size='small'
-                  >
-                    Add Supporting Docs
-                    <VisuallyHiddenInput type='file' multiple onChange={e => handleSupportingFile(e.target.files)} />
-                  </Button>
+                <Grid item xs={12}>
+                  <b>Supporting Documents: </b>
+                  {` ${formik.values.invoiceFile.length == 0 ? ' No File selected' : ''}`}
                   {formik.values.supportingDocuments.map(item => (
                     <Chip label={item.name} />
                   ))}
@@ -297,6 +282,9 @@ const UploadInvoice = ({ open, setOpen }) => {
                     <Divider />
                     <div
                       style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '.5rem',
                         fontSize: '14px',
                         padding: '1rem ',
                         justifyContent: 'space-around'
@@ -332,6 +320,12 @@ const UploadInvoice = ({ open, setOpen }) => {
                         <br />
                       </div>
                       <Divider />
+                      <div style={{ marginTop: '1rem' }}>
+                        <span style={{ fontWeight: 'bold' }}>EIC:</span>
+                        {/* {getInvoiceUserData.email} */}
+                        <br />
+                      </div>
+                      <Divider />
                     </div>
                   </div>
                 </Paper>
@@ -339,10 +333,45 @@ const UploadInvoice = ({ open, setOpen }) => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions sx={{ p: 1 }}>
-          <Button variant='contained' type='submit'>
-            UPLOAD
-          </Button>
+        <DialogActions>
+          <Grid container justifyContent='space-between'>
+            <Grid item sx={{ display: 'flex', gap: '1rem' }}>
+              <Button
+                component='label'
+                role={undefined}
+                variant='outlined'
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Add Invoice
+                <VisuallyHiddenInput
+                  type='file'
+                  accept='application/pdf'
+                  onChange={e => handleInputInvoices(e.target.files)}
+                />
+              </Button>
+              <Button
+                component='label'
+                role={undefined}
+                variant='outlined'
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Add Supporting Docs
+                <VisuallyHiddenInput
+                  type='file'
+                  accept='application/pdf'
+                  multiple
+                  onChange={e => handleSupportingFile(e.target.files)}
+                />
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button variant='contained' type='submit'>
+                UPLOAD
+              </Button>
+            </Grid>
+          </Grid>
         </DialogActions>
       </form>
     </Dialog>
