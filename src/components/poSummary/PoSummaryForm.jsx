@@ -20,14 +20,18 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import dayjs from 'dayjs'
 import styles from './posummary.module.css'
 import { uploadPoAction } from 'src/redux/features/poSummarySlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const PoSummaryForm = ({ open, setOpen }) => {
+  const { userData } = useSelector(state => state.user)
+
   const dispatch = useDispatch()
   const [file, setFile] = useState(null)
   const formikRef = useRef(null)
 
   const statusList = ['New', 'Pending', 'Closed']
+
+  const paymentTypeList = ['Credit Card', 'Debit Card', 'Net Banking', 'UPI', 'Cash', 'Cheque']
 
   const fileChange = e => {
     e.preventDefault()
@@ -65,23 +69,29 @@ const PoSummaryForm = ({ open, setOpen }) => {
             status: '',
             poAmount: '',
             noOfInvoices: '',
-            receiver: ''
+            receiver: JSON.parse(localStorage.getItem('userData')).username,
+            deliveryTimelines: '',
+            paymentType: '',
+            deliveryPlant: ''
           }}
           innerRef={formikRef}
           onSubmit={values => {
-            console.log(values)
             const formData = new FormData()
-            formData.append('name', values.poNumber)
-            formData.append('issueDate', dayjs(values.issueDate).format('DD/MM/YYYY'))
+            formData.append('poNumber', values.poNumber)
+            formData.append('poIssueDate', dayjs(values.issueDate).format('YYYY-MM-DD'))
             formData.append('description', values.description)
-            formData.append('deliveryDate', dayjs(values.deliveryDate).format('DD/MM/YYYY'))
+            formData.append('deliveryDate', dayjs(values.deliveryDate).format('YYYY-MM-DD'))
             formData.append('eic', values.eic)
-            formData.append('status', values.status)
+            formData.append('poStatus', values.status)
             formData.append('poAmount', values.poAmount)
             formData.append('noOfInvoices', values.noOfInvoices)
             formData.append('receiver', values.receiver)
+            formData.append('deliveryTimelines', values.deliveryTimelines)
+            formData.append('paymentType', values.paymentType)
+            formData.append('deliveryPlant', values.deliveryPlant)
             formData.append('file', file)
             dispatch(uploadPoAction(formData))
+            formikRef.current.resetForm()
           }}
           //   validationSchema={validationSchema}
         >
@@ -189,6 +199,26 @@ const PoSummaryForm = ({ open, setOpen }) => {
                       helperText={touched.deliveryTimelines && errors.deliveryTimelines}
                     />
                   </Grid>
+
+                  <Grid item xs={4}>
+                    <Autocomplete
+                      name='paymentType'
+                      size='small'
+                      options={paymentTypeList}
+                      value={values.paymentType}
+                      onChange={(e, value) => value && setFieldValue('paymentType', value)}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          label='Payment Type'
+                          variant='outlined'
+                          size='small'
+                          error={touched.paymentType && Boolean(errors.paymentType)}
+                          helperText={touched.paymentType && errors.paymentType}
+                        />
+                      )}
+                    />
+                  </Grid>
                   <Grid item xs={4}>
                     <Autocomplete
                       name='Status'
@@ -206,6 +236,18 @@ const PoSummaryForm = ({ open, setOpen }) => {
                           helperText={touched.status && errors.status}
                         />
                       )}
+                    />
+                  </Grid>
+                  <Grid item xs={8}>
+                    <TextField
+                      name='deliveryPlant'
+                      label='Delivery Plant'
+                      size='small'
+                      fullWidth
+                      value={values.deliveryPlant}
+                      onChange={handleChange}
+                      error={touched.deliveryPlant && Boolean(errors.deliveryPlant)}
+                      helperText={touched.deliveryPlant && errors.deliveryPlant}
                     />
                   </Grid>
                   <Grid item xs={12}>

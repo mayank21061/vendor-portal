@@ -57,15 +57,28 @@ const CustomInput = forwardRef((props, ref) => {
   const updatedProps = { ...props }
   delete updatedProps.setDates
 
-  return <CustomTextField fullWidth inputRef={ref} {...updatedProps} label={props.label || ''} value={value} />
+  return (
+    <CustomTextField
+      fullWidth
+      inputRef={ref}
+      {...updatedProps}
+      label={props.label || ''}
+      value={value}
+      autocomplete='off'
+    />
+  )
 })
 
 const CustomTable = props => {
   const data = useSelector(state => state.poSummary.poSummaryData)
 
-  const { poSummaryDataIsLoading, poSummaryDataIsError, poSummaryDataError, poSummaryDataIsSuccess } = useSelector(
-    state => state.poSummary
-  )
+  const {
+    poSummaryDataIsLoading,
+    poSummaryDataIsError,
+    poSummaryDataError,
+    poSummaryDataIsSuccess,
+    uploadPoDataIsSuccess
+  } = useSelector(state => state.poSummary)
 
   const dispatch = useDispatch()
 
@@ -98,6 +111,19 @@ const CustomTable = props => {
     }
     if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
   }, [value, endDateRange, startDateRange, filterType, paginationModel])
+
+  useEffect(() => {
+    const payload = {
+      search: value,
+      fromDate: moment(startDateRange).format('YYYY-MM-DD'),
+      toDate: moment(endDateRange).format('YYYY-MM-DD'),
+      filterBy: filterType
+    }
+    if (uploadPoDataIsSuccess) {
+      setShowPoForm(false)
+      dispatch(getPoSummaryAction(payload))
+    }
+  }, [uploadPoDataIsSuccess])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates

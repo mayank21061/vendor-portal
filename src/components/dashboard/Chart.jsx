@@ -7,7 +7,7 @@ import InputLabel from '@mui/material/InputLabel'
 
 const dataset = [
   {
-    month: 'Jan',
+    month: 'Jan 2024',
     submitted: 59,
     eicRejected: 57,
     eicApproved: 86,
@@ -16,7 +16,7 @@ const dataset = [
     paid: 15
   },
   {
-    month: 'Feb',
+    month: 'Feb 2024',
     submitted: 50,
     eicRejected: 52,
     eicApproved: 78,
@@ -25,7 +25,7 @@ const dataset = [
     paid: 20
   },
   {
-    month: 'Mar',
+    month: 'Mar 2024',
     submitted: 47,
     eicRejected: 53,
     eicApproved: 16,
@@ -34,7 +34,7 @@ const dataset = [
     paid: 30
   },
   {
-    month: 'Apr',
+    month: 'Apr 2024',
     submitted: 54,
     eicRejected: 56,
     eicApproved: 92,
@@ -43,7 +43,7 @@ const dataset = [
     paid: 60
   },
   {
-    month: 'May',
+    month: 'May 2024',
     submitted: 57,
     eicRejected: 69,
     eicApproved: 92,
@@ -52,7 +52,7 @@ const dataset = [
     paid: 85
   },
   {
-    month: 'Jun',
+    month: 'Jun 2024',
     submitted: 60,
     eicRejected: 63,
     eicApproved: 19,
@@ -61,7 +61,7 @@ const dataset = [
     paid: 25
   },
   {
-    month: 'Jul',
+    month: 'Jul 2024',
     submitted: 59,
     eicRejected: 60,
     eicApproved: 15,
@@ -70,7 +70,7 @@ const dataset = [
     paid: 29
   },
   {
-    month: 'Aug',
+    month: 'Aug 2024',
     submitted: 65,
     eicRejected: 60,
     eicApproved: 96,
@@ -79,7 +79,7 @@ const dataset = [
     paid: 90
   },
   {
-    month: 'Sep',
+    month: 'Sep 2024',
     submitted: 51,
     eicRejected: 51,
     eicApproved: 95,
@@ -88,7 +88,7 @@ const dataset = [
     paid: 80
   },
   {
-    month: 'Oct',
+    month: 'Oct 2024',
     submitted: 60,
     eicRejected: 65,
     eicApproved: 97,
@@ -97,7 +97,7 @@ const dataset = [
     paid: 45
   },
   {
-    month: 'Nov',
+    month: 'Nov 2024',
     submitted: 67,
     eicRejected: 64,
     eicApproved: 76,
@@ -106,7 +106,7 @@ const dataset = [
     paid: 40
   },
   {
-    month: 'Dec',
+    month: 'Dec 2024',
     submitted: 61,
     eicRejected: 70,
     eicApproved: 93,
@@ -119,7 +119,7 @@ const dataset = [
 const valueFormatter = value => `${value}`
 
 export default function MonthlyBarChart() {
-  const [selectedMonth, setSelectedMonth] = React.useState('Jan')
+  const [selectedMonth, setSelectedMonth] = React.useState('Jan 2024')
 
   const handleChange = event => {
     setSelectedMonth(event.target.value)

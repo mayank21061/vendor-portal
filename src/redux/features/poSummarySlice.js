@@ -33,7 +33,7 @@ export const getPoSummaryAction = createAsyncThunkWithTokenRefresh(
 export const uploadPoAction = createAsyncThunkWithTokenRefresh(
   'poSummary/uploadPoAction',
   async (token, currentUser, payload) => {
-    console.log(payload)
+    console.log(currentUser)
     const headers = {}
     return axios.post(`/call/vendor/Vendorportal/createPO`, payload, createAxiosConfig(token, currentUser, headers))
   }
