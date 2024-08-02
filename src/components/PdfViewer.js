@@ -24,7 +24,7 @@ export default function PdfViewer() {
 
   return (
     <div className='MyComponent'>
-      <div className='webviewer' ref={viewer} style={{ height: '100vh' }}></div>
+      <div className='webviewer' ref={viewer} style={{ height: '90vh' }}></div>
     </div>
   )
 }

@@ -444,11 +444,6 @@ const CustomTable = props => {
                   ))}
                 </Select>
               </FormControl>
-              <Tooltip title='CREATE PO'>
-                <Fab color='primary' aria-label='add' size='small' onClick={() => setShowPoForm(true)}>
-                  <Add />
-                </Fab>
-              </Tooltip>
             </div>
           </Grid>
           {/* {inboxDataIsLoading ? (

@@ -13,7 +13,7 @@ import {
   Tooltip
 } from '@mui/material'
 import { Form, Formik } from 'formik'
-import React, { useRef, useState, forwardRef } from 'react'
+import React, { useRef, useState, forwardRef, useEffect } from 'react'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import DatePicker from 'react-datepicker'
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -23,6 +23,10 @@ import { uploadPoAction } from 'src/redux/features/poSummarySlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 const PoSummaryForm = ({ open, setOpen }) => {
+  let username = ''
+  useEffect(() => {
+    username = JSON.parse(localStorage.getItem('userData'))?.username
+  }, [])
   const { userData } = useSelector(state => state.user)
 
   const dispatch = useDispatch()
@@ -97,7 +101,7 @@ const PoSummaryForm = ({ open, setOpen }) => {
             eic: '',
             description: '',
             poAmount: '',
-            receiver: JSON.parse(localStorage.getItem('userData'))?.username,
+            receiver: username,
             deliveryTimelines: '',
             paymentType: '',
             deliveryPlant: [],
