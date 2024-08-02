@@ -97,7 +97,7 @@ const PoSummaryForm = ({ open, setOpen }) => {
             eic: '',
             description: '',
             poAmount: '',
-            receiver: JSON.parse(localStorage.getItem('userData')).username,
+            receiver: JSON.parse(localStorage.getItem('userData'))?.username,
             deliveryTimelines: '',
             paymentType: '',
             deliveryPlant: [],

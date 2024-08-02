@@ -97,7 +97,12 @@ const UploadInvoice = ({ open, setOpen }) => {
   }
 
   const handleSupportingFile = files => {
-    formik.setFieldValue('supportingDocuments', Array.from(files))
+    formik.setFieldValue('supportingDocuments', [...formik.values.supportingDocuments, ...Array.from(files)])
+  }
+
+  const handleDeleteSupportingDocs = elementIndex => {
+    const filterArr = formik.values.supportingDocuments.filter((item, index) => index != elementIndex)
+    formik.setFieldValue('supportingDocuments', filterArr)
   }
 
   const handleClose = () => {
@@ -261,17 +266,48 @@ const UploadInvoice = ({ open, setOpen }) => {
                 </Grid>
                 <Grid item xs={12}>
                   <b>Invoice File: </b>
-                  {`${formik.values.invoiceFile.length == 0 ? ' No File selected' : ''}`}
+                  {`${formik.values.invoiceFile?.length == 0 ? ' No File selected' : ''}`}
                   {formik.values.invoiceFile.map(item => (
-                    <Chip label={item.name} />
+                    <Chip
+                      label={item.name}
+                      onDelete={() => formik.setFieldValue('invoiceFile', [])}
+                      onClick={() => console.log(file)}
+                    />
                   ))}
+                  <IconButton
+                    component='label'
+                    role={undefined}
+                    variant='outlined'
+                    tabIndex={-1}
+                    // startIcon={}
+                  >
+                    <CloudUploadIcon />
+                    <VisuallyHiddenInput
+                      type='file'
+                      accept='application/pdf'
+                      onChange={e => handleInputInvoices(e.target.files)}
+                    />
+                  </IconButton>
                 </Grid>
                 <Grid item xs={12}>
                   <b>Supporting Documents: </b>
-                  {` ${formik.values.invoiceFile.length == 0 ? ' No File selected' : ''}`}
-                  {formik.values.supportingDocuments.map(item => (
-                    <Chip label={item.name} />
+                  {` ${formik.values.supportingDocuments.length == 0 ? ' No File selected' : ''}`}
+                  {formik.values.supportingDocuments.map((item, index) => (
+                    <Chip
+                      label={item.name}
+                      onDelete={() => handleDeleteSupportingDocs(index)}
+                      onClick={() => console.log(item)}
+                    />
                   ))}
+                  <IconButton component='label' role={undefined} variant='outlined' tabIndex={-1}>
+                    <CloudUploadIcon />
+                    <VisuallyHiddenInput
+                      type='file'
+                      accept='application/pdf'
+                      multiple
+                      onChange={e => handleSupportingFile(e.target.files)}
+                    />
+                  </IconButton>
                 </Grid>
               </Grid>
 
@@ -334,44 +370,9 @@ const UploadInvoice = ({ open, setOpen }) => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Grid container justifyContent='space-between'>
-            <Grid item sx={{ display: 'flex', gap: '1rem' }}>
-              <Button
-                component='label'
-                role={undefined}
-                variant='outlined'
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-              >
-                Add Invoice
-                <VisuallyHiddenInput
-                  type='file'
-                  accept='application/pdf'
-                  onChange={e => handleInputInvoices(e.target.files)}
-                />
-              </Button>
-              <Button
-                component='label'
-                role={undefined}
-                variant='outlined'
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-              >
-                Add Supporting Docs
-                <VisuallyHiddenInput
-                  type='file'
-                  accept='application/pdf'
-                  multiple
-                  onChange={e => handleSupportingFile(e.target.files)}
-                />
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button variant='contained' type='submit'>
-                UPLOAD
-              </Button>
-            </Grid>
-          </Grid>
+          <Button variant='contained' type='submit'>
+            UPLOAD
+          </Button>
         </DialogActions>
       </form>
     </Dialog>

@@ -4,63 +4,67 @@ import { toast } from 'react-toastify'
 import { createAsyncThunkWithTokenRefresh, createAxiosConfig } from '../common/commonFunctions'
 
 const initialState = {
-    // getInboxData
-    getInboxData: '',
-    getInboxDataIsLoading: false,
-    getInboxDataIsError: false,
-    getInboxDataError: '',
-    getInboxDataIsSuccess: false,
-  }
+  // inboxData
+  inboxData: '',
+  inboxDataIsLoading: false,
+  inboxDataIsError: false,
+  inboxDataError: '',
+  inboxDataIsSuccess: false
+}
 
-  export const getInboxAction = createAsyncThunkWithTokenRefresh('inboxSlice/getInboxAction', async (token, currentUser, payload) => {
+export const getInboxAction = createAsyncThunkWithTokenRefresh(
+  'inbox/getInboxAction',
+  async (token, currentUser, payload) => {
     const headers = {} // Adjust the value as needed
     const username = JSON.parse(localStorage.getItem('userData')).username
-    return axios.get(`/call/vendor/uploadInvoice/InboxData?username=${username}`, createAxiosConfig(token, currentUser, headers))
-  })
+    return axios.get(
+      `/call/vendor/uploadInvoice/InboxData?username=${username}`,
+      createAxiosConfig(token, currentUser, headers)
+    )
+  }
+)
 
-  export const inboxSlice = createSlice({
-    name: 'inbox',
-    initialState,
-    reducers: {
-       resetGetInboxAction(state){
-        state.getInboxData='',
-        state.getInboxDataIsLoading=false,
-        state.getInboxDataIsError=false,
-        state.getInboxDataError='',
-        state.getInboxDataIsSuccess=false
-       }
-    },
-    extraReducers(builder) {
-        builder
+export const inboxSlice = createSlice({
+  name: 'inbox',
+  initialState,
+  reducers: {
+    resetGetInboxAction(state) {
+      ;(state.inboxData = ''),
+        (state.inboxDataIsLoading = false),
+        (state.inboxDataIsError = false),
+        (state.inboxDataError = ''),
+        (state.inboxDataIsSuccess = false)
+    }
+  },
+  extraReducers(builder) {
+    builder
 
-      // getInboxData
+      // inboxData
       .addCase(getInboxAction.pending, state => {
-        state.getInboxData='',
-        state.getInboxDataIsLoading=true,
-        state.getInboxDataIsError=false,
-        state.getInboxDataError='',
-        state.getInboxDataIsSuccess=false
+        ;(state.inboxData = ''),
+          (state.inboxDataIsLoading = true),
+          (state.inboxDataIsError = false),
+          (state.inboxDataError = ''),
+          (state.inboxDataIsSuccess = false)
       })
       .addCase(getInboxAction.fulfilled, (state, action) => {
-        state.getInboxData= action.payload,
-        state.getInboxDataIsLoading=false,
-        state.getInboxDataIsError=false,
-        state.getInboxDataError='',
-        state.getInboxDataIsSuccess=true
+        ;(state.inboxData = action.payload),
+          (state.inboxDataIsLoading = false),
+          (state.inboxDataIsError = false),
+          (state.inboxDataError = ''),
+          (state.inboxDataIsSuccess = true)
       })
       .addCase(getInboxAction.rejected, (state, action) => {
-        state.getInboxData='',
-        state.getInboxDataIsLoading=false,
-        state.getInboxDataIsError=true,
-        state.getInboxDataError=action.error.message,
-        state.getInboxDataIsSuccess=false
+        ;(state.inboxData = ''),
+          (state.inboxDataIsLoading = false),
+          (state.inboxDataIsError = true),
+          (state.inboxDataError = action.error.message),
+          (state.inboxDataIsSuccess = false)
       })
 
-       // 
-    }
+    //
+  }
+})
 
-  })
-
-  export const {resetGetInboxAction} = inboxSlice.actions;
-  export default inboxSlice.reducer
-
+export const { resetGetInboxAction } = inboxSlice.actions
+export default inboxSlice.reducer
