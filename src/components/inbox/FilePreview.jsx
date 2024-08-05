@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogTitle, Fab, Grid, IconButton, Tooltip } fr
 import dynamic from 'next/dynamic'
 import React, { useState } from 'react'
 import ForwardDialog from './ForwardDialog'
+import HistoryTable from './HistoryTable'
 
 const PdfViewer = dynamic(() => import('../PdfViewer'), { ssr: false })
 
@@ -42,40 +43,7 @@ const FilePreview = ({ open, setOpen }) => {
               <PdfViewer />
             </Grid>
             <Grid item xs={3} borderLeft='1px solid whitesmoke'>
-              <Timeline position='alternate'>
-                <TimelineItem>
-                  <TimelineOppositeContent color='text.secondary'>09:30 am</TimelineOppositeContent>
-                  <TimelineSeparator>
-                    <TimelineDot />
-                    <TimelineConnector />
-                  </TimelineSeparator>
-                  <TimelineContent>Eat</TimelineContent>
-                </TimelineItem>
-                <TimelineItem>
-                  <TimelineOppositeContent color='text.secondary'>10:00 am</TimelineOppositeContent>
-                  <TimelineSeparator>
-                    <TimelineDot />
-                    <TimelineConnector />
-                  </TimelineSeparator>
-                  <TimelineContent>Code</TimelineContent>
-                </TimelineItem>
-                <TimelineItem>
-                  <TimelineOppositeContent color='text.secondary'>12:00 am</TimelineOppositeContent>
-                  <TimelineSeparator>
-                    <TimelineDot />
-                    <TimelineConnector />
-                  </TimelineSeparator>
-                  <TimelineContent>Sleep</TimelineContent>
-                </TimelineItem>
-                <TimelineItem>
-                  <TimelineOppositeContent color='text.secondary'>9:00 am</TimelineOppositeContent>
-                  <TimelineSeparator>
-                    <TimelineDot />
-                    <TimelineConnector />
-                  </TimelineSeparator>
-                  <TimelineContent>Repeat</TimelineContent>
-                </TimelineItem>
-              </Timeline>
+              <HistoryTable />
             </Grid>
           </Grid>
           <Fab

@@ -43,7 +43,7 @@ const ForwardDialog = ({ open, onClose, id }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>Reply to EIC</DialogTitle>
+      <DialogTitle sx={{ p: 4 }}>Reply to EIC</DialogTitle>
       <Tooltip title='CLOSE'>
         <IconButton
           aria-label='close'
@@ -59,7 +59,7 @@ const ForwardDialog = ({ open, onClose, id }) => {
         </IconButton>
       </Tooltip>
       <Divider />
-      <DialogContent style={{ marginBottom: '1rem' }}>
+      <DialogContent>
         {/* <FormControl variant='outlined' fullWidth>
           <InputLabel>Send To</InputLabel>
           <Select value={receiver} onChange={handleReceiverChange} label='Send To'>
@@ -78,7 +78,6 @@ const ForwardDialog = ({ open, onClose, id }) => {
           value={note}
           onChange={handleNoteChange}
           variant='outlined'
-          style={{ marginTop: '1rem' }}
         />
       </DialogContent>
       <Divider />
