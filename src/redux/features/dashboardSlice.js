@@ -50,7 +50,7 @@ export const getInvoicesAction = createAsyncThunkWithTokenRefresh(
   'dashboardSlice/getInvoicesAction',
   async (token, currentUser, payload) => {
     const headers = {} // Adjust the value as needed
-    const username = JSON.parse(localStorage.getItem('userData')).username
+    const username = JSON.parse(localStorage.getItem('userData'))?.username
     return axios.get(
       `/call/vendor/uploadInvoice/getDashboard?username=${username}`,
       createAxiosConfig(token, currentUser, headers)
