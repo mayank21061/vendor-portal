@@ -14,7 +14,13 @@ const initialState = {
   uploadPoDataIsLoading: false,
   uploadPoDataIsError: false,
   uploadPoDataError: '',
-  uploadPoDataIsSuccess: false
+  uploadPoDataIsSuccess: false,
+
+  poInvoicesData: '',
+  poInvoicesDataIsLoading: false,
+  poInvoicesDataIsError: false,
+  poInvoicesDataError: '',
+  poInvoicesDataIsSuccess: false
 }
 
 export const getPoSummaryAction = createAsyncThunkWithTokenRefresh(
@@ -38,6 +44,18 @@ export const uploadPoAction = createAsyncThunkWithTokenRefresh(
   }
 )
 
+export const getPoInvoicesAction = createAsyncThunkWithTokenRefresh(
+  'poSummary/getPoInvoicesAction',
+  async (token, currentUser, payload) => {
+    console.log(payload)
+    const headers = {}
+    return axios.get(
+      `/call/vendor/Vendorportal/getInvoice/?poNumber=${payload.poNumber}`,
+      createAxiosConfig(token, currentUser, headers)
+    )
+  }
+)
+
 export const poSummarySlice = createSlice({
   name: 'poSummary',
   initialState,
@@ -55,6 +73,13 @@ export const poSummarySlice = createSlice({
       state.uploadPoDataIsError = false
       state.uploadPoDataError = ''
       state.uploadPoDataIsSuccess = false
+    },
+    resetGetPoInvoices(state) {
+      state.poInvoicesData = ''
+      state.poInvoicesDataIsLoading = false
+      state.poInvoicesDataIsError = false
+      state.poInvoicesDataError = ''
+      state.poInvoicesDataIsSuccess = false
     }
   },
   extraReducers(builder) {
@@ -101,6 +126,27 @@ export const poSummarySlice = createSlice({
         state.uploadPoDataIsError = true
         state.uploadPoDataError = action.error.message
         state.uploadPoDataIsSuccess = false
+      })
+      .addCase(getPoInvoicesAction.pending, state => {
+        state.poInvoicesData = ''
+        state.poInvoicesDataIsLoading = true
+        state.poInvoicesDataIsError = false
+        state.poInvoicesDataError = ''
+        state.poInvoicesDataIsSuccess = false
+      })
+      .addCase(getPoInvoicesAction.fulfilled, (state, action) => {
+        state.poInvoicesData = action.payload
+        state.poInvoicesDataIsLoading = false
+        state.poInvoicesDataIsError = false
+        state.poInvoicesDataError = ''
+        state.poInvoicesDataIsSuccess = true
+      })
+      .addCase(getPoInvoicesAction.rejected, (state, action) => {
+        state.poInvoicesData = ''
+        state.poInvoicesDataIsLoading = false
+        state.poInvoicesDataIsError = true
+        state.poInvoicesDataError = action.error.message
+        state.poInvoicesDataIsSuccess = false
       })
 
     //

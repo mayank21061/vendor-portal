@@ -28,6 +28,7 @@ const PoSummaryForm = ({ open, setOpen }) => {
     username = localStorage.getItem('username')
   }, [])
   const { userData } = useSelector(state => state.user)
+  const { uploadPoDataIsLoading } = useSelector(state => state.poSummary)
 
   const dispatch = useDispatch()
   const [file, setFile] = useState(null)
@@ -120,7 +121,7 @@ const PoSummaryForm = ({ open, setOpen }) => {
             formData.append('deliveryTimelines', values.deliveryTimelines)
             formData.append('paymentType', values.paymentType)
             formData.append('deliveryPlant', values.deliveryPlant)
-            formData.append('poFile', values.poFile)
+            formData.append('filePO', values.poFile)
             dispatch(uploadPoAction(formData))
             formikRef.current.resetForm()
           }}
@@ -317,9 +318,13 @@ const PoSummaryForm = ({ open, setOpen }) => {
                     </>
                   )}
                 </>
-                <Button type='submit' variant='contained' endIcon={<Done />}>
-                  {/* {registerPoiIsLoading ? 'Loading...' : 'REPORT'} */}
-                  Submit
+                <Button
+                  type='submit'
+                  variant='contained'
+                  endIcon={<Done />}
+                  disabled={!values.poFile || uploadPoDataIsLoading}
+                >
+                  {uploadPoDataIsLoading ? 'Loading...' : 'SUBMIT'}
                 </Button>
               </DialogActions>
             </Form>

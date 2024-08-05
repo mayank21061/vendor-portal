@@ -32,6 +32,7 @@ import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import { Add, Receipt } from '@mui/icons-material'
 import PoInvoicesTable from './PoInvoicesTable'
 import PoSummaryForm from './PoSummaryForm'
+import PdfViewer from '../PdfViewer'
 
 const renderName = row => {
   if (row.avatar) {
@@ -70,9 +71,10 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const CustomTable = props => {
-  const data = useSelector(state => state.poSummary.poSummaryData)
+  const { content } = useSelector(state => state.poSummary.poSummaryData)
 
   const {
+    poSummaryData,
     poSummaryDataIsLoading,
     poSummaryDataIsError,
     poSummaryDataError,
@@ -95,6 +97,7 @@ const CustomTable = props => {
   const [previewInvoices, setPreviewInvoices] = useState(false)
   const [showPoForm, setShowPoForm] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
+  const [poInvoicesNumber, setPoInvoicesNumber] = useState('')
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -154,6 +157,7 @@ const CustomTable = props => {
 
   const handleViewInvoices = (e, rowData) => {
     setPreviewInvoices(true)
+    setPoInvoicesNumber(rowData.poNumber)
     console.log(rowData)
   }
 
@@ -161,7 +165,7 @@ const CustomTable = props => {
 
   const columns = [
     {
-      flex: 0.1,
+      flex: 0.15,
       field: 'no',
       headerName: 'NUMBER',
       renderCell: ({ row }) => {
@@ -171,24 +175,24 @@ const CustomTable = props => {
 
         return (
           <Typography sx={{ color: 'text.secondary', whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-            {row.date}
+            {row.poNumber}
           </Typography>
         )
       },
       headerClassName: styles.customheader
     },
     {
-      flex: 0.1,
+      flex: 0.15,
       field: 'date',
       headerName: 'DATE',
       renderCell: ({ row }) => {
-        // const date = new Date(row.date)
-        // const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
-        // const formattedDate = date.toLocaleDateString('en-US', options)
+        const date = new Date(row.poIssueDate)
+        const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
+        const formattedDate = date.toLocaleDateString('en-US', options)
 
         return (
           <Typography sx={{ color: 'text.secondary', whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-            {row.date}
+            {formattedDate}
           </Typography>
         )
       },
@@ -219,6 +223,10 @@ const CustomTable = props => {
       renderCell: ({ row }) => {
         const { deliveryDate } = row
 
+        const date = new Date(deliveryDate)
+        const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
+        const formattedDate = date.toLocaleDateString('en-US', options)
+
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -226,7 +234,7 @@ const CustomTable = props => {
                 noWrap
                 sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
               >
-                {deliveryDate}
+                {formattedDate}
               </Typography>
             </Box>
           </Box>
@@ -266,7 +274,7 @@ const CustomTable = props => {
                 noWrap
                 sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
               >
-                {row.status}
+                {row.poStatus}
               </Typography>
             </Box>
           </Box>
@@ -286,7 +294,7 @@ const CustomTable = props => {
                 noWrap
                 sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
               >
-                {row.amount}
+                {row.poAmount}
               </Typography>
             </Box>
           </Box>
@@ -430,20 +438,20 @@ const CustomTable = props => {
               <Paper elevation={10}>
                 <DataGrid
                   sx={{ height: '70vh' }}
-                  rows={data || []}
+                  rows={content || []}
                   rowHeight={62}
                   columnHeaderHeight={40}
                   columns={columns}
                   disableRowSelectionOnClick
                   onRowSelectionModelChange={newRowSelectionModel => {
-                    setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
+                    setCheckedRowDetails(newRowSelectionModel.map(index => content[index]))
                   }}
                   getRowId={row => row.id}
                   componentsProps={{
                     row: {
                       onMouseEnter: event => {
                         const id = event.currentTarget.dataset.id
-                        const hoveredRow = data || [].find(row => row.id === Number(id))
+                        const hoveredRow = content || [].find(row => row.id === Number(id))
                         setHoveredId(id)
                       },
                       onMouseLeave: event => {
@@ -480,7 +488,9 @@ const CustomTable = props => {
           </IconButton>
         </Tooltip>
 
-        <DialogContent dividers></DialogContent>
+        <DialogContent dividers sx={{ height: '80vh' }}>
+          <PdfViewer />
+        </DialogContent>
       </Dialog>
       <Dialog open={previewInvoices} onClose={() => setPreviewInvoices(false)} fullWidth maxWidth='sm'>
         <DialogTitle id='customized-dialog-title' variant='h5'>
@@ -502,7 +512,7 @@ const CustomTable = props => {
         </Tooltip>
 
         <DialogContent dividers>
-          <PoInvoicesTable />
+          <PoInvoicesTable poNumber={poInvoicesNumber} />
         </DialogContent>
       </Dialog>
       <PoSummaryForm open={showPoForm} setOpen={setShowPoForm} />

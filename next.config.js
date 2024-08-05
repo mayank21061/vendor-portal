@@ -101,6 +101,12 @@ module.exports = {
         destination: isDevelopment
           ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/uploadInvoice`
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/uploadInvoice`
+      },
+      {
+        source: '/call/vendor/Vendorportal/getInvoice/:poNumber*',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/getInvoice/:poNumber*`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/getInvoice/:poNumber*`
       }
     ]
   }
