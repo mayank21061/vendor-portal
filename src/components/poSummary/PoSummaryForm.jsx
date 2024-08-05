@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 const PoSummaryForm = ({ open, setOpen }) => {
   let username = ''
   useEffect(() => {
-    username = JSON.parse(localStorage.getItem('userData'))?.username
+    username = localStorage.getItem('username')
   }, [])
   const { userData } = useSelector(state => state.user)
 

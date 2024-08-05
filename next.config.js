@@ -49,10 +49,10 @@ module.exports = {
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/uploadInvoice/getDashboard`
       },
       {
-        source: '/call/vendor/poSummary/getSummary',
+        source: '/call/vendor/poSummary/getSummary/:path*',
         destination: isDevelopment
-          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/poSummary/getSummary`
-          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/poSummary/getSummary`
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/poSummary/getSummary/:path*`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/poSummary/getSummary/:path*`
       },
       {
         source: '/call/vendor/uploadInvoice/InboxData',

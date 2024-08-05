@@ -21,7 +21,7 @@ export const getPoSummaryAction = createAsyncThunkWithTokenRefresh(
   'poSummary/getPoSummaryAction',
   async (token, currentUser, payload) => {
     const headers = { ...payload } // Adjust the value as needed
-    const username = JSON.parse(localStorage.getItem('userData'))?.username
+    const username = localStorage.getItem('username')
     return axios.get(
       `/call/vendor/Vendorportal/poSummary/getSummary?username=${username}`,
       createAxiosConfig(token, currentUser, headers)
