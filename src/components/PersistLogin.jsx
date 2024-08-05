@@ -40,24 +40,23 @@ const PersistLogin = ({ children }) => {
     }
   }, [dispatch])
 
-  // if (isLoading || checkTokenValidityIsLoading) {
-  //   return (
-  //     <Box sx={{ width: '100%', marginTop: '40px' }}>
-  //       <LinearProgress />
-  //     </Box>
-  //   )
-  // } else if (isError || checkTokenValidityIsError) {
-  //   // Redirect to login page
-  //   router.push('/login')
+  if (isLoading || checkTokenValidityIsLoading) {
+    return (
+      <Box sx={{ width: '100%', marginTop: '40px' }}>
+        <LinearProgress />
+      </Box>
+    )
+  } else if (isError || checkTokenValidityIsError) {
+    // Redirect to login page
+    router.push('/login')
 
-  //   return null
+    return null
+  } else if (isSuccess || checkTokenValidityIsSuccess) {
+    return children
+  }
 
-  // } else if (isSuccess || checkTokenValidityIsSuccess) {
-  return children
-  // }
-
-  // // Default return statement
-  // return null
+  // Default return statement
+  return null
 }
 
 export default PersistLogin

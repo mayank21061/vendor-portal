@@ -21,7 +21,7 @@ const FilePreview = ({ open, setOpen }) => {
   return (
     <div>
       <Dialog open={open} fullScreen>
-        <DialogTitle>File Details</DialogTitle>
+        <DialogTitle sx={{ p: 4 }}>File Details</DialogTitle>
         <Tooltip title='CLOSE'>
           <IconButton
             aria-label='close'
@@ -37,11 +37,11 @@ const FilePreview = ({ open, setOpen }) => {
           </IconButton>
         </Tooltip>
         <DialogContent sx={{ p: '0 !important' }} dividers>
-          <Grid container>
+          <Grid container height='100%'>
             <Grid item xs={9}>
               <PdfViewer />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={3} borderLeft='1px solid whitesmoke'>
               <Timeline position='alternate'>
                 <TimelineItem>
                   <TimelineOppositeContent color='text.secondary'>09:30 am</TimelineOppositeContent>

@@ -353,7 +353,7 @@ const CustomTable = props => {
                 />
               </IconButton>
             </Tooltip>
-            <Tooltip title='History'>
+            {/* <Tooltip title='History'>
               <IconButton
                 onClick={() => {
                   handlePreviewHistory(row.id)
@@ -367,7 +367,7 @@ const CustomTable = props => {
                   }}
                 />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </>
         )
     }

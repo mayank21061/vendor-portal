@@ -1,7 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { CircularProgress } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
 
 export default function PdfViewer() {
   let viewer = useRef(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     import('@pdftron/webviewer').then(() => {
@@ -11,11 +13,14 @@ export default function PdfViewer() {
           initialDoc: 'https://pdftron.s3.amazonaws.com/downloads/pl/demo-annotated.pdf'
         },
         viewer.current
-      ).then(instance => {
-        const { docViewer } = instance
-        console.log(docViewer)
-        // you can now call WebViewer APIs here...
-      })
+      )
+        .then(instance => {
+          const { docViewer } = instance
+          console.log(docViewer)
+          setLoading(false)
+          // you can now call WebViewer APIs here...
+        })
+        .catch(e => console.log(e))
     })
     return () => {
       viewer = null
@@ -23,8 +28,22 @@ export default function PdfViewer() {
   }, [])
 
   return (
-    <div className='MyComponent'>
-      <div className='webviewer' ref={viewer} style={{ height: '90vh' }}></div>
-    </div>
+    <>
+      {loading && (
+        <div
+          style={{
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <CircularProgress />
+        </div>
+      )}
+      <div className='MyComponent' style={{ height: '100%' }}>
+        <div className='webviewer' ref={viewer} style={{ height: '100%' }}></div>
+      </div>
+    </>
   )
 }
