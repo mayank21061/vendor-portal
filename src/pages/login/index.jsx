@@ -17,7 +17,7 @@ import { Card, CardContent, CardHeader, InputBase } from '@mui/material'
 // ** Custom Component Import
 
 // ** Icon Imports
-import vendorLogo from '../../assets/vendor.png'
+import vendorLogo from '../../assets/loginLogo.png'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -218,11 +218,23 @@ const LoginPage = () => {
           sx={{
             flex: 1,
             borderRadius: '20px',
-            margin: theme => theme.spacing(8, 0, 8, 8)
+            margin: theme => theme.spacing(8, 0, 8, 8),
+            display: 'flex',
+            justifyContent: 'center'
           }}
         >
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "8rem" }} >
-            <Image src={vendorLogo} alt='claros-logo' width={500} height={300} />
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div
+              style={{
+                padding: '1rem',
+                margin: 'auto',
+                overflowY: 'auto',
+                backgroundColor: 'rgba(255,255,255,.3)',
+                borderRadius: '1rem'
+              }}
+            >
+              <Image src={vendorLogo} alt='claros-logo' width={500} height={400} />
+            </div>
           </div>
         </Box>
       ) : null}

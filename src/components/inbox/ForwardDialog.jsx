@@ -13,7 +13,9 @@ import {
   Divider,
   Tooltip,
   IconButton,
-  Grid
+  Grid,
+  styled,
+  Chip
 } from '@mui/material'
 import { useDispatch } from 'react-redux'
 import { Close } from '@mui/icons-material'
@@ -23,6 +25,19 @@ const ForwardDialog = ({ open, onClose, id }) => {
   const dispatch = useDispatch()
   const [receiver, setReceiver] = useState('')
   const [note, setNote] = useState('')
+  const [files, setFiles] = useState([])
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1
+  })
 
   const handleReceiverChange = event => {
     setReceiver(event.target.value)
@@ -30,6 +45,10 @@ const ForwardDialog = ({ open, onClose, id }) => {
 
   const handleNoteChange = event => {
     setNote(event.target.value)
+  }
+
+  const handleFileChange = files => {
+    setFiles(Array.from(files))
   }
 
   //   const handleForwardClick = () => {
@@ -81,12 +100,23 @@ const ForwardDialog = ({ open, onClose, id }) => {
         />
       </DialogContent>
       <Divider />
-      <DialogActions>
+      <DialogActions sx={{ p: 3 }}>
         <Grid container justifyContent='space-between'>
           <Grid item>
-            <Button onClick={onClose} color='secondary' variant='outlined'>
-              Add File
-            </Button>
+            {files.length == 0 ? (
+              <Button color='secondary' variant='outlined' component='label' role={undefined} tabIndex={-1}>
+                Add File
+                <VisuallyHiddenInput
+                  type='file'
+                  accept='application/pdf'
+                  onChange={e => handleFileChange(e.target.files)}
+                />
+              </Button>
+            ) : (
+              files?.map(item => (
+                <Chip label={item.name} onDelete={() => setFiles([])} onClick={() => console.log(item)} />
+              ))
+            )}
           </Grid>
           <Grid item>
             <Button
