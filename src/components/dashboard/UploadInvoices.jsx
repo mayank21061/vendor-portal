@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from 'react'
+import React, { memo, useState, useEffect, useCallback } from 'react'
 import DoneIcon from '@mui/icons-material/Done'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import {
@@ -18,7 +18,12 @@ import {
   Tooltip,
   Typography
 } from '@mui/material'
-import { getInvoiceUserAction, getPoNumberAction, uploadInvoiceAction } from 'src/redux/features/dashboardSlice'
+import {
+  getInvoiceUserAction,
+  getPoDetailsAction,
+  getPoNumberAction,
+  uploadInvoiceAction
+} from 'src/redux/features/dashboardSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
@@ -26,30 +31,12 @@ import dayjs from 'dayjs'
 import { Close, FourMp } from '@mui/icons-material'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import DatePicker from 'react-datepicker'
-
-const initialState = {
-  poNumber: '',
-  paymentType: '',
-  eic: '',
-  packageNumber: '',
-  deliveryPlant: '',
-  type: '',
-  invoiceNumber: '',
-  invoiceDate: new Date(),
-  invoiceAmount: '',
-  mobileNumber: '',
-  alternateMobileNumber: '',
-  email: '',
-  alternateEmail: '',
-  remarks: '',
-  msmeCategory: '',
-  search: ''
-}
+import _debounce from 'lodash/debounce'
 
 const UploadInvoice = ({ open, setOpen }) => {
   const dispatch = useDispatch()
-  // const { getPoNumberData } = useSelector(state => state.poNumber)
-  // const { getInvoiceUserData } = useSelector(state => state.invoiceUser)
+  const { poNumberListData, poDetailsData } = useSelector(state => state.dashboard)
+  console.log(poDetailsData)
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -120,11 +107,14 @@ const UploadInvoice = ({ open, setOpen }) => {
     fullWidth: true
   }
 
-  useEffect(() => {
-    if (open) {
-      dispatch(getPoNumberAction({ poNumber: formik.values.poNumber }))
-    }
-  }, [open])
+  const getInvoicesDebounce = useCallback(
+    _debounce(searchText => {
+      if (searchText) {
+        dispatch(getPoNumberAction({ poNumber: searchText }))
+      }
+    }, 1000),
+    [dispatch]
+  )
 
   return (
     <Dialog
@@ -157,18 +147,26 @@ const UploadInvoice = ({ open, setOpen }) => {
                 <Grid item sm={6}>
                   <Autocomplete
                     {...config}
-                    options={[]}
+                    options={poNumberListData || []}
                     getOptionLabel={option => option.label || option}
                     value={formik.values.poNumber}
-                    onInputChange={(event, newValue) => formik.setFieldValue('poNumber', newValue)}
-                    renderInput={params => <TextField {...params} label='PO NUMBER' variant='outlined' size='small' />}
+                    onInputChange={(event, newValue) => {
+                      getInvoicesDebounce(newValue)
+                    }}
+                    onChange={(e, value) => {
+                      formik.setFieldValue('poNumber', value)
+                      value && dispatch(getPoDetailsAction({ poNumber: value }))
+                    }}
+                    renderInput={params => (
+                      <TextField {...params} label='PO NUMBER' variant='outlined' size='small' type='number' />
+                    )}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <Autocomplete
                     size='small'
                     {...config}
-                    options={[]}
+                    options={poDetailsData?.deliveryPlant || []}
                     value={formik.values.deliveryPlant}
                     onChange={formik.handleChange}
                     renderInput={params => (
@@ -327,38 +325,38 @@ const UploadInvoice = ({ open, setOpen }) => {
                       }}
                     >
                       <div>
-                        <span style={{ fontWeight: 'bold' }}>Payment Type:</span>
-                        {/* {getInvoiceUserData.paymentType} */}
+                        <span style={{ fontWeight: 'bold' }}>PO Issue Date: </span>
+                        {poDetailsData?.poIssueDate}
                         <br />
                       </div>
                       <Divider />
                       <div style={{ marginTop: '1rem' }}>
-                        <span style={{ fontWeight: 'bold' }}>Invoice Type:</span>
-                        {/* {getInvoiceUserData.type} */}
+                        <span style={{ fontWeight: 'bold' }}>PO Delivery Date: </span>
+                        {poDetailsData?.deliveryDate}
                         <br />
                       </div>
                       <Divider />
                       <div style={{ marginTop: '1rem' }}>
-                        <span style={{ fontWeight: 'bold' }}>Category:</span>
-                        {/* {getInvoiceUserData.msmeCategory} */}
+                        <span style={{ fontWeight: 'bold' }}>Description: </span>
+                        {poDetailsData?.description}
                         <br />
                       </div>
                       <Divider />
                       <div style={{ marginTop: '1rem' }}>
-                        <span style={{ fontWeight: 'bold' }}>Mobile Number:</span>
-                        {/* {getInvoiceUserData.mobileNumber} */}
+                        <span style={{ fontWeight: 'bold' }}>Mobile Number: </span>
+                        {poDetailsData?.mobileNumber}
                         <br />
                       </div>
                       <Divider />
                       <div style={{ marginTop: '1rem' }}>
-                        <span style={{ fontWeight: 'bold' }}>E-mail:</span>
-                        {/* {getInvoiceUserData.email} */}
+                        <span style={{ fontWeight: 'bold' }}>E-mail: </span>
+                        {poDetailsData?.email}
                         <br />
                       </div>
                       <Divider />
                       <div style={{ marginTop: '1rem' }}>
-                        <span style={{ fontWeight: 'bold' }}>EIC:</span>
-                        {/* {getInvoiceUserData.email} */}
+                        <span style={{ fontWeight: 'bold' }}>EIC: </span>
+                        {poDetailsData?.eic}
                         <br />
                       </div>
                       <Divider />

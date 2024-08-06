@@ -1,7 +1,8 @@
 import { CircularProgress } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 
-export default function PdfViewer() {
+export default function PdfViewer({ fileUrl }) {
+  console.log(fileUrl)
   let viewer = useRef(null)
   const [loading, setLoading] = useState(true)
 
@@ -10,7 +11,7 @@ export default function PdfViewer() {
       WebViewer(
         {
           path: '/webviewer/lib',
-          initialDoc: 'https://pdftron.s3.amazonaws.com/downloads/pl/demo-annotated.pdf'
+          initialDoc: fileUrl || 'https://pdftron.s3.amazonaws.com/downloads/pl/demo-annotated.pdf'
         },
         viewer.current
       )

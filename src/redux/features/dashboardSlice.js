@@ -32,18 +32,24 @@ const initialState = {
   invoiceUserDataError: '',
   invoiceUserDataIsSuccess: false,
 
-  //poNumberdata
-  poNumberData: '',
-  poNumberDataIsLoading: false,
-  poNumberDataIsError: false,
-  poNumberDataError: '',
-  poNumberDataIsSuccess: false,
+  //poNumberListData
+  poNumberListData: [],
+  poNumberListDataIsLoading: false,
+  poNumberListDataIsError: false,
+  poNumberListDataError: '',
+  poNumberListDataIsSuccess: false,
 
   uploadInvoiceData: '',
   uploadInvoiceDataIsLoading: false,
   uploadInvoiceDataIsError: false,
   uploadInvoiceDataError: '',
-  uploadInvoiceDataIsSuccess: false
+  uploadInvoiceDataIsSuccess: false,
+
+  poDetailsData: {},
+  poDetailsDataIsLoading: false,
+  poDetailsDataIsError: false,
+  poDetailsDataError: '',
+  poDetailsDataIsSuccess: false
 }
 
 export const getInvoicesAction = createAsyncThunkWithTokenRefresh(
@@ -85,10 +91,21 @@ export const getInvoiceUserAction = createAsyncThunkWithTokenRefresh(
 export const getPoNumberAction = createAsyncThunkWithTokenRefresh(
   'dashboard/getPoNumberAction',
   async (token, currentUser, payload) => {
-    console.log(payload)
     const headers = {} // Adjust the value as needed
     return axios.get(
-      `/call/vendor/uploadInvoice/poSearch?poNumber=${payload.poNumber}`,
+      `/call/vendor/Vendorportal/uploadInvoice/poSearch/?ponumber=${payload.poNumber}`,
+      createAxiosConfig(token, currentUser, headers)
+    )
+  }
+)
+
+export const getPoDetailsAction = createAsyncThunkWithTokenRefresh(
+  'dashboard/getPoDetailsAction',
+  async (token, currentUser, payload) => {
+    console.log(payload.poNumber)
+    const headers = {} // Adjust the value as needed
+    return axios.get(
+      `/call/vendor/Vendorportal/GetPo/?ponumber=${payload.poNumber}`,
       createAxiosConfig(token, currentUser, headers)
     )
   }
@@ -151,6 +168,13 @@ export const dashboardSlice = createSlice({
         (state.uploadInvoiceDataIsError = false),
         (state.uploadInvoiceDataError = ''),
         (state.uploadInvoiceDataIsSuccess = false)
+    },
+    resetPoDetailsDataAction(state) {
+      ;(state.poDetailsData = {}),
+        (state.poDetailsDataIsLoading = false),
+        (state.poDetailsDataIsError = false),
+        (state.poDetailsDataError = ''),
+        (state.poDetailsDataIsSuccess = false)
     }
   },
   extraReducers(builder) {
@@ -248,27 +272,27 @@ export const dashboardSlice = createSlice({
           (state.invoiceUserDataIsSuccess = false)
       })
 
-      // poNumberData
+      // poNumberListData
       .addCase(getPoNumberAction.pending, state => {
-        ;(state.poNumberData = ''),
-          (state.poNumberDataIsLoading = true),
-          (state.poNumberDataIsError = false),
-          (state.poNumberDataError = ''),
-          (state.poNumberDataIsSuccess = false)
+        ;(state.poNumberListData = []),
+          (state.poNumberListDataIsLoading = true),
+          (state.poNumberListDataIsError = false),
+          (state.poNumberListDataError = ''),
+          (state.poNumberListDataIsSuccess = false)
       })
       .addCase(getPoNumberAction.fulfilled, (state, action) => {
-        ;(state.poNumberData = action.payload),
-          (state.poNumberDataIsLoading = false),
-          (state.poNumberDataIsError = false),
-          (state.poNumberDataError = ''),
-          (state.poNumberDataIsSuccess = true)
+        ;(state.poNumberListData = action.payload),
+          (state.poNumberListDataIsLoading = false),
+          (state.poNumberListDataIsError = false),
+          (state.poNumberListDataError = ''),
+          (state.poNumberListDataIsSuccess = true)
       })
       .addCase(getPoNumberAction.rejected, (state, action) => {
-        ;(state.poNumberData = ''),
-          (state.poNumberDataIsLoading = false),
-          (state.poNumberDataIsError = true),
-          (state.poNumberDataError = action.error.message),
-          (state.poNumberDataIsSuccess = false)
+        ;(state.poNumberListData = []),
+          (state.poNumberListDataIsLoading = false),
+          (state.poNumberListDataIsError = true),
+          (state.poNumberListDataError = action.error.message),
+          (state.poNumberListDataIsSuccess = false)
       })
 
       .addCase(uploadInvoiceAction.pending, state => {
@@ -291,6 +315,28 @@ export const dashboardSlice = createSlice({
           (state.uploadInvoiceDataIsError = true),
           (state.uploadInvoiceDataError = action.error.message),
           (state.uploadInvoiceDataIsSuccess = false)
+      })
+
+      .addCase(getPoDetailsAction.pending, state => {
+        ;(state.poDetailsData = {}),
+          (state.poDetailsDataIsLoading = true),
+          (state.poDetailsDataIsError = false),
+          (state.poDetailsDataError = ''),
+          (state.poDetailsDataIsSuccess = false)
+      })
+      .addCase(getPoDetailsAction.fulfilled, (state, action) => {
+        ;(state.poDetailsData = action.payload),
+          (state.poDetailsDataIsLoading = false),
+          (state.poDetailsDataIsError = false),
+          (state.poDetailsDataError = ''),
+          (state.poDetailsDataIsSuccess = true)
+      })
+      .addCase(getPoDetailsAction.rejected, (state, action) => {
+        ;(state.poDetailsData = {}),
+          (state.poDetailsDataIsLoading = false),
+          (state.poDetailsDataIsError = true),
+          (state.poDetailsDataError = action.error.message),
+          (state.poDetailsDataIsSuccess = false)
       })
   }
 })

@@ -103,10 +103,16 @@ module.exports = {
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/uploadInvoice`
       },
       {
-        source: '/call/vendor/Vendorportal/getInvoice/:poNumber*',
+        source: '/call/vendor/Vendorportal/uploadInvoice/poSearch/:ponumber*',
         destination: isDevelopment
-          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/getInvoice/:poNumber*`
-          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/getInvoice/:poNumber*`
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/uploadInvoice/poSearch/:ponumber*`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/uploadInvoice/poSearch/:ponumber*`
+      },
+      {
+        source: '/call/vendor/Vendorportal/GetPo/:ponumber*',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/GetPo/:ponumber*`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/GetPo/:ponumber*`
       }
     ]
   }

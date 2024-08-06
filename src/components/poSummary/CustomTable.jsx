@@ -98,6 +98,7 @@ const CustomTable = props => {
   const [showPoForm, setShowPoForm] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
   const [poInvoicesNumber, setPoInvoicesNumber] = useState('')
+  const [selectedRow, setSelectedRow] = useState({})
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -143,7 +144,7 @@ const CustomTable = props => {
 
   const handleViewPDF = (e, rowData) => {
     setFileUrl(rowData.docUrl)
-    seteventData(rowData)
+    setSelectedRow(rowData)
     setPreviewPO(true)
   }
 
@@ -446,6 +447,9 @@ const CustomTable = props => {
                   onRowSelectionModelChange={newRowSelectionModel => {
                     setCheckedRowDetails(newRowSelectionModel.map(index => content[index]))
                   }}
+                  onRowClick={params => {
+                    setSelectedRow(params.row)
+                  }}
                   getRowId={row => row.id}
                   componentsProps={{
                     row: {
@@ -489,7 +493,7 @@ const CustomTable = props => {
         </Tooltip>
 
         <DialogContent dividers sx={{ height: '80vh' }}>
-          <PdfViewer />
+          <PdfViewer fileUrl={selectedRow?.url} />
         </DialogContent>
       </Dialog>
       <Dialog open={previewInvoices} onClose={() => setPreviewInvoices(false)} fullWidth maxWidth='sm'>
