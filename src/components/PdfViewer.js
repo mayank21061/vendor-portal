@@ -11,7 +11,7 @@ export default function PdfViewer({ fileUrl }) {
       WebViewer(
         {
           path: '/webviewer/lib',
-          initialDoc: fileUrl || 'https://pdftron.s3.amazonaws.com/downloads/pl/demo-annotated.pdf'
+          initialDoc: fileUrl || '/sample.pdf'
         },
         viewer.current
       )
