@@ -11,13 +11,15 @@ export default function PdfViewer({ fileUrl }) {
       WebViewer(
         {
           path: '/webviewer/lib',
+          licenseKey: 'demo:1723009532106:7e7959410300000000cea9ba88d3d46cbf78c57e456d68bdacb7905378',
           initialDoc: fileUrl || '/sample.pdf'
         },
         viewer.current
       )
         .then(instance => {
-          const { docViewer } = instance
-          console.log(docViewer)
+          console.log(instance)
+          const { DocumentViewer } = instance.Core
+          // DocumentViewer?.zoomTo(1)
           setLoading(false)
           // you can now call WebViewer APIs here...
         })

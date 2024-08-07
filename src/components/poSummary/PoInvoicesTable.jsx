@@ -61,6 +61,9 @@ const CustomInput = forwardRef((props, ref) => {
 const PoInvoicesTable = ({ poNumber }) => {
   const dispatch = useDispatch()
   const { content } = useSelector(state => state.poSummary.poInvoicesData)
+  const { poInvoicesDataIsLoading, poInvoicesDataIsSuccess, poInvoicesDataIsError, poInvoicesDataError } = useSelector(
+    state => state.poSummary
+  )
 
   const [dates, setDates] = useState([])
   const [endDateRange, setEndDateRange] = useState(new Date())
@@ -78,16 +81,6 @@ const PoInvoicesTable = ({ poNumber }) => {
 
     return formattedDate
   }
-
-  // useEffect(() => {
-  //   const payload = {
-  //     search: value,
-  //     fromDate: moment(startDateRange).format('YYYY-MM-DD'),
-  //     toDate: moment(endDateRange).format('YYYY-MM-DD'),
-  //     filterBy: filterType
-  //   }
-  //   if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
-  // }, [value, endDateRange, startDateRange, filterType])
 
   useEffect(() => {
     if (poNumber) dispatch(getPoInvoicesAction({ poNumber }))
@@ -259,31 +252,43 @@ const PoInvoicesTable = ({ poNumber }) => {
     <>
       <Paper elevation={24} sx={{ height: '75vh', overflowY: 'auto' }}>
         <Grid item xs={12}>
-          <DataGrid
-            autoHeight
-            rows={content || []}
-            rowHeight={62}
-            columnHeaderHeight={40}
-            columns={columns}
-            disableRowSelectionOnClick
-            onRowSelectionModelChange={newRowSelectionModel => {
-              setCheckedRowDetails(newRowSelectionModel.map(index => content[index]))
-            }}
-            getRowId={row => row.id}
-            componentsProps={{
-              row: {
-                onMouseEnter: event => {
-                  const id = event.currentTarget.dataset.id
-                  const hoveredRow = content || [].find(row => row.id === Number(id))
-                  setHoveredId(id)
-                },
-                onMouseLeave: event => {
-                  setHoveredId(null)
+          {poInvoicesDataIsLoading ? (
+            <Box sx={{ width: '100%', marginTop: '40px' }}>
+              <LinearProgress />
+            </Box>
+          ) : poInvoicesDataIsError ? (
+            <>
+              <h1>{poInvoicesDataError}</h1>
+            </>
+          ) : poInvoicesDataIsSuccess ? (
+            <DataGrid
+              autoHeight
+              rows={content || []}
+              rowHeight={62}
+              columnHeaderHeight={40}
+              columns={columns}
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={newRowSelectionModel => {
+                setCheckedRowDetails(newRowSelectionModel.map(index => content[index]))
+              }}
+              getRowId={row => row.id}
+              componentsProps={{
+                row: {
+                  onMouseEnter: event => {
+                    const id = event.currentTarget.dataset.id
+                    const hoveredRow = content || [].find(row => row.id === Number(id))
+                    setHoveredId(id)
+                  },
+                  onMouseLeave: event => {
+                    setHoveredId(null)
+                  }
                 }
-              }
-            }}
-            hideFooter
-          />
+              }}
+              hideFooter
+            />
+          ) : (
+            ''
+          )}
         </Grid>
       </Paper>
     </>

@@ -113,6 +113,12 @@ module.exports = {
         destination: isDevelopment
           ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/GetPo/:ponumber*`
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/GetPo/:ponumber*`
+      },
+      {
+        source: '/call/vendor/Vendorportal/getInvoice/:ponumber*',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/getInvoice/:ponumber*`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/getInvoice/:ponumber*`
       }
     ]
   }
