@@ -205,10 +205,13 @@ const LoginPage = () => {
 
   const onSubmit = e => {
     e.preventDefault()
+    const formdata = new FormData()
+    formdata.append('username', username)
+    formdata.append('password', password)
 
     //  console.log('encrypted', encryptFun(password, username))
 
-    dispatch(loginAction({ username, password: encryptFun(password, username) }))
+    dispatch(loginAction(formdata))
   }
 
   return (

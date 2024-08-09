@@ -25,10 +25,10 @@ module.exports = {
 
     return [
       {
-        source: '/auth/token',
+        source: '/call/vendor/user/xsc/getlogintoken',
         destination: isDevelopment
-          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/auth/token`
-          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/auth/token`
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/user/xsc/getlogintoken`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/user/xsc/getlogintoken`
       },
       {
         source: '/auth/refresh-token',
@@ -37,10 +37,10 @@ module.exports = {
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/auth/refresh-token`
       },
       {
-        source: '/call/vendor/user/auth/users',
+        source: '/call/vendor/user/xsc/getUserRoles',
         destination: isDevelopment
-          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/user/auth/users`
-          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/user/auth/users`
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/user/xsc/getUserRoles`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/user/xsc/getUserRoles`
       },
       {
         source: '/call/vendor/uploadInvoice/getDashboard',

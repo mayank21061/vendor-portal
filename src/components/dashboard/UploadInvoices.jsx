@@ -166,7 +166,7 @@ const UploadInvoice = ({ open, setOpen }) => {
                   <Autocomplete
                     size='small'
                     {...config}
-                    options={poDetailsData?.deliveryPlant || []}
+                    options={[]}
                     value={formik.values.deliveryPlant}
                     onChange={formik.handleChange}
                     renderInput={params => (
