@@ -396,31 +396,6 @@ const CustomTable = props => {
                 marginTop: '.5rem'
               }}
             >
-              <div style={{ minWidth: '18vw' }}>
-                <DatePickerWrapper>
-                  <ReactDatePicker
-                    showYearDropdown
-                    isClearable
-                    selectsRange
-                    monthsShown={2}
-                    endDate={endDateRange}
-                    selected={startDateRange}
-                    startDate={startDateRange}
-                    shouldCloseOnSelect={false}
-                    id='date-range-picker-months'
-                    onChange={handleOnChangeRange}
-                    customInput={
-                      <CustomInput
-                        dates={dates}
-                        setDates={setDates}
-                        label='Select Date Range'
-                        end={endDateRange}
-                        start={startDateRange}
-                      />
-                    }
-                  />
-                </DatePickerWrapper>
-              </div>
               <div style={{ minWidth: '20vw' }}>
                 <CustomTextField
                   fullWidth
@@ -430,20 +405,7 @@ const CustomTable = props => {
                   style={{ marginTop: '18px' }}
                 />
               </div>
-              <FormControl sx={{ borderRadius: '.8rem', width: '10vw' }} size='small'>
-                <Select
-                  labelId='demo-select-small-label'
-                  id='demo-select-small'
-                  value={filterType}
-                  onChange={handleChangeFilter}
-                >
-                  {filters.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+
               <Tooltip title='ADD CLEINTS'>
                 <Fab color='primary' aria-label='add' size='small' onClick={() => setShowClientsForm(true)}>
                   <Add />
