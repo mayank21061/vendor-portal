@@ -26,11 +26,10 @@ const initialState = {
 
 export const loginAction = createAsyncThunk('auth/loginAction', async payload => {
   try {
-    const response = await axios.post(`/auth/token`, payload, {
+    const response = await axios.post(`/call/vendor/user/xsc/getlogintoken`, payload, {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-
+        // Accept: 'application/json',
+        // 'Content-Type': 'application/json'
         // isManual: true
       }
     })

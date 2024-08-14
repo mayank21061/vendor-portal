@@ -89,7 +89,7 @@ const AppBarContent = props => {
   const [selectedRole, setSelectedRole] = useState({})
 
   useEffect(() => {
-    setUsers(JSON.parse(localStorage.getItem('userData')))
+    setUsers(localStorage.getItem('username'))
   }, [])
 
   // useEffect(() => {

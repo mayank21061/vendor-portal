@@ -14,6 +14,16 @@ const navigation = () => {
       path: '/poSummary',
       title: 'PO Summary',
       icon: 'tabler:shield'
+    },
+    {
+      path: '/vendors',
+      title: 'Vendors',
+      icon: 'tabler:user-check'
+    },
+    {
+      path: '/clients',
+      title: 'Clients',
+      icon: 'tabler:user'
     }
   ]
 }

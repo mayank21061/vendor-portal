@@ -13,27 +13,66 @@ import {
   Tooltip
 } from '@mui/material'
 import { Form, Formik } from 'formik'
-import React, { useRef, useState, forwardRef } from 'react'
+import React, { useRef, useState, forwardRef, useEffect } from 'react'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import DatePicker from 'react-datepicker'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import dayjs from 'dayjs'
 import styles from './posummary.module.css'
 import { uploadPoAction } from 'src/redux/features/poSummarySlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const PoSummaryForm = ({ open, setOpen }) => {
+  let username = ''
+  useEffect(() => {
+    username = localStorage.getItem('username')
+  }, [])
+  const { userData } = useSelector(state => state.user)
+  const { uploadPoDataIsLoading } = useSelector(state => state.poSummary)
+
   const dispatch = useDispatch()
   const [file, setFile] = useState(null)
   const formikRef = useRef(null)
 
-  const statusList = ['New', 'Pending', 'Closed']
+  const paymentTypeList = ['Credit Card', 'Debit Card', 'Net Banking', 'UPI', 'Cash', 'Cheque']
+
+  const stateCapitals = [
+    'New Delhi',
+    'Amaravati', // Andhra Pradesh
+    'Itanagar', // Arunachal Pradesh
+    'Dispur', // Assam
+    'Patna', // Bihar
+    'Raipur', // Chhattisgarh
+    'Panaji', // Goa
+    'Gandhinagar', // Gujarat
+    'Chandigarh', // Haryana (shared with Punjab)
+    'Shimla', // Himachal Pradesh
+    'Ranchi', // Jharkhand
+    'Bengaluru', // Karnataka
+    'Thiruvananthapuram', // Kerala
+    'Bhopal', // Madhya Pradesh
+    'Mumbai', // Maharashtra
+    'Imphal', // Manipur
+    'Shillong', // Meghalaya
+    'Aizawl', // Mizoram
+    'Kohima', // Nagaland
+    'Bhubaneswar', // Odisha
+    'Chandigarh', // Punjab (shared with Haryana)
+    'Jaipur', // Rajasthan
+    'Gangtok', // Sikkim
+    'Chennai', // Tamil Nadu
+    'Hyderabad', // Telangana
+    'Agartala', // Tripura
+    'Lucknow', // Uttar Pradesh
+    'Dehradun', // Uttarakhand
+    'Kolkata' // West Bengal
+  ]
 
   const fileChange = e => {
     e.preventDefault()
     const file = e.target.files[0]
     if (file) {
-      setFile(file)
+      formikRef.current.setFieldValue('poFile', file)
     }
   }
   return (
@@ -62,26 +101,29 @@ const PoSummaryForm = ({ open, setOpen }) => {
             deliveryDate: dayjs(new Date()).add(3, 'day'),
             eic: '',
             description: '',
-            status: '',
             poAmount: '',
-            noOfInvoices: '',
-            receiver: ''
+            receiver: username,
+            deliveryTimelines: '',
+            paymentType: '',
+            deliveryPlant: [],
+            poFile: null
           }}
           innerRef={formikRef}
           onSubmit={values => {
-            console.log(values)
             const formData = new FormData()
-            formData.append('name', values.poNumber)
-            formData.append('issueDate', dayjs(values.issueDate).format('DD/MM/YYYY'))
+            formData.append('poNumber', values.poNumber)
+            formData.append('poIssueDate', dayjs(values.issueDate).format('YYYY-MM-DD'))
             formData.append('description', values.description)
-            formData.append('deliveryDate', dayjs(values.deliveryDate).format('DD/MM/YYYY'))
+            formData.append('deliveryDate', dayjs(values.deliveryDate).format('YYYY-MM-DD'))
             formData.append('eic', values.eic)
-            formData.append('status', values.status)
             formData.append('poAmount', values.poAmount)
-            formData.append('noOfInvoices', values.noOfInvoices)
             formData.append('receiver', values.receiver)
-            formData.append('file', file)
+            formData.append('deliveryTimelines', values.deliveryTimelines)
+            formData.append('paymentType', values.paymentType)
+            formData.append('deliveryPlant', values.deliveryPlant)
+            formData.append('filePO', values.poFile)
             dispatch(uploadPoAction(formData))
+            formikRef.current.resetForm()
           }}
           //   validationSchema={validationSchema}
         >
@@ -164,21 +206,10 @@ const PoSummaryForm = ({ open, setOpen }) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+
+                  <Grid item xs={6}>
                     <TextField
-                      name='noOfInvoices'
-                      label='Number of Invoices'
-                      size='small'
                       type='number'
-                      fullWidth
-                      value={values.noOfInvoices}
-                      onChange={handleChange}
-                      error={touched.noOfInvoices && Boolean(errors.noOfInvoices)}
-                      helperText={touched.noOfInvoices && errors.noOfInvoices}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
                       name='deliveryTimelines'
                       label='Delivery Timelines'
                       size='small'
@@ -187,27 +218,65 @@ const PoSummaryForm = ({ open, setOpen }) => {
                       onChange={handleChange}
                       error={touched.deliveryTimelines && Boolean(errors.deliveryTimelines)}
                       helperText={touched.deliveryTimelines && errors.deliveryTimelines}
+                      InputProps={{
+                        endAdornment: <InputAdornment position='start'>days</InputAdornment>
+                      }}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+
+                  <Grid item xs={6}>
                     <Autocomplete
-                      name='Status'
+                      name='paymentType'
                       size='small'
-                      options={statusList}
-                      value={values.status}
-                      onChange={(e, value) => value && setFieldValue('status', value)}
+                      options={paymentTypeList}
+                      value={values.paymentType}
+                      onChange={(e, value) => value && setFieldValue('paymentType', value)}
                       renderInput={params => (
                         <TextField
                           {...params}
-                          label='Status'
+                          label='Payment Type'
                           variant='outlined'
                           size='small'
-                          error={touched.status && Boolean(errors.status)}
-                          helperText={touched.status && errors.status}
+                          error={touched.paymentType && Boolean(errors.paymentType)}
+                          helperText={touched.paymentType && errors.paymentType}
                         />
                       )}
                     />
                   </Grid>
+
+                  <Grid item xs={12}>
+                    <Autocomplete
+                      multiple
+                      name='deliveryPlant'
+                      size='small'
+                      options={stateCapitals}
+                      value={values.deliveryPlant}
+                      onChange={(e, value) => value && setFieldValue('deliveryPlant', value)}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          label='Delivery Plant'
+                          variant='outlined'
+                          size='small'
+                          error={touched.deliveryPlant && Boolean(errors.deliveryPlant)}
+                          helperText={touched.deliveryPlant && errors.deliveryPlant}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  {/* <Grid item xs={12}>
+                    <TextField
+                      name='deliveryPlant'
+                      label='Delivery Plant'
+                      size='small'
+                      fullWidth
+                      value={values.deliveryPlant}
+                      onChange={handleChange}
+                      error={touched.deliveryPlant && Boolean(errors.deliveryPlant)}
+                      helperText={touched.deliveryPlant && errors.deliveryPlant}
+                    />
+                  </Grid> */}
                   <Grid item xs={12}>
                     <TextField
                       name='description'
@@ -225,11 +294,11 @@ const PoSummaryForm = ({ open, setOpen }) => {
               </DialogContent>
               <DialogActions sx={{ p: 3, display: 'flex', justifyContent: 'space-between' }}>
                 <>
-                  {file?.name ? (
+                  {formikRef?.current?.values?.poFile?.name ? (
                     <div>
-                      {file?.name}
+                      {formikRef?.current?.values?.poFile?.name}
                       <Tooltip title='Delete'>
-                        <IconButton onClick={() => setFile(null)}>
+                        <IconButton onClick={() => formikRef.current.setFieldValue('poFile', null)}>
                           <Close />
                         </IconButton>
                       </Tooltip>
@@ -249,9 +318,13 @@ const PoSummaryForm = ({ open, setOpen }) => {
                     </>
                   )}
                 </>
-                <Button type='submit' variant='contained' endIcon={<Done />}>
-                  {/* {registerPoiIsLoading ? 'Loading...' : 'REPORT'} */}
-                  Submit
+                <Button
+                  type='submit'
+                  variant='contained'
+                  endIcon={<Done />}
+                  disabled={!values.poFile || uploadPoDataIsLoading}
+                >
+                  {uploadPoDataIsLoading ? 'Loading...' : 'SUBMIT'}
                 </Button>
               </DialogActions>
             </Form>

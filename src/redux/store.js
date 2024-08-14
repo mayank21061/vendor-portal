@@ -23,8 +23,7 @@ export const store = configureStore({
     inbox: inboxReducer,
     eic: eicReducer,
     delivery: deliveryReducer,
-    invoice: invoiceUserReducer,
-    poNumber: poNumberReducer
+    invoice: invoiceUserReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

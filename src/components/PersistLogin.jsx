@@ -51,7 +51,6 @@ const PersistLogin = ({ children }) => {
     router.push('/login')
 
     return null
-
   } else if (isSuccess || checkTokenValidityIsSuccess) {
     return children
   }

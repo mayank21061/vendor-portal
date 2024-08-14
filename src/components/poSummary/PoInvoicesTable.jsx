@@ -26,7 +26,7 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
-import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
+import { getPoInvoicesAction, getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import { Receipt } from '@mui/icons-material'
 import styles from './posummary.module.css'
 import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
@@ -58,23 +58,12 @@ const CustomInput = forwardRef((props, ref) => {
   return <CustomTextField fullWidth inputRef={ref} {...updatedProps} label={props.label || ''} value={value} />
 })
 
-const PoInvoicesTable = props => {
-  //   const data = useSelector(state => state.invoice.invoicesData)
-  //   console.log(data)
-
-  const data = [
-    {
-      id: '23',
-      number: 1,
-      date: '123123',
-      dueDate: '2341232',
-      description: 'yubtynhbyujhbt',
-      eic: 'trg4wer',
-      status: 'wwref',
-      amount: '2341234',
-      docUrl: 'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf'
-    }
-  ]
+const PoInvoicesTable = ({ poNumber }) => {
+  const dispatch = useDispatch()
+  const { content } = useSelector(state => state.poSummary.poInvoicesData)
+  const { poInvoicesDataIsLoading, poInvoicesDataIsSuccess, poInvoicesDataIsError, poInvoicesDataError } = useSelector(
+    state => state.poSummary
+  )
 
   const [dates, setDates] = useState([])
   const [endDateRange, setEndDateRange] = useState(new Date())
@@ -93,19 +82,9 @@ const PoInvoicesTable = props => {
     return formattedDate
   }
 
-  // useEffect(() => {
-  //   const payload = {
-  //     search: value,
-  //     fromDate: moment(startDateRange).format('YYYY-MM-DD'),
-  //     toDate: moment(endDateRange).format('YYYY-MM-DD'),
-  //     filterBy: filterType
-  //   }
-  //   if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
-  // }, [value, endDateRange, startDateRange, filterType])
-
-  //   useEffect(() => {
-  //     dispatch(getInvoicesAction())
-  //   }, [])
+  useEffect(() => {
+    if (poNumber) dispatch(getPoInvoicesAction({ poNumber }))
+  }, [poNumber])
 
   const handleFilter = val => {
     setValue(val)
@@ -273,31 +252,43 @@ const PoInvoicesTable = props => {
     <>
       <Paper elevation={24} sx={{ height: '75vh', overflowY: 'auto' }}>
         <Grid item xs={12}>
-          <DataGrid
-            autoHeight
-            rows={data || []}
-            rowHeight={62}
-            columnHeaderHeight={40}
-            columns={columns}
-            disableRowSelectionOnClick
-            onRowSelectionModelChange={newRowSelectionModel => {
-              setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
-            }}
-            getRowId={row => row.id}
-            componentsProps={{
-              row: {
-                onMouseEnter: event => {
-                  const id = event.currentTarget.dataset.id
-                  const hoveredRow = data || [].find(row => row.id === Number(id))
-                  setHoveredId(id)
-                },
-                onMouseLeave: event => {
-                  setHoveredId(null)
+          {poInvoicesDataIsLoading ? (
+            <Box sx={{ width: '100%', marginTop: '40px' }}>
+              <LinearProgress />
+            </Box>
+          ) : poInvoicesDataIsError ? (
+            <>
+              <h1>{poInvoicesDataError}</h1>
+            </>
+          ) : poInvoicesDataIsSuccess ? (
+            <DataGrid
+              autoHeight
+              rows={content || []}
+              rowHeight={62}
+              columnHeaderHeight={40}
+              columns={columns}
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={newRowSelectionModel => {
+                setCheckedRowDetails(newRowSelectionModel.map(index => content[index]))
+              }}
+              getRowId={row => row.id}
+              componentsProps={{
+                row: {
+                  onMouseEnter: event => {
+                    const id = event.currentTarget.dataset.id
+                    const hoveredRow = content || [].find(row => row.id === Number(id))
+                    setHoveredId(id)
+                  },
+                  onMouseLeave: event => {
+                    setHoveredId(null)
+                  }
                 }
-              }
-            }}
-            hideFooter
-          />
+              }}
+              hideFooter
+            />
+          ) : (
+            ''
+          )}
         </Grid>
       </Paper>
     </>
