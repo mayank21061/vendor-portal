@@ -412,10 +412,8 @@ const CustomTable = props => {
                 columnHeaderHeight={40}
                 columns={columns}
                 disableRowSelectionOnClick
-                onRowSelectionModelChange={newRowSelectionModel => {
-                  setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
-                }}
                 getRowId={row => row.id}
+                onRowClick={params => console.log(params)}
                 componentsProps={{
                   row: {
                     onMouseEnter: event => {

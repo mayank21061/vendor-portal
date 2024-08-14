@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from 'react'
+import React, { memo, useState, useEffect, useCallback } from 'react'
 import DoneIcon from '@mui/icons-material/Done'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import {
@@ -18,7 +18,12 @@ import {
   Tooltip,
   Typography
 } from '@mui/material'
-import { getInvoiceUserAction, getPoNumberAction, uploadInvoiceAction } from 'src/redux/features/dashboardSlice'
+import {
+  getInvoiceUserAction,
+  getPoDetailsAction,
+  getPoNumberAction,
+  uploadInvoiceAction
+} from 'src/redux/features/dashboardSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
@@ -26,30 +31,12 @@ import dayjs from 'dayjs'
 import { Close, FourMp } from '@mui/icons-material'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import DatePicker from 'react-datepicker'
-
-const initialState = {
-  poNumber: '',
-  paymentType: '',
-  eic: '',
-  packageNumber: '',
-  deliveryPlant: '',
-  type: '',
-  invoiceNumber: '',
-  invoiceDate: new Date(),
-  invoiceAmount: '',
-  mobileNumber: '',
-  alternateMobileNumber: '',
-  email: '',
-  alternateEmail: '',
-  remarks: '',
-  msmeCategory: '',
-  search: ''
-}
+import _debounce from 'lodash/debounce'
 
 const UploadInvoice = ({ open, setOpen }) => {
   const dispatch = useDispatch()
-  // const { getPoNumberData } = useSelector(state => state.poNumber)
-  // const { getInvoiceUserData } = useSelector(state => state.invoiceUser)
+  const { poNumberListData, poDetailsData } = useSelector(state => state.dashboard)
+  console.log(poDetailsData)
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -97,7 +84,12 @@ const UploadInvoice = ({ open, setOpen }) => {
   }
 
   const handleSupportingFile = files => {
-    formik.setFieldValue('supportingDocuments', Array.from(files))
+    formik.setFieldValue('supportingDocuments', [...formik.values.supportingDocuments, ...Array.from(files)])
+  }
+
+  const handleDeleteSupportingDocs = elementIndex => {
+    const filterArr = formik.values.supportingDocuments.filter((item, index) => index != elementIndex)
+    formik.setFieldValue('supportingDocuments', filterArr)
   }
 
   const handleClose = () => {
@@ -115,18 +107,21 @@ const UploadInvoice = ({ open, setOpen }) => {
     fullWidth: true
   }
 
-  useEffect(() => {
-    if (open) {
-      dispatch(getPoNumberAction({ poNumber: formik.values.poNumber }))
-    }
-  }, [open])
+  const getInvoicesDebounce = useCallback(
+    _debounce(searchText => {
+      if (searchText) {
+        dispatch(getPoNumberAction({ poNumber: searchText }))
+      }
+    }, 1000),
+    [dispatch]
+  )
 
   return (
     <Dialog
       open={open}
       onClose={() => setOpen(false)}
       fullWidth
-      maxWidth='md'
+      maxWidth='lg'
       sx={{ '.MuiPaper-root': { overflowY: 'visible' } }}
     >
       <DialogTitle id='customized-dialog-title'>UPLOAD INVOICE</DialogTitle>
@@ -152,15 +147,41 @@ const UploadInvoice = ({ open, setOpen }) => {
                 <Grid item sm={6}>
                   <Autocomplete
                     {...config}
-                    options={[]}
+                    options={poNumberListData || []}
                     getOptionLabel={option => option.label || option}
                     value={formik.values.poNumber}
-                    onInputChange={(event, newValue) => formik.setFieldValue('poNumber', newValue)}
-                    renderInput={params => <TextField {...params} label='PO NUMBER' variant='outlined' size='small' />}
+                    onInputChange={(event, newValue) => {
+                      getInvoicesDebounce(newValue)
+                    }}
+                    onChange={(e, value) => {
+                      formik.setFieldValue('poNumber', value)
+                      value && dispatch(getPoDetailsAction({ poNumber: value }))
+                    }}
+                    renderInput={params => (
+                      <TextField {...params} label='PO NUMBER' variant='outlined' size='small' type='number' />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Autocomplete
+                    size='small'
+                    {...config}
+                    options={[]}
+                    value={formik.values.deliveryPlant}
+                    onChange={formik.handleChange}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label='DELIVERY PLANT'
+                        name='deliveryPlant'
+                        variant='outlined'
+                        size='small'
+                      />
+                    )}
                   />
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <TextField
                     {...config}
                     size='small'
@@ -182,7 +203,7 @@ const UploadInvoice = ({ open, setOpen }) => {
                   />
                 </Grid>
 
-                <Grid item xs={4}>
+                {/* <Grid item xs={4}>
                   <Autocomplete
                     {...config}
                     options={[]}
@@ -192,11 +213,11 @@ const UploadInvoice = ({ open, setOpen }) => {
                       <TextField {...params} label='ENGINEER INCHARGE' name='eic' variant='outlined' size='small' />
                     )}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={4}>
                   <DatePickerWrapper>
                     <DatePicker
-                      placeholderText='Invoice Date'
+                      placeholderText='Payment Date'
                       fullWidth
                       showYearDropdown
                       id='issue-date'
@@ -204,12 +225,24 @@ const UploadInvoice = ({ open, setOpen }) => {
                       value={dayjs(formik.values.invoiceDate).format('DD/MM/YYYY')}
                       selected={new Date(formik.values.invoiceDate)}
                       dateFormat='dd MMMM yyyy'
-                      customInput={<TextField label='Issue Date' size='small' />}
+                      customInput={<TextField label='Payment Date' size='small' />}
                       onChange={date => formik.setFieldValue('invoiceDate', date)}
                     />
                   </DatePickerWrapper>
                 </Grid>
-                <Grid item xs={4}>
+
+                <Grid item xs={12}>
+                  <TextField
+                    {...config}
+                    multiline
+                    minRows={3}
+                    label='REMARKS'
+                    value={formik.values.remarks}
+                    name='remarks'
+                    onChange={formik.handleChange}
+                  />
+                </Grid>
+                <Grid item xs={6}>
                   <TextField
                     {...config}
                     size='small'
@@ -219,7 +252,7 @@ const UploadInvoice = ({ open, setOpen }) => {
                     onChange={formik.handleChange}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                   <TextField
                     {...config}
                     size='small'
@@ -229,64 +262,50 @@ const UploadInvoice = ({ open, setOpen }) => {
                     onChange={formik.handleChange}
                   />
                 </Grid>
-                <Grid item xs={4}>
-                  <Autocomplete
-                    size='small'
-                    {...config}
-                    options={[]}
-                    value={formik.values.deliveryPlant}
-                    onChange={formik.handleChange}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        label='DELIVERY PLANT'
-                        name='deliveryPlant'
-                        variant='outlined'
-                        size='small'
-                      />
-                    )}
-                  />
+                <Grid item xs={12}>
+                  <b>Invoice File: </b>
+                  {`${formik.values.invoiceFile?.length == 0 ? ' No File selected' : ''}`}
+                  {formik.values.invoiceFile.map(item => (
+                    <Chip
+                      label={item.name}
+                      onDelete={() => formik.setFieldValue('invoiceFile', [])}
+                      onClick={() => console.log(file)}
+                    />
+                  ))}
+                  <IconButton
+                    component='label'
+                    role={undefined}
+                    variant='outlined'
+                    tabIndex={-1}
+                    // startIcon={}
+                  >
+                    <CloudUploadIcon />
+                    <VisuallyHiddenInput
+                      type='file'
+                      accept='application/pdf'
+                      onChange={e => handleInputInvoices(e.target.files)}
+                    />
+                  </IconButton>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    {...config}
-                    label='REMARKS'
-                    value={formik.values.remarks}
-                    name='remarks'
-                    onChange={formik.handleChange}
-                  />
-                </Grid>
-                <Grid item xs={12} className='fileupload' sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                  <Button
-                    component='label'
-                    role={undefined}
-                    variant='contained'
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon />}
-                    size='small'
-                  >
-                    Add Invoice
-                    <VisuallyHiddenInput type='file' onChange={e => handleInputInvoices(e.target.files)} />
-                  </Button>
-                  {formik.values.invoiceFile.map(item => (
-                    <Chip label={item.name} />
+                  <b>Supporting Documents: </b>
+                  {` ${formik.values.supportingDocuments.length == 0 ? ' No File selected' : ''}`}
+                  {formik.values.supportingDocuments.map((item, index) => (
+                    <Chip
+                      label={item.name}
+                      onDelete={() => handleDeleteSupportingDocs(index)}
+                      onClick={() => console.log(item)}
+                    />
                   ))}
-                </Grid>
-                <Grid item xs={12} className='fileupload'>
-                  <Button
-                    component='label'
-                    role={undefined}
-                    variant='contained'
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon />}
-                    size='small'
-                  >
-                    Add Supporting Docs
-                    <VisuallyHiddenInput type='file' multiple onChange={e => handleSupportingFile(e.target.files)} />
-                  </Button>
-                  {formik.values.supportingDocuments.map(item => (
-                    <Chip label={item.name} />
-                  ))}
+                  <IconButton component='label' role={undefined} variant='outlined' tabIndex={-1}>
+                    <CloudUploadIcon />
+                    <VisuallyHiddenInput
+                      type='file'
+                      accept='application/pdf'
+                      multiple
+                      onChange={e => handleSupportingFile(e.target.files)}
+                    />
+                  </IconButton>
                 </Grid>
               </Grid>
 
@@ -297,38 +316,47 @@ const UploadInvoice = ({ open, setOpen }) => {
                     <Divider />
                     <div
                       style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '.5rem',
                         fontSize: '14px',
                         padding: '1rem ',
                         justifyContent: 'space-around'
                       }}
                     >
                       <div>
-                        <span style={{ fontWeight: 'bold' }}>Payment Type:</span>
-                        {/* {getInvoiceUserData.paymentType} */}
+                        <span style={{ fontWeight: 'bold' }}>PO Issue Date: </span>
+                        {poDetailsData?.poIssueDate}
                         <br />
                       </div>
                       <Divider />
                       <div style={{ marginTop: '1rem' }}>
-                        <span style={{ fontWeight: 'bold' }}>Invoice Type:</span>
-                        {/* {getInvoiceUserData.type} */}
+                        <span style={{ fontWeight: 'bold' }}>PO Delivery Date: </span>
+                        {poDetailsData?.deliveryDate}
                         <br />
                       </div>
                       <Divider />
                       <div style={{ marginTop: '1rem' }}>
-                        <span style={{ fontWeight: 'bold' }}>Category:</span>
-                        {/* {getInvoiceUserData.msmeCategory} */}
+                        <span style={{ fontWeight: 'bold' }}>Description: </span>
+                        {poDetailsData?.description}
                         <br />
                       </div>
                       <Divider />
                       <div style={{ marginTop: '1rem' }}>
-                        <span style={{ fontWeight: 'bold' }}>Mobile Number:</span>
-                        {/* {getInvoiceUserData.mobileNumber} */}
+                        <span style={{ fontWeight: 'bold' }}>Mobile Number: </span>
+                        {poDetailsData?.mobileNumber}
                         <br />
                       </div>
                       <Divider />
                       <div style={{ marginTop: '1rem' }}>
-                        <span style={{ fontWeight: 'bold' }}>E-mail:</span>
-                        {/* {getInvoiceUserData.email} */}
+                        <span style={{ fontWeight: 'bold' }}>E-mail: </span>
+                        {poDetailsData?.email}
+                        <br />
+                      </div>
+                      <Divider />
+                      <div style={{ marginTop: '1rem' }}>
+                        <span style={{ fontWeight: 'bold' }}>EIC: </span>
+                        {poDetailsData?.eic}
                         <br />
                       </div>
                       <Divider />
@@ -339,7 +367,7 @@ const UploadInvoice = ({ open, setOpen }) => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions sx={{ p: 1 }}>
+        <DialogActions>
           <Button variant='contained' type='submit'>
             UPLOAD
           </Button>

@@ -14,17 +14,22 @@ const initialState = {
   uploadPoDataIsLoading: false,
   uploadPoDataIsError: false,
   uploadPoDataError: '',
-  uploadPoDataIsSuccess: false
+  uploadPoDataIsSuccess: false,
+
+  poInvoicesData: '',
+  poInvoicesDataIsLoading: false,
+  poInvoicesDataIsError: false,
+  poInvoicesDataError: '',
+  poInvoicesDataIsSuccess: false
 }
 
 export const getPoSummaryAction = createAsyncThunkWithTokenRefresh(
   'poSummary/getPoSummaryAction',
   async (token, currentUser, payload) => {
-    console.log(payload)
-    const headers = { ...payload } // Adjust the value as needed
-    const username = JSON.parse(localStorage.getItem('userData')).username
+    const username = localStorage.getItem('username')
+    const headers = { ...payload, username } // Adjust the value as needed
     return axios.get(
-      `/call/vendor/poSummary/getSummary?username=${username}`,
+      `/call/vendor/Vendorportal/poSummary/getSummary/?username=${username}`,
       createAxiosConfig(token, currentUser, headers)
     )
   }
@@ -33,9 +38,21 @@ export const getPoSummaryAction = createAsyncThunkWithTokenRefresh(
 export const uploadPoAction = createAsyncThunkWithTokenRefresh(
   'poSummary/uploadPoAction',
   async (token, currentUser, payload) => {
-    console.log(payload)
+    console.log(currentUser)
     const headers = {}
     return axios.post(`/call/vendor/Vendorportal/createPO`, payload, createAxiosConfig(token, currentUser, headers))
+  }
+)
+
+export const getPoInvoicesAction = createAsyncThunkWithTokenRefresh(
+  'poSummary/getPoInvoicesAction',
+  async (token, currentUser, payload) => {
+    console.log(payload)
+    const headers = {}
+    return axios.get(
+      `/call/vendor/Vendorportal/getInvoice/?poNumber=${payload.poNumber}`,
+      createAxiosConfig(token, currentUser, headers)
+    )
   }
 )
 
@@ -56,6 +73,13 @@ export const poSummarySlice = createSlice({
       state.uploadPoDataIsError = false
       state.uploadPoDataError = ''
       state.uploadPoDataIsSuccess = false
+    },
+    resetGetPoInvoices(state) {
+      state.poInvoicesData = ''
+      state.poInvoicesDataIsLoading = false
+      state.poInvoicesDataIsError = false
+      state.poInvoicesDataError = ''
+      state.poInvoicesDataIsSuccess = false
     }
   },
   extraReducers(builder) {
@@ -102,6 +126,27 @@ export const poSummarySlice = createSlice({
         state.uploadPoDataIsError = true
         state.uploadPoDataError = action.error.message
         state.uploadPoDataIsSuccess = false
+      })
+      .addCase(getPoInvoicesAction.pending, state => {
+        state.poInvoicesData = ''
+        state.poInvoicesDataIsLoading = true
+        state.poInvoicesDataIsError = false
+        state.poInvoicesDataError = ''
+        state.poInvoicesDataIsSuccess = false
+      })
+      .addCase(getPoInvoicesAction.fulfilled, (state, action) => {
+        state.poInvoicesData = action.payload
+        state.poInvoicesDataIsLoading = false
+        state.poInvoicesDataIsError = false
+        state.poInvoicesDataError = ''
+        state.poInvoicesDataIsSuccess = true
+      })
+      .addCase(getPoInvoicesAction.rejected, (state, action) => {
+        state.poInvoicesData = ''
+        state.poInvoicesDataIsLoading = false
+        state.poInvoicesDataIsError = true
+        state.poInvoicesDataError = action.error.message
+        state.poInvoicesDataIsSuccess = false
       })
 
     //

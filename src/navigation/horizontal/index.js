@@ -13,6 +13,16 @@ const navigation = () => [
     path: '/poSummary',
     title: 'PO Summary',
     icon: 'tabler:shield'
+  },
+  {
+    path: '/vendors',
+    title: 'Vendor',
+    icon: 'tabler:shield'
+  },
+  {
+    path: '/clients',
+    title: 'Cleints',
+    icon: 'tabler:shield'
   }
 ]
 

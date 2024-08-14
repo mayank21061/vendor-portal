@@ -50,14 +50,14 @@ export const getUserDetailsAction = createAsyncThunk('user/getUserDetailsAction'
     }
 
     if (username) {
-      headers['username'] = username
+      headers['userName'] = username
     }
 
     if (token) {
       headers['Authorization'] = `Bearer ${token}`
     }
 
-    const response = await axios.get(`/call/vendor/user/auth/users`, {
+    const response = await axios.get(`/call/vendor/user/xsc/getUserRoles`, {
       headers: {
         Accept: 'application/json',
         ...headers
