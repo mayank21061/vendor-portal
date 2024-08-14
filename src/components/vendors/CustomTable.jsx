@@ -89,7 +89,9 @@ const CustomTable = props => {
       source: 'Linked In',
       country: 'India',
       city: 'Bangalore',
-      state: 'Karnataka'
+      state: 'Karnataka',
+      panNo: 'ASCW23049134',
+      gst: '12412413454123412'
     },
     {
       id: 2,
@@ -107,7 +109,9 @@ const CustomTable = props => {
       source: 'Google',
       country: 'India',
       city: ' New Delhi',
-      state: 'Delhi'
+      state: 'Delhi',
+      panNo: 'ASCW23049134',
+      gst: '12412413454123412'
     },
     {
       id: 3,
@@ -125,7 +129,9 @@ const CustomTable = props => {
       source: 'Linked In',
       country: 'India',
       city: ' New Delhi',
-      state: 'Delhi'
+      state: 'Delhi',
+      panNo: 'ASCW23049134',
+      gst: '12412413454123412'
     },
     {
       id: 4,
@@ -142,7 +148,9 @@ const CustomTable = props => {
       source: 'Linked In',
       country: 'India',
       city: ' New Delhi',
-      state: 'Delhi'
+      state: 'Delhi',
+      panNo: 'ASCW23049134',
+      gst: '12412413454123412'
     }
   ]
 
@@ -383,7 +391,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 600
             }}
           >
-            {`GST No. ${row.state}`}
+            {`GST No. ${row.gst}`}
           </Typography>
           <Typography
             noWrap
@@ -394,7 +402,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 600
             }}
           >
-            {`PAN No. ${row.city}`}
+            {`PAN No. ${row.panNo}`}
           </Typography>
         </Box>
       )
@@ -463,7 +471,7 @@ const CustomTable = props => {
                 />
               </div>
 
-              <Tooltip title='ADD CLEINTS'>
+              <Tooltip title='ADD VENDORS'>
                 <Fab color='primary' aria-label='add' size='small' onClick={() => setShowVendorsForm(true)}>
                   <Add />
                 </Fab>
