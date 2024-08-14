@@ -17,7 +17,8 @@ import {
   MenuItem,
   Paper,
   Select,
-  Tooltip
+  Tooltip,
+  useTheme
 } from '@mui/material'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
@@ -69,55 +70,79 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const CustomTable = props => {
+  const theme = useTheme()
+
+  const getFontColor = () => (theme.palette.mode === 'dark' ? '#fff' : 'text.primary')
+
   //   const data = useSelector(state => state.inbox.inboxData)
   const data = [
     {
-      id: '1',
-      poNumber: '123456',
-      invoiceNumber: '789012',
-      invoiceAmount: '25000',
-      status: 'Pending',
-      deliveryPlant: 'Delhi'
+      id: 1,
+      checked: false,
+      companyName: ' IBM',
+      status: 'Confirmed',
+      contactName: 'Pratibha',
+      email: 'mailto:demo@gmail.com',
+      designation: 'CEO',
+      phoneNumber: '9412345689',
+      industry: 'Software',
+      source: 'Linked In',
+      country: 'India',
+      city: 'Bangalore',
+      state: 'Karnataka'
     },
     {
-      id: '2',
-      poNumber: '654321',
-      invoiceNumber: '345678',
-      invoiceAmount: '30000',
-      status: 'Completed',
-      deliveryPlant: 'Mumbai'
+      id: 2,
+      checked: false,
+
+      companyName: 'Honda',
+      due_date: '12/10/24',
+      value: '1000000',
+      status: 'Refused',
+      email: 'mailto:demo@gmail.com',
+      contactName: 'Santosh',
+      designation: 'AVP',
+      phoneNumber: '9412345689',
+      industry: 'Automotive',
+      source: 'Google',
+      country: 'India',
+      city: ' New Delhi',
+      state: 'Delhi'
     },
     {
-      id: '3',
-      poNumber: '112233',
-      invoiceNumber: '998877',
-      invoiceAmount: '15000',
-      status: 'In Progress',
-      deliveryPlant: 'Chennai'
+      id: 3,
+      checked: false,
+
+      companyName: 'Airtel',
+      due_date: '13/11/24',
+      value: '1000000',
+      status: 'In Discussion',
+      email: 'mailto:atul123@gmail.com',
+      contactName: 'Atul ',
+      designation: 'Software developer',
+      phoneNumber: '9412345689',
+      industry: 'TELECOM',
+      source: 'Linked In',
+      country: 'India',
+      city: ' New Delhi',
+      state: 'Delhi'
     },
     {
-      id: '4',
-      poNumber: '445566',
-      invoiceNumber: '776655',
-      invoiceAmount: '40000',
-      status: 'Pending',
-      deliveryPlant: 'Kolkata'
-    },
-    {
-      id: '5',
-      poNumber: '778899',
-      invoiceNumber: '223344',
-      invoiceAmount: '50000',
-      status: 'Completed',
-      deliveryPlant: 'Bangalore'
-    },
-    {
-      id: '6',
-      poNumber: '990011',
-      invoiceNumber: '554433',
-      invoiceAmount: '35000',
-      status: 'In Progress',
-      deliveryPlant: 'Hyderabad'
+      id: 4,
+      checked: false,
+      companyName: 'Airtel',
+      due_date: '13/11/24',
+      value: '1000000',
+      status: 'New',
+      email: 'mailto:atul@gmail.com',
+      contactName: 'Atul ',
+      designation: 'Software developer',
+      phoneNumber: '9412345689',
+      industry: 'TELECOM',
+      source: 'Linked In',
+      country: 'India',
+      city: ' New Delhi',
+      state: 'Delhi'
     }
   ]
 
@@ -209,49 +234,66 @@ const CustomTable = props => {
       flex: 0.1,
       minWidth: 130,
       field: 'poNumber',
-      headerName: 'PO NUMBER ',
-      headerAlign: 'center',
-      align: 'center',
+      headerName: 'Company Name ',
+      headerAlign: 'left',
+      align: 'left',
       headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          <Typography sx={{ color: 'text.secondary', cursor: 'pointer' }}>{row.poNumber}</Typography>
-        </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography
+            noWrap
+            variant='body2'
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600
+            }}
+          >
+            {row.companyName}
+          </Typography>
+          <Typography
+            noWrap
+            variant='caption'
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 400
+            }}
+          >
+            {`(${row.industry})`}
+          </Typography>
+        </Box>
       )
     },
     {
       flex: 0.1,
       field: 'invoiceNumber',
       minWidth: 170,
-      headerName: 'invoice Number',
+      headerName: 'Contact Person',
       headerAlign: 'left',
       headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
-        <Box
-          sx={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
-              {row.invoiceNumber}
-            </Typography>
-          </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography
+            noWrap
+            variant='body2'
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600
+            }}
+          >
+            {row.contactName}
+          </Typography>
+          <Typography
+            noWrap
+            variant='caption'
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 400
+            }}
+          >
+            {`(${row.designation})`}
+          </Typography>
         </Box>
       )
     },
@@ -259,118 +301,133 @@ const CustomTable = props => {
       flex: 0.1,
       minWidth: 150,
       field: 'invoiceAmount',
-      headerName: 'invoice Amount',
-      headerAlign: 'center',
+      headerName: 'Contact Details',
+      headerAlign: 'left',
       headerClassName: styles.customheader,
 
-      align: 'center',
+      align: 'left',
       renderCell: ({ row }) => (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          <Typography sx={{ color: 'text.secondary' }}>{row.invoiceAmount}</Typography>
-        </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography
+            variant='body2'
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600
+            }}
+          >
+            {row.phoneNumber}
+          </Typography>
+          <Typography
+            variant='caption'
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 400
+            }}
+          >
+            {row.email}
+          </Typography>
+        </Box>
       )
     },
     {
       flex: 0.1,
       minWidth: 150,
       field: 'deliveryPlant',
-      headerName: 'delivery Plant',
-      headerAlign: 'center',
-      align: 'center',
+      headerName: 'Location',
+      headerAlign: 'left',
+      align: 'left',
       headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          <Typography sx={{ color: 'text.secondary' }}>{row.deliveryPlant}</Typography>
-        </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography
+            noWrap
+            variant='body2'
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600
+            }}
+          >
+            {row.state}
+          </Typography>
+          <Typography
+            noWrap
+            variant='body2'
+            sx={{
+              fontSize: '0.7rem',
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600
+            }}
+          >
+            {`(${row.city})`}
+          </Typography>
+        </Box>
       )
     },
     {
       flex: 0.1,
       minWidth: 100,
-      field: 'status',
-      headerName: 'status',
+      field: 'registration',
+      headerName: 'Registration',
       headerAlign: 'left',
-      align: 'right',
+      align: 'left',
       headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'left',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          <Typography sx={{ color: 'text.secondary' }}>{row.status}</Typography>
-        </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography
+            noWrap
+            variant='body2'
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600
+            }}
+          >
+            {`GST No. ${row.state}`}
+          </Typography>
+          <Typography
+            noWrap
+            variant='body2'
+            sx={{
+              fontSize: '0.7rem',
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600
+            }}
+          >
+            {`PAN No. ${row.city}`}
+          </Typography>
+        </Box>
       )
-    },
-    {
-      sortable: false,
-      field: 'actions',
-      headerName: '',
-      headerAlign: 'center',
-      align: 'center',
-      headerClassName: styles.customheader,
-      renderCell: ({ row }) =>
-        hoverdRowId !== null &&
-        hoverdRowId === row.id && (
-          <>
-            <Tooltip title='View Details'>
-              <IconButton
-                onClick={() => {
-                  handlePreviewFile(row.id)
-                }}
-              >
-                <VisibilityIcon
-                  style={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    color: '#014361'
-                  }}
-                />
-              </IconButton>
-            </Tooltip>
-            {/* <Tooltip title='History'>
-              <IconButton
-                onClick={() => {
-                  handlePreviewHistory(row.id)
-                }}
-              >
-                <History
-                  style={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    color: '#014361'
-                  }}
-                />
-              </IconButton>
-            </Tooltip> */}
-          </>
-        )
     }
+    // {
+    //   sortable: false,
+    //   field: 'actions',
+    //   headerName: '',
+    //   headerAlign: 'center',
+    //   align: 'left',
+    //   headerClassName: styles.customheader,
+    //   renderCell: ({ row }) =>
+    //     hoverdRowId !== null &&
+    //     hoverdRowId === row.id && (
+    //       <>
+    //         <Tooltip title='View Details'>
+    //           <IconButton
+    //           // onClick={() => {
+    //           //   handlePreviewFile(row.id)
+    //           // }}
+    //           >
+    //             <VisibilityIcon
+    //               style={{
+    //                 width: '1.2rem',
+    //                 height: '1.2rem',
+    //                 color: '#014361'
+    //               }}
+    //             />
+    //           </IconButton>
+    //         </Tooltip>
+    //       </>
+    //     )
+    // }
   ]
 
   return (
@@ -396,31 +453,6 @@ const CustomTable = props => {
                 marginTop: '.5rem'
               }}
             >
-              <div style={{ minWidth: '18vw' }}>
-                <DatePickerWrapper>
-                  <ReactDatePicker
-                    showYearDropdown
-                    isClearable
-                    selectsRange
-                    monthsShown={2}
-                    endDate={endDateRange}
-                    selected={startDateRange}
-                    startDate={startDateRange}
-                    shouldCloseOnSelect={false}
-                    id='date-range-picker-months'
-                    onChange={handleOnChangeRange}
-                    customInput={
-                      <CustomInput
-                        dates={dates}
-                        setDates={setDates}
-                        label='Select Date Range'
-                        end={endDateRange}
-                        start={startDateRange}
-                      />
-                    }
-                  />
-                </DatePickerWrapper>
-              </div>
               <div style={{ minWidth: '20vw' }}>
                 <CustomTextField
                   fullWidth
@@ -430,21 +462,8 @@ const CustomTable = props => {
                   style={{ marginTop: '18px' }}
                 />
               </div>
-              <FormControl sx={{ borderRadius: '.8rem', width: '10vw' }} size='small'>
-                <Select
-                  labelId='demo-select-small-label'
-                  id='demo-select-small'
-                  value={filterType}
-                  onChange={handleChangeFilter}
-                >
-                  {filters.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Tooltip title='ADD VENDORS'>
+
+              <Tooltip title='ADD CLEINTS'>
                 <Fab color='primary' aria-label='add' size='small' onClick={() => setShowVendorsForm(true)}>
                   <Add />
                 </Fab>
