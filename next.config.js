@@ -119,6 +119,12 @@ module.exports = {
         destination: isDevelopment
           ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/getInvoice/:ponumber*`
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/getInvoice/:ponumber*`
+      },
+      {
+        source: '/call/vendor/user/doRegistration',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/user/doRegistration`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/user/doRegistration`
       }
     ]
   }

@@ -11,6 +11,7 @@ import invoiceUserReducer from './features/dashboardSlice'
 import poSummaryReducer from './features/poSummarySlice'
 import inboxReducer from './features/inboxSlice'
 import poNumberReducer from './features/dashboardSlice'
+import registerationReducer from './features/registrationSlice'
 
 export const store = configureStore({
   reducer: {
@@ -23,7 +24,8 @@ export const store = configureStore({
     inbox: inboxReducer,
     eic: eicReducer,
     delivery: deliveryReducer,
-    invoice: invoiceUserReducer
+    invoice: invoiceUserReducer,
+    registration: registerationReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
