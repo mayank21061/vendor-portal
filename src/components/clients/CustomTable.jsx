@@ -32,6 +32,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import { Add, History } from '@mui/icons-material'
 import { getInboxAction } from 'src/redux/features/inboxSlice'
 import ClientsForm from './ClientsForm'
+import EditClientsForm from './EditClientsForm'
 
 const renderName = row => {
   if (row.avatar) {
@@ -555,6 +556,7 @@ const CustomTable = props => {
         </Grid>
       </Paper>
       <ClientsForm open={showClientsForm} setOpen={setShowClientsForm} />
+      <EditClientsForm />
     </>
   )
 }
