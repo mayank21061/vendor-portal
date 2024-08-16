@@ -83,7 +83,7 @@ const CustomTable = props => {
       companyName: ' IBM',
       status: 'Confirmed',
       contactName: 'Pratibha',
-      email: 'mailto:demo@gmail.com',
+      email: 'demo@gmail.com',
       designation: 'CEO',
       phoneNumber: '9412345689',
       industry: 'Software',
@@ -102,7 +102,7 @@ const CustomTable = props => {
       due_date: '12/10/24',
       value: '1000000',
       status: 'Refused',
-      email: 'mailto:demo@gmail.com',
+      email: 'demo@gmail.com',
       contactName: 'Santosh',
       designation: 'AVP',
       phoneNumber: '9412345689',
@@ -122,7 +122,7 @@ const CustomTable = props => {
       due_date: '13/11/24',
       value: '1000000',
       status: 'In Discussion',
-      email: 'mailto:atul123@gmail.com',
+      email: 'atul123@gmail.com',
       contactName: 'Atul ',
       designation: 'Software developer',
       phoneNumber: '9412345689',
@@ -141,7 +141,7 @@ const CustomTable = props => {
       due_date: '13/11/24',
       value: '1000000',
       status: 'New',
-      email: 'mailto:atul@gmail.com',
+      email: 'atul@gmail.com',
       contactName: 'Atul ',
       designation: 'Software developer',
       phoneNumber: '9412345689',
@@ -176,6 +176,7 @@ const CustomTable = props => {
   const [previewHistory, setPreviewHistory] = useState(false)
   const [selectedRow, setSelectedRow] = useState(null)
   const [showVendorsForm, setShowVendorsForm] = useState(false)
+  const [showEditForm, setShowEditForm] = useState(false)
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -534,6 +535,11 @@ const CustomTable = props => {
                 onRowSelectionModelChange={newRowSelectionModel => {
                   setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
                 }}
+                onRowDoubleClick={event => {
+                  console.log(event.row)
+                  setSelectedRow(event.row)
+                  setShowEditForm(true)
+                }}
                 getRowId={row => row.id}
                 componentsProps={{
                   row: {
@@ -556,7 +562,7 @@ const CustomTable = props => {
         </Grid>
       </Paper>
       <VendorsForm open={showVendorsForm} setOpen={setShowVendorsForm} />
-      <EditVendorsForm />
+      <EditVendorsForm open={showEditForm} setOpen={setShowEditForm} rowData={selectedRow} />
     </>
   )
 }
