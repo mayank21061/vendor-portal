@@ -169,7 +169,7 @@ const VendorsForm = ({ open, setOpen }) => {
       onClose={() => setOpen(false)}
       fullWidth
       maxWidth='md'
-      sx={{ '.MuiPaper-root': { overflowY: 'visible' } }}
+      sx={{ '.MuiPaper-root': { overflowY: 'visible' }, '.MuiPaper-root': { maxHeight: '100%' } }}
     >
       <DialogTitle id='customized-dialog-title' sx={{ p: 4 }}>
         Create Vendor
@@ -274,7 +274,7 @@ const VendorsForm = ({ open, setOpen }) => {
                 <TextField
                   {...config}
                   size='small'
-                  label='PAN'
+                  label='PAN No.'
                   name='panNumber'
                   value={formik.values.panNumber}
                   onChange={formik.handleChange}
@@ -287,7 +287,7 @@ const VendorsForm = ({ open, setOpen }) => {
                 <TextField
                   {...config}
                   size='small'
-                  label='GST'
+                  label='GST No.'
                   name='gstNumber'
                   value={formik.values.gstNumber}
                   onChange={formik.handleChange}
@@ -300,7 +300,7 @@ const VendorsForm = ({ open, setOpen }) => {
                 <TextField
                   {...config}
                   size='small'
-                  label='TAN'
+                  label='TAN No.'
                   name='tanNumber'
                   value={formik.values.tanNumber}
                   onChange={formik.handleChange}
@@ -313,7 +313,7 @@ const VendorsForm = ({ open, setOpen }) => {
                 <TextField
                   {...config}
                   size='small'
-                  label='MSME'
+                  label='MSME No.'
                   name='msmeNumber'
                   value={formik.values.msmeNumber}
                   onChange={formik.handleChange}
@@ -322,60 +322,67 @@ const VendorsForm = ({ open, setOpen }) => {
                   helperText={formik.touched.msmeNumber && formik.errors.msmeNumber}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  {...config}
-                  multiline
-                  minRows={2}
-                  size='small'
-                  label='Registered Address'
-                  name='regAddress'
-                  value={formik.values.regAddress}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.regAddress && Boolean(formik.errors.regAddress)}
-                  helperText={formik.touched.regAddress && formik.errors.regAddress}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  {...config}
-                  size='small'
-                  label='Registered State'
-                  name='regState'
-                  value={formik.values.regState}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.regState && Boolean(formik.errors.regState)}
-                  helperText={formik.touched.regState && formik.errors.regState}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  {...config}
-                  size='small'
-                  label='Registered City'
-                  name='regCity'
-                  value={formik.values.regCity}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.regCity && Boolean(formik.errors.regCity)}
-                  helperText={formik.touched.regCity && formik.errors.regCity}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  {...config}
-                  size='small'
-                  label='Registered Pincode'
-                  name='regPincode'
-                  value={formik.values.regPincode}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.regPincode && Boolean(formik.errors.regPincode)}
-                  helperText={formik.touched.regPincode && formik.errors.regPincode}
-                />
-              </Grid>
+              <Paper sx={{ mt: 2 }} elevation={6}>
+                <Grid container spacing={2} padding={2}>
+                  <Grid item xs={12}>
+                    <Typography>Registered Address</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      {...config}
+                      // multiline
+                      // minRows={2}
+                      size='small'
+                      label='Address'
+                      name='regAddress'
+                      value={formik.values.regAddress}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.regAddress && Boolean(formik.errors.regAddress)}
+                      helperText={formik.touched.regAddress && formik.errors.regAddress}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField
+                      {...config}
+                      size='small'
+                      label='State'
+                      name='regState'
+                      value={formik.values.regState}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.regState && Boolean(formik.errors.regState)}
+                      helperText={formik.touched.regState && formik.errors.regState}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField
+                      {...config}
+                      size='small'
+                      label='City'
+                      name='regCity'
+                      value={formik.values.regCity}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.regCity && Boolean(formik.errors.regCity)}
+                      helperText={formik.touched.regCity && formik.errors.regCity}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField
+                      {...config}
+                      size='small'
+                      label='Pincode'
+                      name='regPincode'
+                      value={formik.values.regPincode}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.regPincode && Boolean(formik.errors.regPincode)}
+                      helperText={formik.touched.regPincode && formik.errors.regPincode}
+                    />
+                  </Grid>
+                </Grid>
+              </Paper>
               <Grid item xs={12}>
                 <FormGroup>
                   <FormControlLabel
@@ -392,62 +399,67 @@ const VendorsForm = ({ open, setOpen }) => {
                 </FormGroup>
               </Grid>
               {!checked && (
-                <>
-                  <Grid item xs={12}>
-                    <TextField
-                      {...config}
-                      multiline
-                      minRows={2}
-                      size='small'
-                      label='HO Address'
-                      name='HOaddress'
-                      value={formik.values.HOaddress}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.HOaddress && Boolean(formik.errors.HOaddress)}
-                      helperText={formik.touched.HOaddress && formik.errors.HOaddress}
-                    />
+                <Paper elevation={6}>
+                  <Grid container spacing={2} padding={2}>
+                    <Grid item xs={12}>
+                      <Typography>Head Office Address</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        {...config}
+                        // multiline
+                        // minRows={2}
+                        size='small'
+                        label='Address'
+                        name='HOaddress'
+                        value={formik.values.HOaddress}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.HOaddress && Boolean(formik.errors.HOaddress)}
+                        helperText={formik.touched.HOaddress && formik.errors.HOaddress}
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField
+                        {...config}
+                        size='small'
+                        label='State'
+                        name='HOstate'
+                        value={formik.values.HOstate}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.HOstate && Boolean(formik.errors.HOstate)}
+                        helperText={formik.touched.HOstate && formik.errors.HOstate}
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField
+                        {...config}
+                        size='small'
+                        label='City'
+                        name='HOcity'
+                        value={formik.values.HOcity}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.HOcity && Boolean(formik.errors.HOcity)}
+                        helperText={formik.touched.HOcity && formik.errors.HOcity}
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField
+                        {...config}
+                        size='small'
+                        label='Pincode'
+                        name='HOPincode'
+                        value={formik.values.HOPincode}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.HOPincode && Boolean(formik.errors.HOPincode)}
+                        helperText={formik.touched.HOPincode && formik.errors.HOPincode}
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      {...config}
-                      size='small'
-                      label='HO State'
-                      name='HOstate'
-                      value={formik.values.HOstate}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.HOstate && Boolean(formik.errors.HOstate)}
-                      helperText={formik.touched.HOstate && formik.errors.HOstate}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      {...config}
-                      size='small'
-                      label='HO City'
-                      name='HOcity'
-                      value={formik.values.HOcity}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.HOcity && Boolean(formik.errors.HOcity)}
-                      helperText={formik.touched.HOcity && formik.errors.HOcity}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      {...config}
-                      size='small'
-                      label='HO Pincode'
-                      name='HOPincode'
-                      value={formik.values.HOPincode}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.HOPincode && Boolean(formik.errors.HOPincode)}
-                      helperText={formik.touched.HOPincode && formik.errors.HOPincode}
-                    />
-                  </Grid>
-                </>
+                </Paper>
               )}
             </Grid>
           </Grid>
