@@ -155,7 +155,7 @@ export default function MonthlyBarChart() {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
         <h2 style={{ margin: '0', color: '#333' }}>Monthly Overview</h2>
-        <FormControl>
+        {/* <FormControl>
           <Select
             labelId='month-select-label'
             id='month-select'
@@ -170,7 +170,7 @@ export default function MonthlyBarChart() {
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
       </div>
       <BarChart
         series={[

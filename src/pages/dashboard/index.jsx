@@ -17,11 +17,11 @@ const Dashboard = () => {
             <div>
               <div
                 style={{
-                  borderBottom: '1px solid #857c7c',
                   textAlign: 'center',
+                  // borderBottom: '1px solid #857c7c',
                   borderTopLeftRadius: '.3rem',
-                  borderTopRightRadius: '.3rem',
-                  backgroundColor: '#b0abab8f'
+                  borderTopRightRadius: '.3rem'
+                  // backgroundColor: '#b0abab8f'
                 }}
               >
                 <Typography variant='h4' color='black'>
@@ -29,7 +29,9 @@ const Dashboard = () => {
                 </Typography>
               </div>
               <div style={{ height: '18vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Typography variant='h2'>83</Typography>
+                <Typography variant='h2' color='black'>
+                  83
+                </Typography>
               </div>
             </div>
           </Paper>
@@ -39,11 +41,11 @@ const Dashboard = () => {
             <div>
               <div
                 style={{
-                  borderBottom: '1px solid #857c7c',
+                  // borderBottom: '1px solid #857c7c',
                   textAlign: 'center',
                   borderTopLeftRadius: '.3rem',
-                  borderTopRightRadius: '.3rem',
-                  backgroundColor: '#b0abab8f'
+                  borderTopRightRadius: '.3rem'
+                  // backgroundColor: '#b0abab8f'
                 }}
               >
                 <Typography variant='h4' color='black'>
@@ -51,7 +53,9 @@ const Dashboard = () => {
                 </Typography>
               </div>
               <div style={{ height: '18vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Typography variant='h2'>82</Typography>
+                <Typography variant='h2' color='black'>
+                  82
+                </Typography>
                 <Typography variant='h2' color='green'>
                   {'(99%)'}
                 </Typography>
@@ -64,11 +68,11 @@ const Dashboard = () => {
             <div>
               <div
                 style={{
-                  borderBottom: '1px solid #857c7c',
+                  // borderBottom: '1px solid #857c7c',
                   textAlign: 'center',
                   borderTopLeftRadius: '.3rem',
-                  borderTopRightRadius: '.3rem',
-                  backgroundColor: '#b0abab8f'
+                  borderTopRightRadius: '.3rem'
+                  // backgroundColor: '#b0abab8f'
                 }}
               >
                 <Typography variant='h4' color='black'>
@@ -76,7 +80,9 @@ const Dashboard = () => {
                 </Typography>
               </div>
               <div style={{ height: '18vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Typography variant='h2'>1</Typography>
+                <Typography variant='h2' color='black'>
+                  1
+                </Typography>
                 <Typography variant='h2' color='green'>
                   {'(1%)'}
                 </Typography>
