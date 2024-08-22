@@ -264,53 +264,53 @@ const CustomTable = props => {
           </Box>
         )
       }
-    },
-
-    {
-      sortable: false,
-      flex: 0.1,
-      field: 'actions',
-      headerName: 'REASON FOR DELAY',
-      headerAlign: 'center',
-      align: 'center',
-      headerClassName: styles.customheader,
-      renderCell: ({ row }) =>
-        hoverdRowId !== null &&
-        hoverdRowId === row.id && (
-          <>
-            <Tooltip title='Preview'>
-              <IconButton
-                onClick={event => {
-                  handleViewPDF(event, row)
-                }}
-              >
-                <VisibilityIcon
-                  style={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
-                  }}
-                />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title='Invoices'>
-              <IconButton
-                onClick={event => {
-                  handleViewPDF(event, row)
-                }}
-              >
-                <Receipt
-                  style={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
-                  }}
-                />
-              </IconButton>
-            </Tooltip>
-          </>
-        )
     }
+
+    // {
+    //   sortable: false,
+    //   flex: 0.1,
+    //   field: 'actions',
+    //   headerName: 'REASON FOR DELAY',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   headerClassName: styles.customheader,
+    //   renderCell: ({ row }) =>
+    //     hoverdRowId !== null &&
+    //     hoverdRowId === row.id && (
+    //       <>
+    //         <Tooltip title='Preview'>
+    //           <IconButton
+    //             onClick={event => {
+    //               handleViewPDF(event, row)
+    //             }}
+    //           >
+    //             <VisibilityIcon
+    //               style={{
+    //                 width: '1.2rem',
+    //                 height: '1.2rem',
+    //                 color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
+    //               }}
+    //             />
+    //           </IconButton>
+    //         </Tooltip>
+    //         <Tooltip title='Invoices'>
+    //           <IconButton
+    //             onClick={event => {
+    //               handleViewPDF(event, row)
+    //             }}
+    //           >
+    //             <Receipt
+    //               style={{
+    //                 width: '1.2rem',
+    //                 height: '1.2rem',
+    //                 color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
+    //               }}
+    //             />
+    //           </IconButton>
+    //         </Tooltip>
+    //       </>
+    //     )
+    // }
   ]
 
   return (
