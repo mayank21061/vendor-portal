@@ -157,7 +157,7 @@ const CustomTable = props => {
     {
       flex: 0.1,
       field: 'no',
-      headerName: 'NUMBER',
+      headerName: 'Invoice no.',
       renderCell: ({ row }) => {
         // const date = new Date(row.date)
         // const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
@@ -227,8 +227,8 @@ const CustomTable = props => {
     },
     {
       flex: 0.15,
-      field: 'dueDate',
-      headerName: 'DUE DATE',
+      field: 'bankDetails',
+      headerName: 'BANK DETAILS',
       headerClassName: styles.customheader,
       renderCell: ({ row }) => {
         return (

@@ -208,6 +208,30 @@ const CustomTable = props => {
     {
       flex: 0.1,
       minWidth: 130,
+      field: 'referenceNo',
+      headerName: 'REFERENCE NO. ',
+      headerAlign: 'center',
+      align: 'center',
+      headerClassName: styles.customheader,
+
+      renderCell: ({ row }) => (
+        <div
+          style={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+        >
+          <Typography sx={{ color: 'text.secondary', cursor: 'pointer' }}>{row.id}</Typography>
+        </div>
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 130,
       field: 'poNumber',
       headerName: 'PO NUMBER ',
       headerAlign: 'center',
@@ -258,8 +282,8 @@ const CustomTable = props => {
     {
       flex: 0.1,
       minWidth: 150,
-      field: 'invoiceAmount',
-      headerName: 'invoice Amount',
+      field: 'date',
+      headerName: 'DATE',
       headerAlign: 'center',
       headerClassName: styles.customheader,
 
@@ -276,30 +300,6 @@ const CustomTable = props => {
           }}
         >
           <Typography sx={{ color: 'text.secondary' }}>{row.invoiceAmount}</Typography>
-        </div>
-      )
-    },
-    {
-      flex: 0.1,
-      minWidth: 150,
-      field: 'deliveryPlant',
-      headerName: 'delivery Plant',
-      headerAlign: 'center',
-      align: 'center',
-      headerClassName: styles.customheader,
-
-      renderCell: ({ row }) => (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          <Typography sx={{ color: 'text.secondary' }}>{row.deliveryPlant}</Typography>
         </div>
       )
     },
