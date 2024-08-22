@@ -114,24 +114,37 @@ const EditClientsForm = ({ open, setOpen, rowData }) => {
   const formik = useFormik({
     // validationSchema,
     initialValues: {
-      companyName: '',
+      companyname: '',
       industryType: '',
-      contactName: '',
-      contactDesignation: '',
-      contactNumber: '',
-      contactEmail: '',
-      HOaddress: '',
-      HOstate: '',
-      HOcity: '',
-      HOPincode: '',
+      contactpersonname: '',
+      contactpersondesignation: '',
+      contactpersonmobilenumber: '',
+      contactpersonemail: '',
+      otherAddress: {
+        address: '',
+        country: 'India',
+        state: '',
+        city: '',
+        zipCode: ''
+      },
+      // otherState: '',
+      // otherCity: '',
+      // otherZipCode: '',
       gstNumber: '',
       panNumber: '',
-      tanNumber: '',
-      msmeNumber: '',
-      regAddress: '',
-      regState: '',
-      regCity: '',
-      regPincode: ''
+      tanno: '',
+      msmeno: '',
+      registrationAddress: {
+        address: '',
+        country: 'India',
+        state: '',
+        city: '',
+        zipCode: ''
+      },
+      // registrationState: '',
+      // registrationCity: '',
+      // registrationZipCode: '',
+      isClient: 'true'
     },
     onSubmit: values => {
       if (checked) {
@@ -144,24 +157,27 @@ const EditClientsForm = ({ open, setOpen, rowData }) => {
       formik.resetForm()
       setOpen(false)
       setChecked(true)
-      // dispatch(uploadInvoiceAction(values))
+      dispatch(uploadInvoiceAction({ id: rowData.id, isClient: values.isClient, values }))
     }
   })
 
   useEffect(() => {
     if (rowData) {
-      formik.setFieldValue('companyName', rowData.companyName || '')
-      formik.setFieldValue('industryType', rowData.industry || '')
-      formik.setFieldValue('contactName', rowData.contactName || '')
-      formik.setFieldValue('contactDesignation', rowData.designation || '')
-      formik.setFieldValue('contactNumber', rowData.phoneNumber || '')
-      formik.setFieldValue('contactEmail', rowData.email || '')
-      formik.setFieldValue('panNumber', rowData.panNo || '')
-      formik.setFieldValue('gstNumber', rowData.gst || '')
-      formik.setFieldValue('regState', rowData.state || '')
-      formik.setFieldValue('regCity', rowData.city || '')
-      formik.setFieldValue('companyName', rowData.companyName || '')
-      formik.setFieldValue('companyName', rowData.companyName || '')
+      console.log(rowData)
+      formik.setFieldValue('companyname', rowData.companyName || '')
+      formik.setFieldValue('industryType', rowData.industrytype || '')
+      formik.setFieldValue('contactpersonname', rowData.contactpersondetails.contactpersonname || '')
+      formik.setFieldValue('contactpersondesignation', rowData.contactpersondetails.contactpersondesignation || '')
+      formik.setFieldValue('contactpersonmobilenumber', rowData.contactpersondetails.contactpersonmobilenumber || '')
+      formik.setFieldValue('contactpersonemail', rowData.contactpersondetails.contactpersonemail || '')
+      formik.setFieldValue('panNumber', rowData.panNumber || '')
+      formik.setFieldValue('gstNumber', rowData.gstNumber || '')
+      formik.setFieldValue('msmeno', rowData.msmeno || '')
+      formik.setFieldValue('tanno', rowData.tanno || '')
+      formik.setFieldValue('registrationAddress.address', rowData.registrationAddress.address || '')
+      formik.setFieldValue('registrationAddress.state', rowData.registrationAddress.state || '')
+      formik.setFieldValue('registrationAddress.city', rowData.registrationAddress.city || '')
+      formik.setFieldValue('registrationAddress.zipCode', rowData.registrationAddress.zipCode || '')
     }
   }, [rowData])
 
@@ -189,7 +205,7 @@ const EditClientsForm = ({ open, setOpen, rowData }) => {
       sx={{ '.MuiPaper-root': { overflowY: 'visible' }, '.MuiPaper-root': { maxHeight: '100%' } }}
     >
       <DialogTitle id='customized-dialog-title' sx={{ p: 4 }}>
-        Vendor Details
+        Client Details
       </DialogTitle>
       <Tooltip title='CLOSE'>
         <IconButton
@@ -214,12 +230,12 @@ const EditClientsForm = ({ open, setOpen, rowData }) => {
                   {...config}
                   size='small'
                   label='Company Name'
-                  name='companyName'
-                  value={formik.values.companyName}
+                  name='companyname'
+                  value={formik.values.companyname}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.companyName && Boolean(formik.errors.companyName)}
-                  helperText={formik.touched.companyName && formik.errors.companyName}
+                  error={formik.touched.companyname && Boolean(formik.errors.companyname)}
+                  helperText={formik.touched.companyname && formik.errors.companyname}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -240,12 +256,12 @@ const EditClientsForm = ({ open, setOpen, rowData }) => {
                   {...config}
                   size='small'
                   label='Contact Name'
-                  name='contactName'
-                  value={formik.values.contactName}
+                  name='contactpersonname'
+                  value={formik.values.contactpersonname}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.contactName && Boolean(formik.errors.contactName)}
-                  helperText={formik.touched.contactName && formik.errors.contactName}
+                  error={formik.touched.contactpersonname && Boolean(formik.errors.contactpersonname)}
+                  helperText={formik.touched.contactpersonname && formik.errors.contactpersonname}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -253,12 +269,12 @@ const EditClientsForm = ({ open, setOpen, rowData }) => {
                   {...config}
                   size='small'
                   label='Designation'
-                  name='contactDesignation'
-                  value={formik.values.contactDesignation}
+                  name='contactpersondesignation'
+                  value={formik.values.contactpersondesignation}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.contactDesignation && Boolean(formik.errors.contactDesignation)}
-                  helperText={formik.touched.contactDesignation && formik.errors.contactDesignation}
+                  error={formik.touched.contactpersondesignation && Boolean(formik.errors.contactpersondesignation)}
+                  helperText={formik.touched.contactpersondesignation && formik.errors.contactpersondesignation}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -266,12 +282,12 @@ const EditClientsForm = ({ open, setOpen, rowData }) => {
                   {...config}
                   size='small'
                   label='Mobile No.'
-                  name='contactNumber'
-                  value={formik.values.contactNumber}
+                  name='contactpersonmobilenumber'
+                  value={formik.values.contactpersonmobilenumber}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.contactNumber && Boolean(formik.errors.contactNumber)}
-                  helperText={formik.touched.contactNumber && formik.errors.contactNumber}
+                  error={formik.touched.contactpersonmobilenumber && Boolean(formik.errors.contactpersonmobilenumber)}
+                  helperText={formik.touched.contactpersonmobilenumber && formik.errors.contactpersonmobilenumber}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -279,12 +295,12 @@ const EditClientsForm = ({ open, setOpen, rowData }) => {
                   {...config}
                   size='small'
                   label='Email'
-                  name='contactEmail'
-                  value={formik.values.contactEmail}
+                  name='contactpersonemail'
+                  value={formik.values.contactpersonemail}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.contactEmail && Boolean(formik.errors.contactEmail)}
-                  helperText={formik.touched.contactEmail && formik.errors.contactEmail}
+                  error={formik.touched.contactpersonemail && Boolean(formik.errors.contactpersonemail)}
+                  helperText={formik.touched.contactpersonemail && formik.errors.contactpersonemail}
                 />
               </Grid>
               <Grid item xs={3}>

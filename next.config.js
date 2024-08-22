@@ -125,6 +125,18 @@ module.exports = {
         destination: isDevelopment
           ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/user/doRegistration`
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/user/doRegistration`
+      },
+      {
+        source: '/call/vendor/user/getAllClientsORvendor',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/user/getAllClientsORvendor`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/user/getAllClientsORvendor`
+      },
+      {
+        source: '/call/vendor/user/updateVendorClient',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/user/updateVendorClient`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/user/updateVendorClient`
       }
     ]
   }

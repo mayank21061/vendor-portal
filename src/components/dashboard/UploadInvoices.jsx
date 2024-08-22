@@ -2,6 +2,7 @@ import React, { memo, useState, useEffect, useCallback } from 'react'
 import DoneIcon from '@mui/icons-material/Done'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import {
+  AppBar,
   Autocomplete,
   Button,
   Chip,
@@ -10,11 +11,16 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  FormControl,
+  FormLabel,
   Grid,
   IconButton,
   Paper,
+  Radio,
+  RadioGroup,
   styled,
   TextField,
+  Toolbar,
   Tooltip,
   Typography
 } from '@mui/material'
@@ -32,6 +38,9 @@ import { Close, FourMp } from '@mui/icons-material'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import DatePicker from 'react-datepicker'
 import _debounce from 'lodash/debounce'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
 
 const UploadInvoice = ({ open, setOpen }) => {
   const dispatch = useDispatch()
@@ -69,7 +78,17 @@ const UploadInvoice = ({ open, setOpen }) => {
       msmeCategory: '',
       search: '',
       invoiceFile: [],
-      supportingDocuments: []
+      supportingDocuments: [],
+      paymentAgainstLC: false,
+      isGstInvoice: false,
+      sellerGst: '',
+      buyerGst: '',
+      tredExPayment: false,
+      mdccPayment: false,
+      factorUnitNo: '',
+      mdccNo: '',
+      accountNo: '',
+      ses: ''
     },
     onSubmit: values => {
       dispatch(uploadInvoiceAction(values))
@@ -120,90 +139,229 @@ const UploadInvoice = ({ open, setOpen }) => {
     <Dialog
       open={open}
       onClose={() => setOpen(false)}
-      fullWidth
-      maxWidth='lg'
+      fullScreen
+      // maxWidth='lg'
       sx={{ '.MuiPaper-root': { overflowY: 'visible' } }}
     >
-      <DialogTitle id='customized-dialog-title'>UPLOAD INVOICE</DialogTitle>
-      <Tooltip title='CLOSE'>
-        <IconButton
-          aria-label='close'
-          onClick={() => setOpen(false)}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: theme => theme.palette.grey[500]
-          }}
-        >
-          <Close />
-        </IconButton>
-      </Tooltip>
+      <AppBar sx={{ position: 'relative' }}>
+        <Toolbar sx={{ height: '3rem', minHeight: '3rem' }}>
+          <Typography sx={{ ml: 2, flex: 1, color: 'white' }} variant='h6' component='div'>
+            Upload Invoice
+          </Typography>
+          <IconButton autoFocus color='inherit' onClick={() => setOpen(false)}>
+            <Close />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+
       <form onSubmit={formik.handleSubmit}>
-        <DialogContent dividers>
-          <Grid container>
-            <Grid container spacing={2}>
-              <Grid item container spacing={2} xs={12} sm={8}>
-                <Grid item sm={6}>
-                  <Autocomplete
-                    {...config}
-                    options={poNumberListData || []}
-                    getOptionLabel={option => option.label || option}
-                    value={formik.values.poNumber}
-                    onInputChange={(event, newValue) => {
-                      getInvoicesDebounce(newValue)
-                    }}
-                    onChange={(e, value) => {
-                      formik.setFieldValue('poNumber', value)
-                      value && dispatch(getPoDetailsAction({ poNumber: value }))
-                    }}
-                    renderInput={params => (
-                      <TextField {...params} label='PO NUMBER' variant='outlined' size='small' type='number' />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Autocomplete
-                    size='small'
-                    {...config}
-                    options={[]}
-                    value={formik.values.deliveryPlant}
-                    onChange={formik.handleChange}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        label='DELIVERY PLANT'
-                        name='deliveryPlant'
-                        variant='outlined'
-                        size='small'
-                      />
-                    )}
-                  />
-                </Grid>
+        <DialogContent>
+          <Grid container spacing={2} sx={{ justifyContent: 'space-between' }}>
+            <Grid container spacing={2} xs={6} padding={2}>
+              <Grid item sm={9.5}>
+                <Autocomplete
+                  {...config}
+                  name='poNumber'
+                  value={formik.values.poNumber}
+                  options={poNumberListData || []}
+                  getOptionLabel={option => option.label || option}
+                  onInputChange={(event, newValue) => {
+                    formik.setFieldValue('poNumber', newValue)
+                    getInvoicesDebounce(newValue)
+                  }}
+                  onChange={(e, value) => {
+                    formik.setFieldValue('poNumber', value)
+                    value && dispatch(getPoDetailsAction({ poNumber: value }))
+                  }}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      name='poNumber'
+                      label='PO NUMBER'
+                      variant='outlined'
+                      size='small'
+                      // type='number'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={2.5}>
+                <Button variant='contained'>View Docs</Button>
+              </Grid>
 
-                <Grid item xs={4}>
-                  <TextField
-                    {...config}
-                    size='small'
-                    label='INVOICE NUMBER'
-                    value={formik.values.invoiceNumber}
-                    name='invoiceNumber'
-                    onChange={formik.handleChange}
-                  />
-                </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='PAYMENT TYPE'
+                  value={formik.values.paymentType}
+                  name='paymentType'
+                  onChange={formik.handleChange}
+                />
+              </Grid>
 
-                <Grid item xs={4}>
-                  <TextField
-                    {...config}
-                    size='small'
-                    label='AMOUNT OF INVOICE'
-                    name='invoiceAmount'
-                    value={formik.values.invoiceAmount}
-                    onChange={formik.handleChange}
-                  />
-                </Grid>
+              <Grid item xs={12}>
+                <Autocomplete
+                  size='small'
+                  {...config}
+                  options={[]}
+                  value={formik.values.deliveryPlant}
+                  onChange={formik.handleChange}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label='DELIVERY PLANT'
+                      name='deliveryPlant'
+                      variant='outlined'
+                      size='small'
+                    />
+                  )}
+                />
+              </Grid>
 
-                {/* <Grid item xs={4}>
+              <Grid item sx={12}>
+                <FormControl sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <FormLabel>Is this Payment Against LC ?</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby='demo-row-radio-buttons-group-label'
+                    name='row-radio-buttons-group'
+                    sx={{ ml: 1 }}
+                    onChange={event => formik.setFieldValue('isGstInvoice', event.target.value)}
+                    value={formik.values.isGstInvoice}
+                  >
+                    <FormControlLabel value={true} control={<Radio />} label='Yes' />
+                    <FormControlLabel value={false} control={<Radio />} label='No' />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <DatePickerWrapper>
+                  <DatePicker
+                    placeholderText='Invoice Date'
+                    fullWidth
+                    showYearDropdown
+                    id='issue-date'
+                    autoComplete='off'
+                    value={dayjs(formik.values.invoiceDate).format('DD/MM/YYYY')}
+                    selected={new Date(formik.values.invoiceDate)}
+                    dateFormat='dd MMMM yyyy'
+                    customInput={<TextField label='Payment Date' size='small' fullWidth />}
+                    onChange={date => formik.setFieldValue('invoiceDate', date)}
+                  />
+                </DatePickerWrapper>
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='INVOICE NUMBER'
+                  value={formik.values.invoiceNumber}
+                  name='invoiceNumber'
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControl sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <FormLabel>Is it a GST invoice ?</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby='demo-row-radio-buttons-group-label'
+                    name='row-radio-buttons-group'
+                    sx={{ ml: 1 }}
+                    onChange={event => formik.setFieldValue('paymentAgainstLC', event.target.value)}
+                    value={formik.values.paymentAgainstLC}
+                  >
+                    <FormControlLabel value={true} control={<Radio />} label='Yes' />
+                    <FormControlLabel value={false} control={<Radio />} label='No' />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='Seller GST'
+                  name='sellerGst'
+                  value={formik.values.sellerGst}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='Buyer GST'
+                  name='buyerGst'
+                  value={formik.values.buyerGst}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <FormControl>
+                  <FormLabel>Is it TRED Exchange Payment ?</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby='demo-row-radio-buttons-group-label'
+                    name='row-radio-buttons-group'
+                    sx={{ ml: 1 }}
+                    onChange={event => formik.setFieldValue('tredExPayment', event.target.value)}
+                    value={formik.values.tredExPayment}
+                  >
+                    <FormControlLabel value={true} control={<Radio />} label='Yes' />
+                    <FormControlLabel value={false} control={<Radio />} label='No' />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={6}>
+                <FormControl>
+                  <FormLabel>Is it MDCC Payment ?</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby='demo-row-radio-buttons-group-label'
+                    name='row-radio-buttons-group'
+                    sx={{ ml: 1 }}
+                    onChange={event => formik.setFieldValue('mdccPayment', event.target.value)}
+                    value={formik.values.mdccPayment}
+                  >
+                    <FormControlLabel value={true} control={<Radio />} label='Yes' />
+                    <FormControlLabel value={false} control={<Radio />} label='No' />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='Factor Unit Number'
+                  name='factorUnitNo'
+                  disabled={!formik.values.tredExPayment}
+                  value={formik.values.factorUnitNo}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='MDCC Number'
+                  name='mdccNo'
+                  disabled={!formik.values.mdccPayment}
+                  value={formik.values.mdccNo}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+
+              {/* <Grid item xs={4}>
                   <Autocomplete
                     {...config}
                     options={[]}
@@ -214,103 +372,10 @@ const UploadInvoice = ({ open, setOpen }) => {
                     )}
                   />
                 </Grid> */}
-                <Grid item xs={4}>
-                  <DatePickerWrapper>
-                    <DatePicker
-                      placeholderText='Payment Date'
-                      fullWidth
-                      showYearDropdown
-                      id='issue-date'
-                      autoComplete='off'
-                      value={dayjs(formik.values.invoiceDate).format('DD/MM/YYYY')}
-                      selected={new Date(formik.values.invoiceDate)}
-                      dateFormat='dd MMMM yyyy'
-                      customInput={<TextField label='Payment Date' size='small' />}
-                      onChange={date => formik.setFieldValue('invoiceDate', date)}
-                    />
-                  </DatePickerWrapper>
-                </Grid>
+            </Grid>
 
-                <Grid item xs={12}>
-                  <TextField
-                    {...config}
-                    multiline
-                    minRows={3}
-                    label='REMARKS'
-                    value={formik.values.remarks}
-                    name='remarks'
-                    onChange={formik.handleChange}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    {...config}
-                    size='small'
-                    label='ALTERNATE E-MAIL'
-                    name='alternateEmail'
-                    value={formik.values.alternateEmail}
-                    onChange={formik.handleChange}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    {...config}
-                    size='small'
-                    label='ALTERNATE NUMBER'
-                    value={formik.values.alternateMobileNumber}
-                    name='alternateMobileNumber'
-                    onChange={formik.handleChange}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <b>Invoice File: </b>
-                  {`${formik.values.invoiceFile?.length == 0 ? ' No File selected' : ''}`}
-                  {formik.values.invoiceFile.map(item => (
-                    <Chip
-                      label={item.name}
-                      onDelete={() => formik.setFieldValue('invoiceFile', [])}
-                      onClick={() => console.log(file)}
-                    />
-                  ))}
-                  <IconButton
-                    component='label'
-                    role={undefined}
-                    variant='outlined'
-                    tabIndex={-1}
-                    // startIcon={}
-                  >
-                    <CloudUploadIcon />
-                    <VisuallyHiddenInput
-                      type='file'
-                      accept='application/pdf'
-                      onChange={e => handleInputInvoices(e.target.files)}
-                    />
-                  </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                  <b>Supporting Documents: </b>
-                  {` ${formik.values.supportingDocuments.length == 0 ? ' No File selected' : ''}`}
-                  {formik.values.supportingDocuments.map((item, index) => (
-                    <Chip
-                      label={item.name}
-                      onDelete={() => handleDeleteSupportingDocs(index)}
-                      onClick={() => console.log(item)}
-                    />
-                  ))}
-                  <IconButton component='label' role={undefined} variant='outlined' tabIndex={-1}>
-                    <CloudUploadIcon />
-                    <VisuallyHiddenInput
-                      type='file'
-                      accept='application/pdf'
-                      multiple
-                      onChange={e => handleSupportingFile(e.target.files)}
-                    />
-                  </IconButton>
-                </Grid>
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <Paper elevation={3} style={{ padding: '6px' }}>
+            <Grid container xs={6} padding={2} spacing={2}>
+              {/* <Paper elevation={3} style={{ padding: '6px' }}>
                   <div>
                     <Typography variant='h5'>Details</Typography>
                     <Divider />
@@ -362,16 +427,165 @@ const UploadInvoice = ({ open, setOpen }) => {
                       <Divider />
                     </div>
                   </div>
-                </Paper>
+                </Paper> */}
+              <Grid item xs={12}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='AMOUNT OF INVOICE'
+                  name='invoiceAmount'
+                  value={formik.values.invoiceAmount}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='Mobile Number'
+                  value={formik.values.mobileNumber}
+                  name='mobileNumber'
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='ALTERNATE NUMBER'
+                  value={formik.values.alternateMobileNumber}
+                  name='alternateMobileNumber'
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='E-MAIL'
+                  name='email'
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='ALTERNATE E-MAIL'
+                  name='alternateEmail'
+                  value={formik.values.alternateEmail}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  {...config}
+                  multiline
+                  minRows={3}
+                  label='REMARKS'
+                  value={formik.values.remarks}
+                  name='remarks'
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  {...config}
+                  size='small'
+                  label='Bank Account for Payment'
+                  value={formik.values.accountNo}
+                  name='accountNo'
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                If Your Bank Account is not updated with us, Kindly get in touch with EIC for updating the same.
+              </Grid>
+              <Grid item xs={12}>
+                SES to be confirmed
+              </Grid>
+              <Grid item sm={12}>
+                <Autocomplete
+                  {...config}
+                  name='ses'
+                  // value={formik.values.poNumber}
+                  options={[]}
+                  getOptionLabel={option => option.label || option}
+                  onInputChange={(event, newValue) => {
+                    formik.setFieldValue('ses', newValue)
+                    getInvoicesDebounce(newValue)
+                  }}
+                  onChange={(e, value) => {
+                    formik.setFieldValue('ses', value)
+                    value && dispatch(getPoDetailsAction({ poNumber: value }))
+                  }}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      name='ses'
+                      label='Please Select SES'
+                      variant='outlined'
+                      size='small'
+                      // type='number'
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <Typography fontWeight='bold'>Invoice File: </Typography>
+                {`${formik.values.invoiceFile?.length == 0 ? ' No File selected' : ''}`}
+                {formik.values.invoiceFile.map(item => (
+                  <Chip
+                    label={item.name}
+                    onDelete={() => formik.setFieldValue('invoiceFile', [])}
+                    onClick={() => console.log(file)}
+                  />
+                ))}
+                <IconButton
+                  component='label'
+                  role={undefined}
+                  variant='outlined'
+                  tabIndex={-1}
+                  // startIcon={}
+                >
+                  <CloudUploadIcon />
+                  <VisuallyHiddenInput
+                    type='file'
+                    accept='application/pdf'
+                    onChange={e => handleInputInvoices(e.target.files)}
+                  />
+                </IconButton>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography fontWeight='bold'>Supporting Documents:</Typography>
+                {` ${formik.values.supportingDocuments.length == 0 ? ' No File selected' : ''}`}
+                {formik.values.supportingDocuments.map((item, index) => (
+                  <Chip
+                    label={item.name}
+                    onDelete={() => handleDeleteSupportingDocs(index)}
+                    onClick={() => console.log(item)}
+                  />
+                ))}
+                <IconButton component='label' role={undefined} variant='outlined' tabIndex={-1}>
+                  <CloudUploadIcon />
+                  <VisuallyHiddenInput
+                    type='file'
+                    accept='application/pdf'
+                    multiple
+                    onChange={e => handleSupportingFile(e.target.files)}
+                  />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button variant='contained' type='submit'>
+                  UPLOAD
+                </Button>
               </Grid>
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button variant='contained' type='submit'>
-            UPLOAD
-          </Button>
-        </DialogActions>
       </form>
     </Dialog>
   )

@@ -114,24 +114,37 @@ const EditVendorsForm = ({ open, setOpen, rowData }) => {
   const formik = useFormik({
     // validationSchema,
     initialValues: {
-      companyName: '',
+      companyname: '',
       industryType: '',
-      contactName: '',
-      contactDesignation: '',
-      contactNumber: '',
-      contactEmail: '',
-      HOaddress: '',
-      HOstate: '',
-      HOcity: '',
-      HOPincode: '',
+      contactpersonname: '',
+      contactpersondesignation: '',
+      contactpersonmobilenumber: '',
+      contactpersonemail: '',
+      otherAddress: {
+        address: '',
+        country: 'India',
+        state: '',
+        city: '',
+        zipCode: ''
+      },
+      // otherState: '',
+      // otherCity: '',
+      // otherZipCode: '',
       gstNumber: '',
       panNumber: '',
-      tanNumber: '',
-      msmeNumber: '',
-      regAddress: '',
-      regState: '',
-      regCity: '',
-      regPincode: ''
+      tanno: '',
+      msmeno: '',
+      registrationAddress: {
+        address: '',
+        country: 'India',
+        state: '',
+        city: '',
+        zipCode: ''
+      },
+      // registrationState: '',
+      // registrationCity: '',
+      // registrationZipCode: '',
+      isClient: 'false'
     },
     onSubmit: values => {
       if (checked) {
@@ -144,18 +157,18 @@ const EditVendorsForm = ({ open, setOpen, rowData }) => {
       formik.resetForm()
       setOpen(false)
       setChecked(true)
-      // dispatch(uploadInvoiceAction(values))
+      dispatch(uploadInvoiceAction({ id: rowData.id, isClient: values.isClient, values }))
     }
   })
 
   useEffect(() => {
     if (rowData) {
-      formik.setFieldValue('companyName', rowData.companyName || '')
+      formik.setFieldValue('companyname', rowData.companyName || '')
       formik.setFieldValue('industryType', rowData.industry || '')
-      formik.setFieldValue('contactName', rowData.contactName || '')
-      formik.setFieldValue('contactDesignation', rowData.designation || '')
-      formik.setFieldValue('contactNumber', rowData.phoneNumber || '')
-      formik.setFieldValue('contactEmail', rowData.email || '')
+      formik.setFieldValue('contactpersonname', rowData.contactName || '')
+      formik.setFieldValue('contactpersondesignation', rowData.designation || '')
+      formik.setFieldValue('contactpersonmobilenumber', rowData.phoneNumber || '')
+      formik.setFieldValue('contactpersonemail', rowData.email || '')
       formik.setFieldValue('panNumber', rowData.panNo || '')
       formik.setFieldValue('gstNumber', rowData.gst || '')
       formik.setFieldValue('regState', rowData.state || '')

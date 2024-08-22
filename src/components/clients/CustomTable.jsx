@@ -33,6 +33,7 @@ import { Add, History } from '@mui/icons-material'
 import { getInboxAction } from 'src/redux/features/inboxSlice'
 import ClientsForm from './ClientsForm'
 import EditClientsForm from './EditClientsForm'
+import { getClientVendorDataAction } from 'src/redux/features/registrationSlice'
 
 const renderName = row => {
   if (row.avatar) {
@@ -75,87 +76,10 @@ const CustomTable = props => {
 
   const getFontColor = () => (theme.palette.mode === 'dark' ? '#fff' : 'text.primary')
 
-  //   const data = useSelector(state => state.inbox.inboxData)
-  const data = [
-    {
-      id: 1,
-      checked: false,
-      companyName: ' IBM',
-      status: 'Confirmed',
-      contactName: 'Pratibha',
-      email: 'demo@gmail.com',
-      designation: 'CEO',
-      phoneNumber: '9412345689',
-      industry: 'Software',
-      source: 'Linked In',
-      country: 'India',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      panNo: 'ASCW23049134',
-      gst: '12412413454123412'
-    },
-    {
-      id: 2,
-      checked: false,
+  const data = useSelector(state => state.registration.clientVendorData?.content || [])
 
-      companyName: 'Honda',
-      due_date: '12/10/24',
-      value: '1000000',
-      status: 'Refused',
-      email: 'demo@gmail.com',
-      contactName: 'Santosh',
-      designation: 'AVP',
-      phoneNumber: '9412345689',
-      industry: 'Automotive',
-      source: 'Google',
-      country: 'India',
-      city: ' New Delhi',
-      state: 'Delhi',
-      panNo: 'ASCW23049134',
-      gst: '12412413454123412'
-    },
-    {
-      id: 3,
-      checked: false,
-
-      companyName: 'Airtel',
-      due_date: '13/11/24',
-      value: '1000000',
-      status: 'In Discussion',
-      email: 'atul123@gmail.com',
-      contactName: 'Atul ',
-      designation: 'Software developer',
-      phoneNumber: '9412345689',
-      industry: 'TELECOM',
-      source: 'Linked In',
-      country: 'India',
-      city: ' New Delhi',
-      state: 'Delhi',
-      panNo: 'ASCW23049134',
-      gst: '12412413454123412'
-    },
-    {
-      id: 4,
-      checked: false,
-      companyName: 'Airtel',
-      due_date: '13/11/24',
-      value: '1000000',
-      status: 'New',
-      email: 'atul@gmail.com',
-      contactName: 'Atul ',
-      designation: 'Software developer',
-      phoneNumber: '9412345689',
-      industry: 'TELECOM',
-      source: 'Linked In',
-      country: 'India',
-      city: ' New Delhi',
-      state: 'Delhi',
-      panNo: 'ASCW23049134',
-      gst: '12412413454123412'
-    }
-  ]
-
-  const { inboxDataIsLoading, inboxDataIsError, inboxDataError, inboxDataIsSuccess } = useSelector(state => state.inbox)
+  const { clientVendorDataIsLoading, clientVendorDataIsError, clientVendorDataError, clientVendorDataIsSuccess } =
+    useSelector(state => state.registration)
 
   const dispatch = useDispatch()
 
@@ -191,7 +115,8 @@ const CustomTable = props => {
       toDate: moment(endDateRange).format('YYYY-MM-DD'),
       filterBy: filterType
     }
-    if (startDateRange && endDateRange) dispatch(getInboxAction(payload))
+    // if (startDateRange && endDateRange)
+    dispatch(getClientVendorDataAction({ isClient: 'true', ...paginationModel }))
   }, [value, endDateRange, startDateRange, filterType, paginationModel])
 
   const handleOnChangeRange = dates => {
@@ -243,8 +168,8 @@ const CustomTable = props => {
     {
       flex: 0.1,
       minWidth: 130,
-      field: 'poNumber',
-      headerName: 'Company Name ',
+      field: 'companyName',
+      headerName: 'Company Name',
       headerAlign: 'left',
       align: 'left',
       headerClassName: styles.customheader,
@@ -269,14 +194,14 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 400
             }}
           >
-            {`(${row.industry})`}
+            {`(${row.industrytype})`}
           </Typography>
         </Box>
       )
     },
     {
       flex: 0.1,
-      field: 'invoiceNumber',
+      field: 'contactPerson',
       minWidth: 170,
       headerName: 'Contact Person',
       headerAlign: 'left',
@@ -292,7 +217,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 600
             }}
           >
-            {row.contactName}
+            {row.contactpersondetails.contactpersonname}
           </Typography>
           <Typography
             noWrap
@@ -302,7 +227,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 400
             }}
           >
-            {`(${row.designation})`}
+            {`(${row.contactpersondetails.contactpersondesignation})`}
           </Typography>
         </Box>
       )
@@ -310,7 +235,7 @@ const CustomTable = props => {
     {
       flex: 0.1,
       minWidth: 150,
-      field: 'invoiceAmount',
+      field: 'contactDetails',
       headerName: 'Contact Details',
       headerAlign: 'left',
       headerClassName: styles.customheader,
@@ -325,7 +250,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 600
             }}
           >
-            {row.phoneNumber}
+            {row.contactpersondetails.contactpersonmobilenumber}
           </Typography>
           <Typography
             variant='caption'
@@ -334,7 +259,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 400
             }}
           >
-            {row.email}
+            {row.contactpersondetails.contactpersonemail}
           </Typography>
         </Box>
       )
@@ -342,7 +267,7 @@ const CustomTable = props => {
     {
       flex: 0.1,
       minWidth: 150,
-      field: 'deliveryPlant',
+      field: 'location',
       headerName: 'Location',
       headerAlign: 'left',
       align: 'left',
@@ -358,7 +283,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 600
             }}
           >
-            {row.state}
+            {row.registrationAddress.state}
           </Typography>
           <Typography
             noWrap
@@ -369,7 +294,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 600
             }}
           >
-            {`(${row.city})`}
+            {`(${row.registrationAddress.city})`}
           </Typography>
         </Box>
       )
@@ -393,7 +318,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 600
             }}
           >
-            {`GST No. ${row.gst}`}
+            {`GST No. ${row.gstNumber}`}
           </Typography>
           <Typography
             noWrap
@@ -404,7 +329,7 @@ const CustomTable = props => {
               fontWeight: hoverdRowId == row.id ? 700 : 600
             }}
           >
-            {`PAN No. ${row.panNo}`}
+            {`PAN No. ${row.panNumber}`}
           </Typography>
         </Box>
       )
@@ -480,15 +405,15 @@ const CustomTable = props => {
               </Tooltip>
             </div>
           </Grid>
-          {/* {inboxDataIsLoading ? (
+          {clientVendorDataIsLoading ? (
             <Box sx={{ width: '100%', marginTop: '40px' }}>
               <LinearProgress />
             </Box>
-          ) : inboxDataIsError ? (
+          ) : clientVendorDataIsError ? (
             <>
-              <h1>{inboxDataError}</h1>
+              <h1>{clientVendorDataError}</h1>
             </>
-          ) : inboxDataIsSuccess ? (
+          ) : clientVendorDataIsSuccess ? (
             <Grid item xs={12}>
               <Paper elevation={10}>
                 <DataGrid
@@ -500,6 +425,10 @@ const CustomTable = props => {
                   disableRowSelectionOnClick
                   onRowSelectionModelChange={newRowSelectionModel => {
                     setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
+                  }}
+                  onRowDoubleClick={event => {
+                    data.some(elem => elem.id == event.row.id && setSelectedRow(elem))
+                    setShowEditForm(true)
                   }}
                   getRowId={row => row.id}
                   componentsProps={{
@@ -522,8 +451,8 @@ const CustomTable = props => {
             </Grid>
           ) : (
             ''
-          )} */}
-          <Grid item xs={12}>
+          )}
+          {/* <Grid item xs={12}>
             <Paper elevation={10}>
               <DataGrid
                 sx={{ height: '70vh' }}
@@ -558,7 +487,7 @@ const CustomTable = props => {
                 onPaginationModelChange={setPaginationModel}
               />
             </Paper>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Paper>
       <ClientsForm open={showClientsForm} setOpen={setShowClientsForm} />

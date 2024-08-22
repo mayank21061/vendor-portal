@@ -35,10 +35,12 @@ import { Close, FourMp } from '@mui/icons-material'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import DatePicker from 'react-datepicker'
 import _debounce from 'lodash/debounce'
+import { clientVendorRegisterAction } from 'src/redux/features/registrationSlice'
 
 const ClientsForm = ({ open, setOpen }) => {
   const dispatch = useDispatch()
-  const { poNumberListData, poDetailsData } = useSelector(state => state.dashboard)
+  const data = useSelector(state => state.registration)
+  console.log(data)
   const [checked, setChecked] = useState(true)
 
   const VisuallyHiddenInput = styled('input')({
@@ -114,37 +116,47 @@ const ClientsForm = ({ open, setOpen }) => {
   const formik = useFormik({
     // validationSchema,
     initialValues: {
-      companyName: '',
+      companyname: '',
       industryType: '',
-      contactName: '',
-      contactDesignation: '',
-      contactNumber: '',
-      contactEmail: '',
-      HOaddress: '',
-      HOstate: '',
-      HOcity: '',
-      HOPincode: '',
+      contactpersonname: '',
+      contactpersondesignation: '',
+      contactpersonmobilenumber: '',
+      contactpersonemail: '',
+      otherAddress: {
+        address: '',
+        country: 'India',
+        state: '',
+        city: '',
+        zipCode: ''
+      },
+      // otherState: '',
+      // otherCity: '',
+      // otherZipCode: '',
       gstNumber: '',
       panNumber: '',
-      tanNumber: '',
-      msmeNumber: '',
-      whAddress: '',
-      whState: '',
-      whCity: '',
-      whPincode: ''
+      tanno: '',
+      msmeno: '',
+      registrationAddress: {
+        address: '',
+        country: 'India',
+        state: '',
+        city: '',
+        zipCode: ''
+      },
+      // registrationState: '',
+      // registrationCity: '',
+      // registrationZipCode: '',
+      isClient: 'true'
     },
     onSubmit: values => {
       if (checked) {
-        values.HOaddress = values.whAddress
-        values.HOstate = values.whState
-        values.HOcity = values.whCity
-        values.HOPincode = values.whPincode
+        values.otherAddress = values.registrationAddress
       }
       console.log(values)
       formik.resetForm()
       setOpen(false)
       setChecked(true)
-      // dispatch(uploadInvoiceAction(values))
+      dispatch(clientVendorRegisterAction({ isClient: values.isClient, values }))
     }
   })
 
@@ -197,12 +209,12 @@ const ClientsForm = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='Company Name'
-                  name='companyName'
-                  value={formik.values.companyName}
+                  name='companyname'
+                  value={formik.values.companyname}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.companyName && Boolean(formik.errors.companyName)}
-                  helperText={formik.touched.companyName && formik.errors.companyName}
+                  error={formik.touched.companyname && Boolean(formik.errors.companyname)}
+                  helperText={formik.touched.companyname && formik.errors.companyname}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -223,12 +235,12 @@ const ClientsForm = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='Contact Name'
-                  name='contactName'
-                  value={formik.values.contactName}
+                  name='contactpersonname'
+                  value={formik.values.contactpersonname}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.contactName && Boolean(formik.errors.contactName)}
-                  helperText={formik.touched.contactName && formik.errors.contactName}
+                  error={formik.touched.contactpersonname && Boolean(formik.errors.contactpersonname)}
+                  helperText={formik.touched.contactpersonname && formik.errors.contactpersonname}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -236,12 +248,12 @@ const ClientsForm = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='Designation'
-                  name='contactDesignation'
-                  value={formik.values.contactDesignation}
+                  name='contactpersondesignation'
+                  value={formik.values.contactpersondesignation}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.contactDesignation && Boolean(formik.errors.contactDesignation)}
-                  helperText={formik.touched.contactDesignation && formik.errors.contactDesignation}
+                  error={formik.touched.contactpersondesignation && Boolean(formik.errors.contactpersondesignation)}
+                  helperText={formik.touched.contactpersondesignation && formik.errors.contactpersondesignation}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -249,12 +261,12 @@ const ClientsForm = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='Mobile No.'
-                  name='contactNumber'
-                  value={formik.values.contactNumber}
+                  name='contactpersonmobilenumber'
+                  value={formik.values.contactpersonmobilenumber}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.contactNumber && Boolean(formik.errors.contactNumber)}
-                  helperText={formik.touched.contactNumber && formik.errors.contactNumber}
+                  error={formik.touched.contactpersonmobilenumber && Boolean(formik.errors.contactpersonmobilenumber)}
+                  helperText={formik.touched.contactpersonmobilenumber && formik.errors.contactpersonmobilenumber}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -262,12 +274,12 @@ const ClientsForm = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='Email'
-                  name='contactEmail'
-                  value={formik.values.contactEmail}
+                  name='contactpersonemail'
+                  value={formik.values.contactpersonemail}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.contactEmail && Boolean(formik.errors.contactEmail)}
-                  helperText={formik.touched.contactEmail && formik.errors.contactEmail}
+                  error={formik.touched.contactpersonemail && Boolean(formik.errors.contactpersonemail)}
+                  helperText={formik.touched.contactpersonemail && formik.errors.contactpersonemail}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -301,12 +313,12 @@ const ClientsForm = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='TAN No.'
-                  name='tanNumber'
-                  value={formik.values.tanNumber}
+                  name='tanno'
+                  value={formik.values.tanno}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.tanNumber && Boolean(formik.errors.tanNumber)}
-                  helperText={formik.touched.tanNumber && formik.errors.tanNumber}
+                  error={formik.touched.tanno && Boolean(formik.errors.tanno)}
+                  helperText={formik.touched.tanno && formik.errors.tanno}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -314,12 +326,12 @@ const ClientsForm = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='MSME No.'
-                  name='msmeNumber'
-                  value={formik.values.msmeNumber}
+                  name='msmeno'
+                  value={formik.values.msmeno}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.msmeNumber && Boolean(formik.errors.msmeNumber)}
-                  helperText={formik.touched.msmeNumber && formik.errors.msmeNumber}
+                  error={formik.touched.msmeno && Boolean(formik.errors.msmeno)}
+                  helperText={formik.touched.msmeno && formik.errors.msmeno}
                 />
               </Grid>
               <Paper sx={{ mt: 2 }} elevation={6}>
@@ -334,12 +346,17 @@ const ClientsForm = ({ open, setOpen }) => {
                       // minRows={2}
                       size='small'
                       label='Address'
-                      name='whAddress'
-                      value={formik.values.whAddress}
+                      name='registrationAddress.address'
+                      value={formik.values.registrationAddress?.address}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      error={formik.touched.whAddress && Boolean(formik.errors.whAddress)}
-                      helperText={formik.touched.whAddress && formik.errors.whAddress}
+                      error={
+                        formik.touched.registrationAddress?.address &&
+                        Boolean(formik.errors.registrationAddress?.address)
+                      }
+                      helperText={
+                        formik.touched.registrationAddress?.address && formik.errors.registrationAddress?.address
+                      }
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -347,12 +364,14 @@ const ClientsForm = ({ open, setOpen }) => {
                       {...config}
                       size='small'
                       label='State'
-                      name='whState'
-                      value={formik.values.whState}
+                      name='registrationAddress.state'
+                      value={formik.values.registrationAddress?.state}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      error={formik.touched.whState && Boolean(formik.errors.whState)}
-                      helperText={formik.touched.whState && formik.errors.whState}
+                      error={
+                        formik.touched.registrationAddress?.state && Boolean(formik.errors.registrationAddress?.state)
+                      }
+                      helperText={formik.touched.registrationAddress?.state && formik.errors.registrationAddress?.state}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -360,12 +379,14 @@ const ClientsForm = ({ open, setOpen }) => {
                       {...config}
                       size='small'
                       label='City'
-                      name='whCity'
-                      value={formik.values.whCity}
+                      name='registrationAddress.city'
+                      value={formik.values.registrationAddress?.city}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      error={formik.touched.whCity && Boolean(formik.errors.whCity)}
-                      helperText={formik.touched.whCity && formik.errors.whCity}
+                      error={
+                        formik.touched.registrationAddress?.city && Boolean(formik.errors.registrationAddress?.city)
+                      }
+                      helperText={formik.touched.registrationAddress?.city && formik.errors.registrationAddress?.city}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -373,12 +394,17 @@ const ClientsForm = ({ open, setOpen }) => {
                       {...config}
                       size='small'
                       label='Pincode'
-                      name='whPincode'
-                      value={formik.values.whPincode}
+                      name='registrationAddress.zipCode'
+                      value={formik.values.registrationAddress?.zipCode}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      error={formik.touched.whPincode && Boolean(formik.errors.whPincode)}
-                      helperText={formik.touched.whPincode && formik.errors.whPincode}
+                      error={
+                        formik.touched.registrationAddress?.zipCode &&
+                        Boolean(formik.errors.registrationAddress?.zipCode)
+                      }
+                      helperText={
+                        formik.touched.registrationAddress?.zipCode && formik.errors.registrationAddress?.zipCode
+                      }
                     />
                   </Grid>
                 </Grid>
@@ -411,12 +437,12 @@ const ClientsForm = ({ open, setOpen }) => {
                         // minRows={2}
                         size='small'
                         label='Address'
-                        name='HOaddress'
-                        value={formik.values.HOaddress}
+                        name='otherAddress.address'
+                        value={formik.values.otherAddress?.address}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.HOaddress && Boolean(formik.errors.HOaddress)}
-                        helperText={formik.touched.HOaddress && formik.errors.HOaddress}
+                        error={formik.touched.otherAddress?.address && Boolean(formik.errors.otherAddress?.address)}
+                        helperText={formik.touched.otherAddress?.address && formik.errors.otherAddress?.address}
                       />
                     </Grid>
                     <Grid item xs={4}>
@@ -425,11 +451,11 @@ const ClientsForm = ({ open, setOpen }) => {
                         size='small'
                         label='State'
                         name='HOstate'
-                        value={formik.values.HOstate}
+                        value={formik.values.otherAddress?.state}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.HOstate && Boolean(formik.errors.HOstate)}
-                        helperText={formik.touched.HOstate && formik.errors.HOstate}
+                        error={formik.touched.otherAddress?.state && Boolean(formik.errors.otherAddress?.state)}
+                        helperText={formik.touched.otherAddress?.state && formik.errors.otherAddress?.state}
                       />
                     </Grid>
                     <Grid item xs={4}>
@@ -437,12 +463,12 @@ const ClientsForm = ({ open, setOpen }) => {
                         {...config}
                         size='small'
                         label='City'
-                        name='HOcity'
-                        value={formik.values.HOcity}
+                        name='otherAddress.city'
+                        value={formik.values.otherAddress?.city}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.HOcity && Boolean(formik.errors.HOcity)}
-                        helperText={formik.touched.HOcity && formik.errors.HOcity}
+                        error={formik.touched.otherAddress?.city && Boolean(formik.errors.otherAddress?.city)}
+                        helperText={formik.touched.otherAddress?.city && formik.errors.otherAddress?.city}
                       />
                     </Grid>
                     <Grid item xs={4}>
@@ -450,12 +476,12 @@ const ClientsForm = ({ open, setOpen }) => {
                         {...config}
                         size='small'
                         label='Pincode'
-                        name='HOPincode'
-                        value={formik.values.HOPincode}
+                        name='otherAddress.zipCode'
+                        value={formik.values.otherAddress?.zipCode}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.HOPincode && Boolean(formik.errors.HOPincode)}
-                        helperText={formik.touched.HOPincode && formik.errors.HOPincode}
+                        error={formik.touched.otherAddress?.zipCode && Boolean(formik.errors.otherAddress?.zipCode)}
+                        helperText={formik.touched.otherAddress?.zipCode && formik.errors.otherAddress?.zipCode}
                       />
                     </Grid>
                   </Grid>
