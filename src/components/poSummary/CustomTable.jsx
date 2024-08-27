@@ -33,6 +33,7 @@ import { Add, Receipt } from '@mui/icons-material'
 import PoInvoicesTable from './PoInvoicesTable'
 import PoSummaryForm from './PoSummaryForm'
 import PdfViewer from '../PdfViewer'
+import { getFileAction } from 'src/redux/features/fileUrlSlice'
 
 const renderName = row => {
   if (row.avatar) {
@@ -143,7 +144,9 @@ const CustomTable = props => {
   }
 
   const handleViewPDF = (e, rowData) => {
-    setFileUrl(rowData.docUrl)
+    console.log(rowData)
+    setFileUrl(rowData.url)
+    dispatch(getFileAction({ fileUrl: rowData.url }))
     setSelectedRow(rowData)
     setPreviewPO(true)
   }
@@ -493,7 +496,7 @@ const CustomTable = props => {
         </Tooltip>
 
         <DialogContent dividers sx={{ height: '80vh' }}>
-          <PdfViewer fileUrl={selectedRow?.url} />
+          <PdfViewer fileUrl={fileUrl} />
         </DialogContent>
       </Dialog>
       <Dialog open={previewInvoices} onClose={() => setPreviewInvoices(false)} fullWidth maxWidth='sm'>

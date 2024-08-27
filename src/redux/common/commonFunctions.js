@@ -2,12 +2,13 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
-export const createAxiosConfig = (token, currentUser, additionalHeaders = {}) => ({
+export const createAxiosConfig = (token, currentUser, additionalHeaders = {}, responseType) => ({
   headers: {
     Authorization: `Bearer ${token}`,
     Rolename: currentUser?.roleName,
     ...additionalHeaders
-  }
+  },
+  responseType
 })
 
 // Separate function for token refresh

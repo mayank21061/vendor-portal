@@ -49,10 +49,10 @@ module.exports = {
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/uploadInvoice/getDashboard`
       },
       {
-        source: '/call/vendor/Vendorportal/poSummary/getSummary/:username*',
+        source: '/call/vendor/Vendorportal/poSummary/getSummary',
         destination: isDevelopment
-          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/poSummary/getSummary/:username*`
-          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/poSummary/getSummary/:username*`
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/poSummary/getSummary`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/poSummary/getSummary`
       },
       {
         source: '/call/vendor/uploadInvoice/InboxData',
@@ -137,6 +137,12 @@ module.exports = {
         destination: isDevelopment
           ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/user/updateVendorClient`
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/user/updateVendorClient`
+      },
+      {
+        source: '/call/vendor/Vendorportal/getFileURLObject',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/getFileURLObject`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/getFileURLObject`
       }
     ]
   }
