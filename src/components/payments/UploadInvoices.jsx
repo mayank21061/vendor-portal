@@ -45,7 +45,7 @@ import Checkbox from '@mui/material/Checkbox'
 const UploadInvoice = ({ open, setOpen }) => {
   const dispatch = useDispatch()
   const { poNumberListData, poDetailsData } = useSelector(state => state.dashboard)
-  console.log(poDetailsData)
+  console.log(poDetailsData.deliveryPlant)
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -68,7 +68,7 @@ const UploadInvoice = ({ open, setOpen }) => {
       deliveryPlant: '',
       type: '',
       invoiceNumber: '',
-      invoiceDate: dayjs(),
+      invoiceDate: dayjs().format('YYYY-MM-DD'),
       invoiceAmount: '',
       mobileNumber: '',
       alternateMobileNumber: '',
@@ -77,42 +77,46 @@ const UploadInvoice = ({ open, setOpen }) => {
       remarks: '',
       msmeCategory: '',
       search: '',
-      invoiceFile: [],
-      supportingDocuments: [],
-      paymentAgainstLC: false,
-      isGstInvoice: false,
+      file: null,
+      supportingDocument: [],
+      isagainstLC: false,
+      isGst: false,
       sellerGst: '',
       buyerGst: '',
-      tredExPayment: false,
-      mdccPayment: false,
-      factorUnitNo: '',
-      mdccNo: '',
-      accountNo: '',
+      isTredExchangePayment: false,
+      isMDCCPayment: false,
+      factoryunitnumber: '',
+      mdccnumber: '',
+      bankaccountno: '',
       ses: ''
     },
     onSubmit: values => {
-      dispatch(uploadInvoiceAction(values))
+      const formData = new FormData()
+      for (let key in values) {
+        formData.append(key, values[key])
+      }
+      dispatch(uploadInvoiceAction(formData))
     }
   })
 
-  const [supportingDocuments, setSupportingDocuments] = useState([])
   const [fileError, setFileError] = useState('')
 
   const handleInputInvoices = files => {
-    formik.setFieldValue('invoiceFile', Array.from(files))
+    console.log(files[0])
+    formik.setFieldValue('file', files[0])
   }
 
   const handleSupportingFile = files => {
-    formik.setFieldValue('supportingDocuments', [...formik.values.supportingDocuments, ...Array.from(files)])
+    formik.setFieldValue('supportingDocument', [...formik.values.supportingDocument, ...Array.from(files)])
   }
 
   const handleDeleteSupportingDocs = elementIndex => {
-    const filterArr = formik.values.supportingDocuments.filter((item, index) => index != elementIndex)
-    formik.setFieldValue('supportingDocuments', filterArr)
+    const filterArr = formik.values.supportingDocument.filter((item, index) => index != elementIndex)
+    formik.setFieldValue('supportingDocument', filterArr)
   }
 
   const handleClose = () => {
-    // setSupportingDocuments([])
+    // setsupportingDocument([])
     // setFiles(null)
     setFileError('')
     if (props && props.onClose) {
@@ -186,27 +190,45 @@ const UploadInvoice = ({ open, setOpen }) => {
                 />
               </Grid>
               <Grid item xs={2.5}>
-                <Button variant='contained'>View Docs</Button>
+                <Button variant='contained' onClick={() => console.log(poDetailsData.url)}>
+                  View Docs
+                </Button>
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  {...config}
-                  size='small'
-                  label='PAYMENT TYPE'
-                  value={formik.values.paymentType}
+                <Autocomplete
                   name='paymentType'
-                  onChange={formik.handleChange}
+                  size='small'
+                  {...config}
+                  options={[
+                    'CREDIT CARD',
+                    'DEBIT CARD',
+                    'PAYPAL',
+                    'BANK TRANSFER',
+                    'CASH',
+                    'CHECK',
+                    'MOBILE PAYMENT',
+                    'CRYPTOCURRENCY',
+                    'GIFT CARD',
+                    'OTHER'
+                  ]}
+                  value={formik.values.paymentType}
+                  // onChange={formik.handleChange}
+                  onChange={(e, value) => formik.setFieldValue('paymentType', value)}
+                  renderInput={params => (
+                    <TextField {...params} label='PAYMENT TYPE' name='paymentType' variant='outlined' size='small' />
+                  )}
                 />
               </Grid>
 
               <Grid item xs={12}>
                 <Autocomplete
+                  name='deliveryPlant'
                   size='small'
                   {...config}
-                  options={[]}
+                  options={poDetailsData.deliveryPlant || []}
                   value={formik.values.deliveryPlant}
-                  onChange={formik.handleChange}
+                  onChange={(e, value) => formik.setFieldValue('deliveryPlant', value)}
                   renderInput={params => (
                     <TextField
                       {...params}
@@ -227,8 +249,8 @@ const UploadInvoice = ({ open, setOpen }) => {
                     aria-labelledby='demo-row-radio-buttons-group-label'
                     name='row-radio-buttons-group'
                     sx={{ ml: 1 }}
-                    onChange={event => formik.setFieldValue('isGstInvoice', event.target.value)}
-                    value={formik.values.isGstInvoice}
+                    onChange={event => formik.setFieldValue('isagainstLC', Boolean(event.target.value))}
+                    value={formik.values.isagainstLC}
                   >
                     <FormControlLabel value={true} control={<Radio />} label='Yes' />
                     <FormControlLabel value={false} control={<Radio />} label='No' />
@@ -272,8 +294,8 @@ const UploadInvoice = ({ open, setOpen }) => {
                     aria-labelledby='demo-row-radio-buttons-group-label'
                     name='row-radio-buttons-group'
                     sx={{ ml: 1 }}
-                    onChange={event => formik.setFieldValue('paymentAgainstLC', event.target.value)}
-                    value={formik.values.paymentAgainstLC}
+                    onChange={event => formik.setFieldValue('isGst', Boolean(event.target.value))}
+                    value={formik.values.isGst}
                   >
                     <FormControlLabel value={true} control={<Radio />} label='Yes' />
                     <FormControlLabel value={false} control={<Radio />} label='No' />
@@ -311,8 +333,8 @@ const UploadInvoice = ({ open, setOpen }) => {
                     aria-labelledby='demo-row-radio-buttons-group-label'
                     name='row-radio-buttons-group'
                     sx={{ ml: 1 }}
-                    onChange={event => formik.setFieldValue('tredExPayment', event.target.value)}
-                    value={formik.values.tredExPayment}
+                    onChange={event => formik.setFieldValue('isTredExchangePayment', event.target.value)}
+                    value={formik.values.isTredExchangePayment}
                   >
                     <FormControlLabel value={true} control={<Radio />} label='Yes' />
                     <FormControlLabel value={false} control={<Radio />} label='No' />
@@ -328,8 +350,8 @@ const UploadInvoice = ({ open, setOpen }) => {
                     aria-labelledby='demo-row-radio-buttons-group-label'
                     name='row-radio-buttons-group'
                     sx={{ ml: 1 }}
-                    onChange={event => formik.setFieldValue('mdccPayment', event.target.value)}
-                    value={formik.values.mdccPayment}
+                    onChange={event => formik.setFieldValue('isMDCCPayment', event.target.value)}
+                    value={formik.values.isMDCCPayment}
                   >
                     <FormControlLabel value={true} control={<Radio />} label='Yes' />
                     <FormControlLabel value={false} control={<Radio />} label='No' />
@@ -342,9 +364,9 @@ const UploadInvoice = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='Factor Unit Number'
-                  name='factorUnitNo'
-                  disabled={!formik.values.tredExPayment}
-                  value={formik.values.factorUnitNo}
+                  name='factoryunitnumber'
+                  disabled={!formik.values.isTredExchangePayment}
+                  value={formik.values.factoryunitnumber}
                   onChange={formik.handleChange}
                 />
               </Grid>
@@ -354,9 +376,9 @@ const UploadInvoice = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='MDCC Number'
-                  name='mdccNo'
-                  disabled={!formik.values.mdccPayment}
-                  value={formik.values.mdccNo}
+                  name='mdccnumber'
+                  disabled={!formik.values.isMDCCPayment}
+                  value={formik.values.mdccnumber}
                   onChange={formik.handleChange}
                 />
               </Grid>
@@ -494,8 +516,8 @@ const UploadInvoice = ({ open, setOpen }) => {
                   {...config}
                   size='small'
                   label='Bank Account for Payment'
-                  value={formik.values.accountNo}
-                  name='accountNo'
+                  value={formik.values.bankaccountno}
+                  name='bankaccountno'
                   onChange={formik.handleChange}
                 />
               </Grid>
@@ -535,14 +557,24 @@ const UploadInvoice = ({ open, setOpen }) => {
 
               <Grid item xs={6}>
                 <Typography fontWeight='bold'>Invoice File: </Typography>
-                {`${formik.values.invoiceFile?.length == 0 ? ' No File selected' : ''}`}
-                {formik.values.invoiceFile.map(item => (
+                {`${
+                  formik.values.file != null ? (
+                    <Chip
+                      label={formik.values.file.name}
+                      onDelete={() => formik.setFieldValue('file', null)}
+                      onClick={() => console.log(file)}
+                    />
+                  ) : (
+                    ' No File selected'
+                  )
+                }`}
+                {/* {formik.values.file?.map(item => (
                   <Chip
                     label={item.name}
-                    onDelete={() => formik.setFieldValue('invoiceFile', [])}
+                    onDelete={() => formik.setFieldValue('file', [])}
                     onClick={() => console.log(file)}
                   />
-                ))}
+                ))} */}
                 <IconButton
                   component='label'
                   role={undefined}
@@ -560,8 +592,8 @@ const UploadInvoice = ({ open, setOpen }) => {
               </Grid>
               <Grid item xs={6}>
                 <Typography fontWeight='bold'>Supporting Documents:</Typography>
-                {` ${formik.values.supportingDocuments.length == 0 ? ' No File selected' : ''}`}
-                {formik.values.supportingDocuments.map((item, index) => (
+                {` ${formik.values.supportingDocument.length == 0 ? ' No File selected' : ''}`}
+                {formik.values.supportingDocument.map((item, index) => (
                   <Chip
                     label={item.name}
                     onDelete={() => handleDeleteSupportingDocs(index)}

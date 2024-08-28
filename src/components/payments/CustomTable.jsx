@@ -19,7 +19,8 @@ import {
   MenuItem,
   Paper,
   Select,
-  Tooltip
+  Tooltip,
+  useTheme
 } from '@mui/material'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
@@ -64,15 +65,17 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const CustomTable = props => {
+  const dispatch = useDispatch()
+  const theme = useTheme()
+  const getFontColor = () => (theme.palette.mode === 'dark' ? '#fff' : 'text.primary')
+
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
   const [showInvoicesForm, setShowInvoicesForm] = useState(false)
-  const data = useSelector(state => state.invoice.invoicesData)
-
+  const data = useSelector(state => state.invoice.invoicesData?.content)
+  console.log(data)
   const { invoicesDataIsLoading, invoicesDataIsError, invoicesDataError, invoicesDataIsSuccess } = useSelector(
     state => state.invoice
   )
-
-  const dispatch = useDispatch()
 
   const [dates, setDates] = useState([])
   const [endDateRange, setEndDateRange] = useState(new Date())
@@ -91,15 +94,15 @@ const CustomTable = props => {
     return formattedDate
   }
 
-  // useEffect(() => {
-  //   const payload = {
-  //     search: value,
-  //     fromDate: moment(startDateRange).format('YYYY-MM-DD'),
-  //     toDate: moment(endDateRange).format('YYYY-MM-DD'),
-  //     filterBy: filterType
-  //   }
-  //   if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
-  // }, [value, endDateRange, startDateRange, filterType])
+  useEffect(() => {
+    const payload = {
+      search: value,
+      fromDate: moment(startDateRange).format('YYYY-MM-DD'),
+      toDate: moment(endDateRange).format('YYYY-MM-DD'),
+      filterBy: filterType
+    }
+    if (startDateRange && endDateRange) dispatch(getInvoicesAction(payload))
+  }, [value, endDateRange, startDateRange, filterType])
 
   const getInvoicesDataDebounce = useCallback(
     _debounce((value, filterType) => {
@@ -107,10 +110,6 @@ const CustomTable = props => {
     }, 1000),
     []
   )
-
-  useEffect(() => {
-    getInvoicesDataDebounce()
-  }, [value, filterType])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -164,8 +163,14 @@ const CustomTable = props => {
         // const formattedDate = date.toLocaleDateString('en-US', options)
 
         return (
-          <Typography sx={{ color: 'text.secondary', whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-            {row.date}
+          <Typography
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600,
+              fontSize: 'small'
+            }}
+          >
+            {row.invoiceNumber}
           </Typography>
         )
       },
@@ -176,13 +181,19 @@ const CustomTable = props => {
       field: 'date',
       headerName: 'DATE',
       renderCell: ({ row }) => {
-        // const date = new Date(row.date)
-        // const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
-        // const formattedDate = date.toLocaleDateString('en-US', options)
+        const date = new Date(row.invoiceDate)
+        const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
+        const formattedDate = date.toLocaleDateString('en-US', options)
 
         return (
-          <Typography sx={{ color: 'text.secondary', whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-            {row.date}
+          <Typography
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600,
+              fontSize: 'small'
+            }}
+          >
+            {formattedDate}
           </Typography>
         )
       },
@@ -198,8 +209,14 @@ const CustomTable = props => {
         // const formattedDate = date.toLocaleDateString('en-US', options)
 
         return (
-          <Typography sx={{ color: 'text.secondary', whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-            {row.date}
+          <Typography
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 700 : 600,
+              fontSize: 'small'
+            }}
+          >
+            {row.poNumber}
           </Typography>
         )
       },
@@ -216,9 +233,14 @@ const CustomTable = props => {
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 noWrap
-                sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
+                // sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
+                sx={{
+                  color: hoverdRowId == row.id ? 'black' : getFontColor(),
+                  fontWeight: hoverdRowId == row.id ? 700 : 600,
+                  fontSize: 'small'
+                }}
               >
-                {row.amount}
+                {row.invoiceAmount}
               </Typography>
             </Box>
           </Box>
@@ -236,7 +258,12 @@ const CustomTable = props => {
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 noWrap
-                sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
+                // sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
+                sx={{
+                  color: hoverdRowId == row.id ? 'black' : getFontColor(),
+                  fontWeight: hoverdRowId == row.id ? 700 : 600,
+                  fontSize: 'small'
+                }}
               >
                 {row.dueDate}
               </Typography>
@@ -256,7 +283,12 @@ const CustomTable = props => {
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography
                 noWrap
-                sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
+                // sx={{ color: 'text.secondary', fontWeight: 500, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}
+                sx={{
+                  color: hoverdRowId == row.id ? 'black' : getFontColor(),
+                  fontWeight: hoverdRowId == row.id ? 700 : 600,
+                  fontSize: 'small'
+                }}
               >
                 {row.status}
               </Typography>
@@ -340,7 +372,7 @@ const CustomTable = props => {
                 marginTop: '.5rem'
               }}
             >
-              {/* <div style={{ minWidth: '18vw' }}>
+              <div style={{ minWidth: '18vw' }}>
                 <DatePickerWrapper>
                   <ReactDatePicker
                     showYearDropdown
@@ -364,7 +396,7 @@ const CustomTable = props => {
                     }
                   />
                 </DatePickerWrapper>
-              </div> */}
+              </div>
               <div style={{ minWidth: '20vw' }}>
                 <CustomTextField
                   fullWidth
@@ -395,7 +427,7 @@ const CustomTable = props => {
               </Tooltip>
             </div>
           </Grid>
-          {/* {invoicesDataIsLoading ? (
+          {invoicesDataIsLoading ? (
             <Box sx={{ width: '100%', marginTop: '40px' }}>
               <LinearProgress />
             </Box>
@@ -403,42 +435,42 @@ const CustomTable = props => {
             <>
               <h1>{invoicesDataError}</h1>
             </>
-          ) : invoicesDataIsSuccess ? ( */}
-          <Grid item xs={12}>
-            <Paper elevation={10}>
-              <DataGrid
-                sx={{ height: '70vh' }}
-                rows={data || []}
-                rowHeight={62}
-                columnHeaderHeight={40}
-                columns={columns}
-                disableRowSelectionOnClick
-                getRowId={row => row.id}
-                onRowClick={params => console.log(params)}
-                componentsProps={{
-                  row: {
-                    onMouseEnter: event => {
-                      const id = event.currentTarget.dataset.id
-                      const hoveredRow = data || [].find(row => row.id === Number(id))
-                      setHoveredId(id)
-                    },
-                    onMouseLeave: event => {
-                      setHoveredId(null)
+          ) : invoicesDataIsSuccess ? (
+            <Grid item xs={12}>
+              <Paper elevation={10}>
+                <DataGrid
+                  sx={{ height: '70vh' }}
+                  rows={data || []}
+                  rowHeight={62}
+                  columnHeaderHeight={40}
+                  columns={columns}
+                  disableRowSelectionOnClick
+                  getRowId={row => row.id}
+                  onRowClick={params => console.log(params)}
+                  componentsProps={{
+                    row: {
+                      onMouseEnter: event => {
+                        const id = event.currentTarget.dataset.id
+                        const hoveredRow = data || [].find(row => row.id === Number(id))
+                        setHoveredId(id)
+                      },
+                      onMouseLeave: event => {
+                        setHoveredId(null)
+                      }
                     }
-                  }
-                }}
-                pageSizeOptions={[7, 10, 25, 50]}
-                paginationModel={paginationModel}
-                onPaginationModelChange={setPaginationModel}
-              />
-            </Paper>
-          </Grid>
-
-          {/*// ) : (
-          //   ''
-          // )}*/}
+                  }}
+                  pageSizeOptions={[7, 10, 25, 50]}
+                  paginationModel={paginationModel}
+                  onPaginationModelChange={setPaginationModel}
+                />
+              </Paper>
+            </Grid>
+          ) : (
+            ''
+          )}
         </Grid>
       </Paper>
+
       {/* ---------- view events  detail dialog */}
       <Dialog
         open={showeventDetail}
