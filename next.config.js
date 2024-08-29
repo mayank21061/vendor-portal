@@ -55,10 +55,10 @@ module.exports = {
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/poSummary/getSummary`
       },
       {
-        source: '/call/vendor/uploadInvoice/InboxData',
+        source: '/call/vendor/Vendorportal/InboxData/:username*',
         destination: isDevelopment
-          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/uploadInvoice/InboxData`
-          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/uploadInvoice/InboxData`
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/InboxData/:username*`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/InboxData/:username*`
       },
       {
         source: '/call/vendor/uploadInvoice/getAllRoles',

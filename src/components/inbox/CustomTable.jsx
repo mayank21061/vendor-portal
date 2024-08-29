@@ -32,6 +32,7 @@ import { Add, History } from '@mui/icons-material'
 import { getInboxAction } from 'src/redux/features/inboxSlice'
 import HistoryPreview from './HistoryPreview'
 import FilePreview from './FilePreview'
+import { getFileAction } from 'src/redux/features/fileUrlSlice'
 
 const renderName = row => {
   if (row.avatar) {
@@ -70,57 +71,57 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const CustomTable = props => {
-  //   const data = useSelector(state => state.inbox.inboxData)
-  const data = [
-    {
-      id: '1',
-      poNumber: '123456',
-      invoiceNumber: '789012',
-      invoiceAmount: '25000',
-      status: 'Pending',
-      deliveryPlant: 'Delhi'
-    },
-    {
-      id: '2',
-      poNumber: '654321',
-      invoiceNumber: '345678',
-      invoiceAmount: '30000',
-      status: 'Completed',
-      deliveryPlant: 'Mumbai'
-    },
-    {
-      id: '3',
-      poNumber: '112233',
-      invoiceNumber: '998877',
-      invoiceAmount: '15000',
-      status: 'In Progress',
-      deliveryPlant: 'Chennai'
-    },
-    {
-      id: '4',
-      poNumber: '445566',
-      invoiceNumber: '776655',
-      invoiceAmount: '40000',
-      status: 'Pending',
-      deliveryPlant: 'Kolkata'
-    },
-    {
-      id: '5',
-      poNumber: '778899',
-      invoiceNumber: '223344',
-      invoiceAmount: '50000',
-      status: 'Completed',
-      deliveryPlant: 'Bangalore'
-    },
-    {
-      id: '6',
-      poNumber: '990011',
-      invoiceNumber: '554433',
-      invoiceAmount: '35000',
-      status: 'In Progress',
-      deliveryPlant: 'Hyderabad'
-    }
-  ]
+  const data = useSelector(state => state.inbox.inboxData?.content || [])
+  // const data = [
+  //   {
+  //     id: '1',
+  //     poNumber: '123456',
+  //     invoiceNumber: '789012',
+  //     invoiceAmount: '25000',
+  //     status: 'Pending',
+  //     deliveryPlant: 'Delhi'
+  //   },
+  //   {
+  //     id: '2',
+  //     poNumber: '654321',
+  //     invoiceNumber: '345678',
+  //     invoiceAmount: '30000',
+  //     status: 'Completed',
+  //     deliveryPlant: 'Mumbai'
+  //   },
+  //   {
+  //     id: '3',
+  //     poNumber: '112233',
+  //     invoiceNumber: '998877',
+  //     invoiceAmount: '15000',
+  //     status: 'In Progress',
+  //     deliveryPlant: 'Chennai'
+  //   },
+  //   {
+  //     id: '4',
+  //     poNumber: '445566',
+  //     invoiceNumber: '776655',
+  //     invoiceAmount: '40000',
+  //     status: 'Pending',
+  //     deliveryPlant: 'Kolkata'
+  //   },
+  //   {
+  //     id: '5',
+  //     poNumber: '778899',
+  //     invoiceNumber: '223344',
+  //     invoiceAmount: '50000',
+  //     status: 'Completed',
+  //     deliveryPlant: 'Bangalore'
+  //   },
+  //   {
+  //     id: '6',
+  //     poNumber: '990011',
+  //     invoiceNumber: '554433',
+  //     invoiceAmount: '35000',
+  //     status: 'In Progress',
+  //     deliveryPlant: 'Hyderabad'
+  //   }
+  // ]
 
   const { inboxDataIsLoading, inboxDataIsError, inboxDataError, inboxDataIsSuccess } = useSelector(state => state.inbox)
 
@@ -208,30 +209,6 @@ const CustomTable = props => {
     {
       flex: 0.1,
       minWidth: 130,
-      field: 'referenceNo',
-      headerName: 'REFERENCE NO. ',
-      headerAlign: 'center',
-      align: 'center',
-      headerClassName: styles.customheader,
-
-      renderCell: ({ row }) => (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          <Typography sx={{ color: 'text.secondary', cursor: 'pointer' }}>{row.id}</Typography>
-        </div>
-      )
-    },
-    {
-      flex: 0.1,
-      minWidth: 130,
       field: 'poNumber',
       headerName: 'PO NUMBER ',
       headerAlign: 'center',
@@ -257,7 +234,7 @@ const CustomTable = props => {
       flex: 0.1,
       field: 'invoiceNumber',
       minWidth: 170,
-      headerName: 'invoice Number',
+      headerName: 'Invoice Number',
       headerAlign: 'left',
       headerClassName: styles.customheader,
 
@@ -281,9 +258,35 @@ const CustomTable = props => {
     },
     {
       flex: 0.1,
+      field: 'invoiceAmount',
+      minWidth: 170,
+      headerName: 'Invoice Amount',
+      headerAlign: 'left',
+      headerClassName: styles.customheader,
+
+      renderCell: ({ row }) => (
+        <Box
+          sx={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
+              {row.invoiceAmount}
+            </Typography>
+          </Box>
+        </Box>
+      )
+    },
+    {
+      flex: 0.1,
       minWidth: 150,
       field: 'date',
-      headerName: 'DATE',
+      headerName: 'Invoice DATE',
       headerAlign: 'center',
       headerClassName: styles.customheader,
 
@@ -299,17 +302,17 @@ const CustomTable = props => {
             cursor: 'pointer'
           }}
         >
-          <Typography sx={{ color: 'text.secondary' }}>{row.invoiceAmount}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{row.invoiceDate}</Typography>
         </div>
       )
     },
     {
       flex: 0.1,
-      minWidth: 100,
+      minWidth: 50,
       field: 'status',
       headerName: 'status',
-      headerAlign: 'left',
-      align: 'right',
+      headerAlign: 'center',
+      align: 'center',
       headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
@@ -318,12 +321,36 @@ const CustomTable = props => {
             height: '100%',
             width: '100%',
             display: 'flex',
-            justifyContent: 'left',
+            justifyContent: 'center',
             alignItems: 'center',
             cursor: 'pointer'
           }}
         >
           <Typography sx={{ color: 'text.secondary' }}>{row.status}</Typography>
+        </div>
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 50,
+      field: 'referenceNo',
+      headerName: 'EIC ',
+      headerAlign: 'center',
+      align: 'center',
+      headerClassName: styles.customheader,
+
+      renderCell: ({ row }) => (
+        <div
+          style={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+        >
+          <Typography sx={{ color: 'text.secondary', cursor: 'pointer' }}>{row.eic}</Typography>
         </div>
       )
     },
@@ -342,6 +369,7 @@ const CustomTable = props => {
               <IconButton
                 onClick={() => {
                   handlePreviewFile(row.id)
+                  dispatch(getFileAction({ fileUrl: row.invoiceurl }))
                 }}
               >
                 <VisibilityIcon

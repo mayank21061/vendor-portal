@@ -18,7 +18,7 @@ export const getInboxAction = createAsyncThunkWithTokenRefresh(
     const headers = {} // Adjust the value as needed
     const username = localStorage.getItem('username')
     return axios.get(
-      `/call/vendor/uploadInvoice/InboxData?username=${username}`,
+      `/call/vendor/Vendorportal/InboxData?username=${username}`,
       createAxiosConfig(token, currentUser, headers)
     )
   }
