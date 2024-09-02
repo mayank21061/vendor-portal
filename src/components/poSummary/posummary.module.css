@@ -25,3 +25,13 @@
 .dialog {
   overflow: unset !important;
 }
+
+.tableHeader > tr > th {
+  padding: 10px;
+  font-weight: bold !important;
+}
+
+.tableRow > td {
+  /* background-color: rgb(255, 180, 109); */
+  cursor: pointer;
+}

@@ -4,11 +4,7 @@ const navigation = () => [
     path: '/dashboard',
     icon: 'tabler:smart-home'
   },
-  {
-    path: '/payments',
-    title: 'Payments',
-    icon: 'tabler:file-invoice'
-  },
+
   {
     title: 'Inbox',
     path: '/inbox',
@@ -18,6 +14,11 @@ const navigation = () => [
     path: '/poSummary',
     title: 'PO Summary',
     icon: 'tabler:shield'
+  },
+  {
+    path: '/invoices',
+    title: 'Invoices',
+    icon: 'tabler:file-invoice'
   }
   // {
   //   path: '/vendors',
