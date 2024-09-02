@@ -114,21 +114,21 @@ const CustomTable = props => {
       toDate: moment(endDateRange).format('YYYY-MM-DD'),
       filterBy: filterType
     }
-    if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
+    // if (startDateRange && endDateRange) dispatch(getPoSummaryAction(payload))
   }, [value, endDateRange, startDateRange, filterType, paginationModel])
 
-  useEffect(() => {
-    const payload = {
-      search: value,
-      fromDate: moment(startDateRange).format('YYYY-MM-DD'),
-      toDate: moment(endDateRange).format('YYYY-MM-DD'),
-      filterBy: filterType
-    }
-    if (uploadPoDataIsSuccess) {
-      setShowPoForm(false)
-      dispatch(getPoSummaryAction(payload))
-    }
-  }, [uploadPoDataIsSuccess])
+  // useEffect(() => {
+  //   const payload = {
+  //     search: value,
+  //     fromDate: moment(startDateRange).format('YYYY-MM-DD'),
+  //     toDate: moment(endDateRange).format('YYYY-MM-DD'),
+  //     filterBy: filterType
+  //   }
+  //   if (uploadPoDataIsSuccess) {
+  //     setShowPoForm(false)
+  //     dispatch(getPoSummaryAction(payload))
+  //   }
+  // }, [uploadPoDataIsSuccess])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates

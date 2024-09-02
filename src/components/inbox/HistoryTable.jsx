@@ -118,7 +118,8 @@ const HistoryTable = props => {
       invoiceNumber: '554433',
       invoiceAmount: '35000',
       type: 'In Progress',
-      remarks: 'Hyderabad'
+      remarks:
+        'Hyderabad xerctvbyunhjimk,jntfvrcsexcdr6tfv7bgyiunhiojukyjtrhchr6t7vyukbnr6ct7vyygifbdjjdfgsdfgehgnfvdncirroezdfvncoirsdfvnierizsdkl'
     }
   ]
 
@@ -137,7 +138,6 @@ const HistoryTable = props => {
   const [previewPO, setPreviewPO] = useState(false)
   const [fileUrl, setFileUrl] = useState(null)
   const [previewInvoices, setPreviewInvoices] = useState(false)
-  const [showPoForm, setShowPoForm] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
   const [previewFile, setPreviewFile] = useState(false)
   const [previewHistory, setPreviewHistory] = useState(false)
@@ -206,7 +206,7 @@ const HistoryTable = props => {
 
   const columns = [
     {
-      flex: 0.1,
+      flex: 0.05,
       //   minWidth: 130,
       field: 'date',
       headerName: 'Date',
@@ -215,22 +215,13 @@ const HistoryTable = props => {
       headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
+        <div>
           <Typography sx={{ color: 'text.secondary', cursor: 'pointer' }}>{row.date}</Typography>
         </div>
       )
     },
     {
-      flex: 0.1,
+      flex: 0.05,
       field: 'type',
       //   minWidth: 170,
       headerName: 'Type',
@@ -270,10 +261,12 @@ const HistoryTable = props => {
         <Tooltip title={row.remarks}>
           <div
             style={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
               height: '100%',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
+              width: '28vw',
+              cursor: 'pointer',
               alignItems: 'center',
               cursor: 'pointer'
             }}

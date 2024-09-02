@@ -31,13 +31,19 @@ import Icon from 'src/@core/components/icon'
 // ** Components
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
 import styled from '@emotion/styled'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 // import { setCurrentUser } from 'src/redux/features/userSlice'
 // import { darkmodefunc } from 'src/redux/features/darkMode'
 // import NotificationBar from './Notifaction'
 // import { getNotificationsAction } from 'src/redux/features/notificationsSlice'
 import dynamic from 'next/dynamic'
+import CustomTextField from 'src/@core/components/mui/text-field'
+import { borderRadius } from '@mui/system'
+import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
+import _debounce from 'lodash/debounce'
+import { resetTableAction, setTableStateAction } from 'src/redux/features/tableSlice'
+import { getInboxAction } from 'src/redux/features/inboxSlice'
 
 // const LatestInfoDropdown = dynamic(() => import('./LatestInfoDropdown'), {
 //   loading: () => (
@@ -49,10 +55,15 @@ import dynamic from 'next/dynamic'
 
 const AppBarContent = props => {
   // ** Props
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
   const router = useRouter()
   const [state, setState] = useState(false)
+  const [value, setValue] = useState('')
+  // const [filterType, setFilterType] = useState('All')
+  const currentPath = router.pathname.split('/')[1]
+  const { pageNumber, pageSize, searchText, filterType, fromDate, toDate } = useSelector(state => state.table)
+  console.log(pageNumber, pageSize, searchText, filterType, fromDate, toDate)
 
   const styles = {
     py: 1.75,
@@ -89,8 +100,38 @@ const AppBarContent = props => {
   const [selectedRole, setSelectedRole] = useState({})
 
   useEffect(() => {
+    dispatch(resetTableAction())
+  }, [currentPath])
+
+  const getDebouncePoSummary = useCallback(
+    _debounce(search => {
+      dispatch(getPoSummaryAction({ pageNumber, pageSize, search, fromDate, toDate, filterBy: filterType }))
+    }, 1000),
+    []
+  )
+
+  const getDebounceInbox = useCallback(
+    _debounce(search => {
+      dispatch(getInboxAction({ pageNumber, pageSize, search, fromDate, toDate, filterBy: filterType }))
+    })
+  )
+
+  useEffect(() => {
     setUsers(localStorage.getItem('username'))
-  }, [])
+    if (currentPath == 'poSummary') {
+      if (value) {
+        getDebouncePoSummary(value)
+      } else {
+        dispatch(getPoSummaryAction({ pageNumber, pageSize, search: value, fromDate, toDate, filterBy: filterType }))
+      }
+    } else if (currentPath == 'inbox') {
+      if (value) {
+        getDebounceInbox(value)
+      } else {
+        dispatch(getInboxAction({ pageNumber, pageSize, search: value, fromDate, toDate, filterBy: filterType }))
+      }
+    }
+  }, [pageNumber, pageSize, filterType, fromDate, toDate, value, currentPath])
 
   // useEffect(() => {
   //   setSelectedRole(users?.data?.[0]?.deptRole?.[0])
@@ -111,6 +152,12 @@ const AppBarContent = props => {
   const notifactionClose = () => {
     setState(false)
   }
+
+  const handleChangeFilter = e => {
+    dispatch(setTableStateAction({ filterType: e.target.value }))
+  }
+
+  const filters = ['All', 'New', 'Pending', 'Closed']
 
   return (
     <>
@@ -179,6 +226,34 @@ const AppBarContent = props => {
                 ))}
               </Select>
             </FormControl> */}
+            {router.pathname.split('/')[1] != 'dashboard' && (
+              <div style={{ minWidth: '20vw', marginRight: '1rem' }}>
+                <CustomTextField
+                  fullWidth
+                  value={value}
+                  placeholder='Search'
+                  onChange={e => setValue(e.target.value)}
+                  sx={{ backgroundColor: 'white', borderRadius: '.5rem' }}
+                />
+              </div>
+            )}
+            {router.pathname.split('/')[1] != 'dashboard' && (
+              <FormControl sx={{ borderRadius: '.8rem', width: '10vw', marginRight: '1rem' }} size='small'>
+                <Select
+                  labelId='demo-select-small-label'
+                  id='demo-select-small'
+                  value={filterType}
+                  onChange={handleChangeFilter}
+                  sx={{ backgroundColor: 'white', borderRadius: '.5rem' }}
+                >
+                  {filters.map((item, index) => (
+                    <MenuItem key={index} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
             <div style={{ cursor: 'pointer' }}>
               <Tooltip title='Notification' onClick={handlenotifaction}>
                 <Box sx={styles}>

@@ -39,11 +39,11 @@ const FilePreview = ({ open, setOpen }) => {
         </Tooltip>
         <DialogContent sx={{ p: '0 !important' }} dividers>
           <Grid container height='100%'>
-            <Grid item xs={9}>
-              <PdfViewer />
-            </Grid>
-            <Grid item xs={3} borderLeft='1px solid whitesmoke'>
+            <Grid item xs={8} borderLeft='1px solid whitesmoke'>
               <HistoryTable />
+            </Grid>
+            <Grid item xs={4}>
+              <PdfViewer />
             </Grid>
           </Grid>
           <Fab

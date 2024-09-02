@@ -35,3 +35,8 @@
   /* background-color: rgb(255, 180, 109); */
   cursor: pointer;
 }
+
+.datePicker {
+  /* background-color: red; */
+  /* display: flex !important; */
+}

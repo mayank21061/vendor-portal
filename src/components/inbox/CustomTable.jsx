@@ -17,7 +17,8 @@ import {
   MenuItem,
   Paper,
   Select,
-  Tooltip
+  Tooltip,
+  useTheme
 } from '@mui/material'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
@@ -122,6 +123,9 @@ const CustomTable = props => {
   //     deliveryPlant: 'Hyderabad'
   //   }
   // ]
+  const theme = useTheme()
+
+  const getFontColor = () => (theme.palette.mode === 'dark' ? '#fff' : 'text.primary')
 
   const { inboxDataIsLoading, inboxDataIsError, inboxDataError, inboxDataIsSuccess } = useSelector(state => state.inbox)
 
@@ -157,7 +161,7 @@ const CustomTable = props => {
       toDate: moment(endDateRange).format('YYYY-MM-DD'),
       filterBy: filterType
     }
-    if (startDateRange && endDateRange) dispatch(getInboxAction(payload))
+    // if (startDateRange && endDateRange) dispatch(getInboxAction(payload))
   }, [value, endDateRange, startDateRange, filterType, paginationModel])
 
   const handleOnChangeRange = dates => {
@@ -199,9 +203,11 @@ const CustomTable = props => {
 
   const handlePreviewFile = id => {
     console.log(id)
-
+    dispatch(getFileAction({ fileUrl: id.invoiceurl }))
     setPreviewFile(true)
   }
+
+  console.log(hoverdRowId)
 
   const filters = ['All', 'New', 'Pending', 'Closed']
 
@@ -226,7 +232,14 @@ const CustomTable = props => {
             cursor: 'pointer'
           }}
         >
-          <Typography sx={{ color: 'text.secondary', cursor: 'pointer' }}>{row.poNumber}</Typography>
+          <Typography
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 600 : 500
+            }}
+          >
+            {row.poNumber}
+          </Typography>
         </div>
       )
     },
@@ -249,7 +262,13 @@ const CustomTable = props => {
           }}
         >
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
+            <Typography
+              noWrap
+              sx={{
+                color: hoverdRowId == row.id ? 'black' : getFontColor(),
+                fontWeight: hoverdRowId == row.id ? 600 : 500
+              }}
+            >
               {row.invoiceNumber}
             </Typography>
           </Box>
@@ -275,7 +294,13 @@ const CustomTable = props => {
           }}
         >
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography noWrap sx={{ color: 'text.secondary', fontWeight: 500 }}>
+            <Typography
+              noWrap
+              sx={{
+                color: hoverdRowId == row.id ? 'black' : getFontColor(),
+                fontWeight: hoverdRowId == row.id ? 600 : 500
+              }}
+            >
               {row.invoiceAmount}
             </Typography>
           </Box>
@@ -302,7 +327,14 @@ const CustomTable = props => {
             cursor: 'pointer'
           }}
         >
-          <Typography sx={{ color: 'text.secondary' }}>{row.invoiceDate}</Typography>
+          <Typography
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 600 : 500
+            }}
+          >
+            {row.invoiceDate}
+          </Typography>
         </div>
       )
     },
@@ -326,7 +358,14 @@ const CustomTable = props => {
             cursor: 'pointer'
           }}
         >
-          <Typography sx={{ color: 'text.secondary' }}>{row.status}</Typography>
+          <Typography
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 600 : 500
+            }}
+          >
+            {row.status}
+          </Typography>
         </div>
       )
     },
@@ -350,62 +389,69 @@ const CustomTable = props => {
             cursor: 'pointer'
           }}
         >
-          <Typography sx={{ color: 'text.secondary', cursor: 'pointer' }}>{row.eic}</Typography>
+          <Typography
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 600 : 500
+            }}
+          >
+            {row.eic}
+          </Typography>
         </div>
       )
-    },
-    {
-      sortable: false,
-      field: 'actions',
-      headerName: '',
-      headerAlign: 'center',
-      align: 'center',
-      headerClassName: styles.customheader,
-      renderCell: ({ row }) =>
-        hoverdRowId !== null &&
-        hoverdRowId === row.id && (
-          <>
-            <Tooltip title='View Details'>
-              <IconButton
-                onClick={() => {
-                  handlePreviewFile(row.id)
-                  dispatch(getFileAction({ fileUrl: row.invoiceurl }))
-                }}
-              >
-                <VisibilityIcon
-                  style={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    color: '#014361'
-                  }}
-                />
-              </IconButton>
-            </Tooltip>
-            {/* <Tooltip title='History'>
-              <IconButton
-                onClick={() => {
-                  handlePreviewHistory(row.id)
-                }}
-              >
-                <History
-                  style={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    color: '#014361'
-                  }}
-                />
-              </IconButton>
-            </Tooltip> */}
-          </>
-        )
     }
+    // {
+    //   sortable: false,
+    //   field: 'actions',
+    //   headerName: '',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   headerClassName: styles.customheader,
+    //   renderCell: ({ row }) =>
+    //     hoverdRowId !== null &&
+    //     hoverdRowId === row.id && (
+    //       <>
+    //         <Tooltip title='View Details'>
+    //           <IconButton
+    //             onClick={() => {
+    //               handlePreviewFile(row.id)
+    //               dispatch(getFileAction({ fileUrl: row.invoiceurl }))
+    //             }}
+    //           >
+    //             <VisibilityIcon
+    //               style={{
+    //                 width: '1.2rem',
+    //                 height: '1.2rem',
+    //                 color: '#014361'
+    //               }}
+    //             />
+    //           </IconButton>
+    //         </Tooltip>
+    //         {/* <Tooltip title='History'>
+    //           <IconButton
+    //             onClick={() => {
+    //               handlePreviewHistory(row.id)
+    //             }}
+    //           >
+    //             <History
+    //               style={{
+    //                 width: '1.2rem',
+    //                 height: '1.2rem',
+    //                 color: '#014361'
+    //               }}
+    //             />
+    //           </IconButton>
+    //         </Tooltip> */}
+    //       </>
+    //     )
+    // }
   ]
 
   return (
     <>
-      <Paper elevation={24} sx={{ height: '85vh', overflowY: 'auto' }}>
-        <Grid container spacing={2} sx={{ padding: '0rem 1rem 0.5rem 1rem' }}>
-          <Grid
+      <Paper elevation={24} sx={{ height: '89vh', overflowY: 'auto' }}>
+        <Grid container spacing={2} sx={{}}>
+          {/* <Grid
             item
             xs={12}
             style={{
@@ -473,8 +519,8 @@ const CustomTable = props => {
                 </Select>
               </FormControl>
             </div>
-          </Grid>
-          {/* {inboxDataIsLoading ? (
+          </Grid> */}
+          {inboxDataIsLoading ? (
             <Box sx={{ width: '100%', marginTop: '40px' }}>
               <LinearProgress />
             </Box>
@@ -484,48 +530,14 @@ const CustomTable = props => {
             </>
           ) : inboxDataIsSuccess ? (
             <Grid item xs={12}>
-              <Paper elevation={10}>
-                <DataGrid
-                  sx={{ height: '70vh' }}
-                  rows={data || []}
-                  rowHeight={62}
-                  columnHeaderHeight={40}
-                  columns={columns}
-                  disableRowSelectionOnClick
-                  onRowSelectionModelChange={newRowSelectionModel => {
-                    setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
-                  }}
-                  getRowId={row => row.id}
-                  componentsProps={{
-                    row: {
-                      onMouseEnter: event => {
-                        const id = event.currentTarget.dataset.id
-                        const hoveredRow = data || [].find(row => row.id === Number(id))
-                        setHoveredId(id)
-                      },
-                      onMouseLeave: event => {
-                        setHoveredId(null)
-                      }
-                    }
-                  }}
-                  pageSizeOptions={[7, 10, 25, 50]}
-                  paginationModel={paginationModel}
-                  onPaginationModelChange={setPaginationModel}
-                />
-              </Paper>
-            </Grid>
-          ) : (
-            ''
-          )} */}
-          <Grid item xs={12}>
-            <Paper elevation={10}>
               <DataGrid
-                sx={{ height: '70vh' }}
+                sx={{ height: '89vh' }}
                 rows={data || []}
                 rowHeight={62}
                 columnHeaderHeight={40}
                 columns={columns}
                 disableRowSelectionOnClick
+                onRowDoubleClick={row => handlePreviewFile(row.row)}
                 onRowSelectionModelChange={newRowSelectionModel => {
                   setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
                 }}
@@ -546,8 +558,10 @@ const CustomTable = props => {
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}
               />
-            </Paper>
-          </Grid>
+            </Grid>
+          ) : (
+            ''
+          )}
         </Grid>
       </Paper>
       <HistoryPreview open={previewHistory} setOpen={setPreviewHistory} />
