@@ -163,7 +163,8 @@ export default function CollapsibleTable() {
   const [anchorEl, setAnchorEl] = useState(null)
   const [open, setOpen] = useState(false)
   const [placement, setPlacement] = useState()
-
+  const { pageSize, pageNumber } = useSelector(state => state.table)
+  console.log(pageSize, pageNumber)
   const CustomInput = forwardRef((props, ref) => {
     const startDate = props.start !== null ? dayjs(props.start).format('DD/MM/YYYY') : ''
     const endDate = props.end !== null ? ` - ${dayjs(props.end).format('DD/MM/YYYY')}` : null
@@ -307,10 +308,10 @@ export default function CollapsibleTable() {
                   rowsPerPageOptions={[7, 10, 15]}
                   colSpan={8}
                   count={content?.length || 0}
-                  rowsPerPage={7}
-                  page={0}
-                  onPageChange={e => console.log(e)}
-                  onRowsPerPageChange={() => console.log(e)}
+                  rowsPerPage={pageSize}
+                  page={pageNumber + 1}
+                  onPageChange={e => dispatch(setTableStateAction({ pageNumber: e.target.value - 1 }))}
+                  onRowsPerPageChange={e => dispatch(setTableStateAction(e.target.value))}
                   //   ActionsComponent={TablePaginationActions}
                 />
               </TableRow>
