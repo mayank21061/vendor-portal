@@ -42,7 +42,7 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 
-const UploadInvoice = ({ open, setOpen }) => {
+const UploadInvoice = ({ open, setOpen, rowData }) => {
   const dispatch = useDispatch()
   const { poNumberListData, poDetailsData } = useSelector(state => state.dashboard)
   console.log(poDetailsData.deliveryPlant)

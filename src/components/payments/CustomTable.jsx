@@ -347,19 +347,19 @@ const CustomTable = props => {
 
   return (
     <>
-      <Paper elevation={24} sx={{ height: '85vh', overflowY: 'auto' }}>
-        <Grid container spacing={2} sx={{ padding: '0rem 1rem 0.5rem 1rem' }}>
-          <Grid
-            item
-            xs={12}
-            style={{
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <Typography variant='h4' fontWeight='bold' sx={{ mt: 4 }}>
+      {/* <Paper elevation={24} sx={{ height: '85vh', overflowY: 'auto' }}> */}
+      <Grid container spacing={2}>
+        <Grid
+          item
+          xs={12}
+          style={{
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
+        >
+          {/* <Typography variant='h4' fontWeight='bold' sx={{ mt: 4 }}>
               Payments
             </Typography>
             <div
@@ -425,51 +425,62 @@ const CustomTable = props => {
                   <Add />
                 </Fab>
               </Tooltip>
-            </div>
-          </Grid>
-          {invoicesDataIsLoading ? (
-            <Box sx={{ width: '100%', marginTop: '40px' }}>
-              <LinearProgress />
-            </Box>
-          ) : invoicesDataIsError ? (
-            <>
-              <h1>{invoicesDataError}</h1>
-            </>
-          ) : invoicesDataIsSuccess ? (
-            <Grid item xs={12}>
-              <Paper elevation={10}>
-                <DataGrid
-                  sx={{ height: '70vh' }}
-                  rows={data || []}
-                  rowHeight={62}
-                  columnHeaderHeight={40}
-                  columns={columns}
-                  disableRowSelectionOnClick
-                  getRowId={row => row.id}
-                  onRowClick={params => console.log(params)}
-                  componentsProps={{
-                    row: {
-                      onMouseEnter: event => {
-                        const id = event.currentTarget.dataset.id
-                        const hoveredRow = data || [].find(row => row.id === Number(id))
-                        setHoveredId(id)
-                      },
-                      onMouseLeave: event => {
-                        setHoveredId(null)
-                      }
-                    }
-                  }}
-                  pageSizeOptions={[7, 10, 25, 50]}
-                  paginationModel={paginationModel}
-                  onPaginationModelChange={setPaginationModel}
-                />
-              </Paper>
-            </Grid>
-          ) : (
-            ''
-          )}
+            </div> */}
         </Grid>
-      </Paper>
+        {invoicesDataIsLoading ? (
+          <Box sx={{ width: '100%', marginTop: '40px' }}>
+            <LinearProgress />
+          </Box>
+        ) : invoicesDataIsError ? (
+          <>
+            <h1>{invoicesDataError}</h1>
+          </>
+        ) : invoicesDataIsSuccess ? (
+          <Grid item xs={12}>
+            <Paper elevation={10}>
+              <DataGrid
+                sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
+                rows={data || []}
+                rowHeight={62}
+                columnHeaderHeight={40}
+                columns={columns}
+                disableRowSelectionOnClick
+                getRowId={row => row.id}
+                onRowClick={params => console.log(params)}
+                componentsProps={{
+                  row: {
+                    onMouseEnter: event => {
+                      const id = event.currentTarget.dataset.id
+                      const hoveredRow = data || [].find(row => row.id === Number(id))
+                      setHoveredId(id)
+                    },
+                    onMouseLeave: event => {
+                      setHoveredId(null)
+                    }
+                  }
+                }}
+                pageSizeOptions={[7, 10, 25, 50]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+              />
+            </Paper>
+          </Grid>
+        ) : (
+          ''
+        )}
+      </Grid>
+      {/* </Paper> */}
+      <Tooltip title='CREATE INVOICE'>
+        <Fab
+          color='primary'
+          aria-label='add'
+          size='small'
+          onClick={() => setShowInvoicesForm(true)}
+          sx={{ position: 'absolute', bottom: 12, right: 12 }}
+        >
+          <Add />
+        </Fab>
+      </Tooltip>
 
       {/* ---------- view events  detail dialog */}
       <Dialog

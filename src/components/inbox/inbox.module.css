@@ -25,3 +25,19 @@
 .dialog {
   overflow: unset !important;
 }
+
+.inputActions {
+  margin: 0.5rem;
+  border-radius: 0.7rem;
+  border: 1px solid grey;
+  padding: 0.5rem;
+  position: absolute;
+  bottom: 0;
+  width: 65%;
+}
+
+.inputActions > input {
+  border: none;
+  outline: none;
+  width: 91%;
+}

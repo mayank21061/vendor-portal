@@ -16,6 +16,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Fab,
   Fade,
   LinearProgress,
   TableFooter,
@@ -34,7 +35,8 @@ import {
   Close,
   Receipt,
   CalendarViewMonth,
-  CalendarMonth
+  CalendarMonth,
+  Add
 } from '@mui/icons-material'
 import PdfViewer from '../PdfViewer'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
@@ -42,6 +44,7 @@ import ReactDatePicker from 'react-datepicker'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import Popper from '@mui/material/Popper'
 import { setTableStateAction } from 'src/redux/features/tableSlice'
+import PoSummaryForm from './PoSummaryForm'
 function Row(props) {
   const { row } = props
   const [open, setOpen] = useState(false)
@@ -199,6 +202,7 @@ export default function CollapsibleTable() {
   const { content } = useSelector(state => state.poSummary.poSummaryData)
   const [previewPO, setPreviewPO] = useState(false)
   const { toDate, fromDate } = useSelector(state => state.table)
+  const [showPoForm, setShowPoForm] = useState(false)
 
   const {
     poSummaryData,
@@ -236,88 +240,101 @@ export default function CollapsibleTable() {
           <h1>{poSummaryDataError}</h1>
         </>
       ) : poSummaryDataIsSuccess ? (
-        <TableContainer component={Paper}>
-          <Table aria-label='collapsible table' stickyHeader>
-            <TableHead className={styles.tableHeader}>
-              <TableRow>
-                <TableCell>PO Number</TableCell>
-                <TableCell align='left'>
-                  {'PO Date'}
-                  <IconButton onClick={handleClick('bottom')}>
-                    <CalendarMonth />
-                  </IconButton>
-                </TableCell>
-                <Popper
-                  // Note: The following zIndex style is specifically for documentation purposes and may not be necessary in your application.
-                  sx={{ zIndex: 1200 }}
-                  open={open}
-                  anchorEl={anchorEl}
-                  placement={placement}
-                  transition
-                >
-                  {({ TransitionProps }) => (
-                    <Fade {...TransitionProps} timeout={350}>
-                      <Box width={250}>
-                        <Paper>
-                          <DatePickerWrapper>
-                            <ReactDatePicker
-                              className={styles.datePicker}
-                              showYearDropdown
-                              isClearable
-                              selectsRange
-                              monthsShown={2}
-                              endDate={new Date(toDate)}
-                              selected={new Date(fromDate)}
-                              startDate={new Date(fromDate)}
-                              shouldCloseOnSelect={false}
-                              id='date-range-picker-months'
-                              onChange={handleOnChangeRange}
-                              customInput={
-                                <CustomInput
-                                  dates={dates}
-                                  setDates={setDates}
-                                  label='Select Date Range'
-                                  end={new Date(toDate)}
-                                  start={new Date(fromDate)}
-                                />
-                              }
-                            />
-                          </DatePickerWrapper>
-                        </Paper>
-                      </Box>
-                    </Fade>
-                  )}
-                </Popper>
+        <>
+          <Tooltip title='CREATE PO'>
+            <Fab
+              color='primary'
+              aria-label='add'
+              size='small'
+              onClick={() => setShowPoForm(true)}
+              sx={{ position: 'absolute', right: 5, top: 55 }}
+            >
+              <Add />
+            </Fab>
+          </Tooltip>
+          <TableContainer component={Paper}>
+            <Table aria-label='collapsible table' stickyHeader>
+              <TableHead className={styles.tableHeader}>
+                <TableRow>
+                  <TableCell>PO Number</TableCell>
+                  <TableCell align='left'>
+                    {'PO Date'}
+                    <IconButton onClick={handleClick('bottom')}>
+                      <CalendarMonth />
+                    </IconButton>
+                  </TableCell>
+                  <Popper
+                    // Note: The following zIndex style is specifically for documentation purposes and may not be necessary in your application.
+                    sx={{ zIndex: 1200 }}
+                    open={open}
+                    anchorEl={anchorEl}
+                    placement={placement}
+                    transition
+                  >
+                    {({ TransitionProps }) => (
+                      <Fade {...TransitionProps} timeout={350}>
+                        <Box width={250}>
+                          <Paper>
+                            <DatePickerWrapper>
+                              <ReactDatePicker
+                                className={styles.datePicker}
+                                showYearDropdown
+                                isClearable
+                                selectsRange
+                                monthsShown={2}
+                                endDate={new Date(toDate)}
+                                selected={new Date(fromDate)}
+                                startDate={new Date(fromDate)}
+                                shouldCloseOnSelect={false}
+                                id='date-range-picker-months'
+                                onChange={handleOnChangeRange}
+                                customInput={
+                                  <CustomInput
+                                    dates={dates}
+                                    setDates={setDates}
+                                    label='Select Date Range'
+                                    end={new Date(toDate)}
+                                    start={new Date(fromDate)}
+                                  />
+                                }
+                              />
+                            </DatePickerWrapper>
+                          </Paper>
+                        </Box>
+                      </Fade>
+                    )}
+                  </Popper>
 
-                <TableCell align='left'>Description</TableCell>
-                <TableCell align='left'>Delivery Date</TableCell>
-                <TableCell align='center'>EIC</TableCell>
-                <TableCell align='left'>Status</TableCell>
-                <TableCell align='center'>{`Amount`}</TableCell>
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {content?.map(row => (
-                <Row key={row.id} row={row} previewPO={() => setPreviewPO(true)} />
-              ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[7, 10, 15]}
-                  colSpan={8}
-                  count={content?.length || 0}
-                  rowsPerPage={pageSize}
-                  page={pageNumber + 1}
-                  onPageChange={e => dispatch(setTableStateAction({ pageNumber: e.target.value - 1 }))}
-                  onRowsPerPageChange={e => dispatch(setTableStateAction(e.target.value))}
-                  //   ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
+                  <TableCell align='left'>Description</TableCell>
+                  <TableCell align='left'>Delivery Date</TableCell>
+                  <TableCell align='center'>EIC</TableCell>
+                  <TableCell align='left'>Status</TableCell>
+                  <TableCell align='center'>{`Amount`}</TableCell>
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {content?.map(row => (
+                  <Row key={row.id} row={row} previewPO={() => setPreviewPO(true)} />
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[7, 10, 15]}
+                    colSpan={8}
+                    count={content?.length || 0}
+                    rowsPerPage={pageSize}
+                    page={pageNumber + 1}
+                    onPageChange={e => dispatch(setTableStateAction({ pageNumber: e.target.value - 1 }))}
+                    onRowsPerPageChange={e => dispatch(setTableStateAction(e.target.value))}
+                    //   ActionsComponent={TablePaginationActions}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
+        </>
       ) : (
         ''
       )}
@@ -343,6 +360,8 @@ export default function CollapsibleTable() {
           <PdfViewer />
         </DialogContent>
       </Dialog>
+
+      <PoSummaryForm open={showPoForm} setOpen={setShowPoForm} />
     </>
   )
 }

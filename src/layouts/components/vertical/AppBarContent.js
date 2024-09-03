@@ -157,7 +157,10 @@ const AppBarContent = props => {
     dispatch(setTableStateAction({ filterType: e.target.value }))
   }
 
-  const filters = ['All', 'New', 'Pending', 'Closed']
+  const filters =
+    currentPath === 'invoices'
+      ? ['All', 'Submitted', 'With EIC', 'EIC Approved', 'With Finance', 'Finance Approved', 'With Bank', 'Paid']
+      : ['All', 'New', 'Pending', 'Closed']
 
   return (
     <>

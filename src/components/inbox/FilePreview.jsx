@@ -8,21 +8,35 @@ import {
   TimelineOppositeContent,
   TimelineSeparator
 } from '@mui/lab'
-import { Dialog, DialogContent, DialogTitle, Fab, Grid, IconButton, Tooltip } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Fab, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import dynamic from 'next/dynamic'
 import React, { useState } from 'react'
 import ForwardDialog from './ForwardDialog'
 import HistoryTable from './HistoryTable'
+import RemarksHistory from './RemarksHistory'
 
 const PdfViewer = dynamic(() => import('../PdfViewer'), { ssr: false })
 
-const FilePreview = ({ open, setOpen }) => {
+const FilePreview = ({ open, setOpen, rowData }) => {
   const [showForwardForm, setShowForwardForm] = useState(false)
+  console.log(rowData)
 
   return (
     <div>
       <Dialog open={open} fullScreen>
-        <DialogTitle sx={{ p: 4 }}>File Details</DialogTitle>
+        <DialogTitle sx={{ p: 4, display: 'flex', alignItems: 'center' }}>
+          <Typography fontWeight={900}>PO Number:&nbsp;</Typography>
+          <Typography fontSize={14}>{rowData?.poNumber}</Typography>
+          <Typography fontWeight={900}>&nbsp;|&nbsp;</Typography>
+          <Typography fontWeight={900}>Invoice Number:&nbsp;</Typography>
+          <Typography fontSize={14}>{rowData?.invoiceNumber}</Typography>
+          <Typography fontWeight={900}>&nbsp;|&nbsp;</Typography>
+          <Typography fontWeight={900}>Recevied On:&nbsp;</Typography>
+          <Typography fontSize={14}>{rowData?.invoiceDate}</Typography>
+          <Typography fontWeight={900}>&nbsp;|&nbsp;</Typography>
+          <Typography fontWeight={900}>From:&nbsp;</Typography>
+          <Typography fontSize={14}>{rowData?.eic}</Typography>
+        </DialogTitle>
         <Tooltip title='CLOSE'>
           <IconButton
             aria-label='close'
@@ -40,31 +54,16 @@ const FilePreview = ({ open, setOpen }) => {
         <DialogContent sx={{ p: '0 !important' }} dividers>
           <Grid container height='100%'>
             <Grid item xs={8} borderLeft='1px solid whitesmoke'>
-              <HistoryTable />
+              {/* <HistoryTable /> */}
+              <RemarksHistory />
             </Grid>
             <Grid item xs={4}>
               <PdfViewer />
             </Grid>
           </Grid>
-          <Fab
-            variant='extended'
-            sx={{
-              position: 'absolute',
-              right: 10,
-              bottom: 20,
-              bgcolor: '#7367f0',
-              color: '#fff',
-              ':hover': { color: 'black' }
-            }}
-            size='small'
-            onClick={() => setShowForwardForm(true)}
-          >
-            Reply
-            <Send sx={{ ml: 1 }} />
-          </Fab>
         </DialogContent>
       </Dialog>
-      <ForwardDialog open={showForwardForm} onClose={() => setShowForwardForm(false)} />
+      {/* <ForwardDialog open={showForwardForm} onClose={() => setShowForwardForm(false)} /> */}
     </div>
   )
 }

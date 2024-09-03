@@ -311,7 +311,7 @@ const CustomTable = props => {
       flex: 0.1,
       minWidth: 150,
       field: 'date',
-      headerName: 'Invoice DATE',
+      headerName: 'Recieved On',
       headerAlign: 'center',
       headerClassName: styles.customheader,
 
@@ -334,6 +334,37 @@ const CustomTable = props => {
             }}
           >
             {row.invoiceDate}
+          </Typography>
+        </div>
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 50,
+      field: 'referenceNo',
+      headerName: 'Recieved From ',
+      headerAlign: 'center',
+      align: 'center',
+      headerClassName: styles.customheader,
+
+      renderCell: ({ row }) => (
+        <div
+          style={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+        >
+          <Typography
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 600 : 500
+            }}
+          >
+            {row.eic}
           </Typography>
         </div>
       )
@@ -368,38 +399,8 @@ const CustomTable = props => {
           </Typography>
         </div>
       )
-    },
-    {
-      flex: 0.1,
-      minWidth: 50,
-      field: 'referenceNo',
-      headerName: 'EIC ',
-      headerAlign: 'center',
-      align: 'center',
-      headerClassName: styles.customheader,
-
-      renderCell: ({ row }) => (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          <Typography
-            sx={{
-              color: hoverdRowId == row.id ? 'black' : getFontColor(),
-              fontWeight: hoverdRowId == row.id ? 600 : 500
-            }}
-          >
-            {row.eic}
-          </Typography>
-        </div>
-      )
     }
+
     // {
     //   sortable: false,
     //   field: 'actions',
@@ -531,13 +532,16 @@ const CustomTable = props => {
           ) : inboxDataIsSuccess ? (
             <Grid item xs={12}>
               <DataGrid
-                sx={{ height: '89vh' }}
+                sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
                 rows={data || []}
                 rowHeight={62}
                 columnHeaderHeight={40}
                 columns={columns}
                 disableRowSelectionOnClick
-                onRowDoubleClick={row => handlePreviewFile(row.row)}
+                onRowDoubleClick={row => {
+                  handlePreviewFile(row.row)
+                  setSelectedRow(row.row)
+                }}
                 onRowSelectionModelChange={newRowSelectionModel => {
                   setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
                 }}
@@ -565,7 +569,7 @@ const CustomTable = props => {
         </Grid>
       </Paper>
       <HistoryPreview open={previewHistory} setOpen={setPreviewHistory} />
-      <FilePreview open={previewFile} setOpen={setPreviewFile} />
+      <FilePreview open={previewFile} setOpen={setPreviewFile} rowData={selectedRow} />
     </>
   )
 }
