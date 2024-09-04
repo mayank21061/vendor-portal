@@ -149,6 +149,12 @@ module.exports = {
         destination: isDevelopment
           ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/searchInvoices`
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/searchInvoices`
+      },
+      {
+        source: '/call/vendor/Vendorportal/poSummary/invoiceagainstpo/:poNumber*',
+        destination: isDevelopment
+          ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/poSummary/invoiceagainstpo/:poNumber*`
+          : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/poSummary/invoiceagainstpo/:poNumber*`
       }
     ]
   }

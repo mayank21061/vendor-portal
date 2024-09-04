@@ -24,7 +24,7 @@ import {
   Tooltip
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
+import { getPoInvoicesDetailsAction, getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import { forwardRef, Fragment, useEffect, useState } from 'react'
 import styles from './posummary.module.css'
 import dayjs from 'dayjs'
@@ -46,8 +46,13 @@ import Popper from '@mui/material/Popper'
 import { setTableStateAction } from 'src/redux/features/tableSlice'
 import PoSummaryForm from './PoSummaryForm'
 function Row(props) {
+  const dispatch = useDispatch()
   const { row } = props
   const [open, setOpen] = useState(false)
+  const { poInvoicesDetailsData, poInvoicesDetailsDataIsLoading, poInvoicesDetailsDataIsSuccess } = useSelector(
+    state => state.poSummary
+  )
+  console.log(poInvoicesDetailsData, poInvoicesDetailsDataIsLoading, poInvoicesDetailsDataIsSuccess)
 
   const formattedAmount = amount => {
     let amt = amount.split('').reverse()
@@ -64,6 +69,13 @@ function Row(props) {
     return str.split('').reverse().join('')
   }
 
+  const previewInvoices = ({ poNumber }) => {
+    if (!open) {
+      dispatch(getPoInvoicesDetailsAction({ poNumber }))
+    }
+    setOpen(!open)
+  }
+
   return (
     <Fragment>
       <TableRow
@@ -75,7 +87,7 @@ function Row(props) {
       >
         <TableCell>{row.poNumber}</TableCell>
         <TableCell align='left'>{dayjs(row.poIssueDate).format('DD/MM/YYYY')}</TableCell>
-        <TableCell align='left' sx={{ width: '25vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <TableCell align='left' sx={{ width: '20vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {row.description}
         </TableCell>
         <TableCell align='left'>{dayjs(row.deliveryDate).format('DD/MM/YYYY')}</TableCell>
@@ -95,7 +107,13 @@ function Row(props) {
         </TableCell>
         <TableCell align='left'>{`Rs. ${formattedAmount(row.poAmount)}`}</TableCell>
         <TableCell>
-          <IconButton aria-label='expand row' size='small' onClick={() => setOpen(!open)}>
+          <IconButton
+            aria-label='expand row'
+            size='small'
+            onClick={() => {
+              previewInvoices(row)
+            }}
+          >
             {open ? (
               <Close />
             ) : (
@@ -111,30 +129,34 @@ function Row(props) {
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant='h6' gutterBottom component='div'>
-                Invoices
+                {poInvoicesDetailsDataIsSuccess && poInvoicesDetailsData.length > 0 ? 'Invoices' : 'No Invoices'}
               </Typography>
-              <Table size='small' aria-label='purchases'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align='right'>Amount</TableCell>
-                    <TableCell align='right'>Total price ($)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row?.history?.map(historyRow => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell component='th' scope='row'>
-                        {historyRow.date}
-                      </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align='right'>{historyRow.amount}</TableCell>
-                      <TableCell align='right'>{Math.round(historyRow.amount * row.price * 100) / 100}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              {poInvoicesDetailsData && (
+                <Paper elevation={10}>
+                  <Table size='small' aria-label='purchases'>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Invoice Number</TableCell>
+                        <TableCell>Invoice Date</TableCell>
+                        <TableCell>Invoice Amount</TableCell>
+                        <TableCell>Status</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {poInvoicesDetailsData?.map(historyRow => (
+                        <TableRow key={historyRow.date}>
+                          <TableCell component='th' scope='row'>
+                            {historyRow.invoiceNumber}
+                          </TableCell>
+                          <TableCell>{historyRow.invoiceDate}</TableCell>
+                          <TableCell>{historyRow.invoiceAmount}</TableCell>
+                          <TableCell>{historyRow.status}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Paper>
+              )}
             </Box>
           </Collapse>
         </TableCell>
@@ -241,17 +263,6 @@ export default function CollapsibleTable() {
         </>
       ) : poSummaryDataIsSuccess ? (
         <>
-          <Tooltip title='CREATE PO'>
-            <Fab
-              color='primary'
-              aria-label='add'
-              size='small'
-              onClick={() => setShowPoForm(true)}
-              sx={{ position: 'absolute', right: 5, top: 55 }}
-            >
-              <Add />
-            </Fab>
-          </Tooltip>
           <TableContainer component={Paper}>
             <Table aria-label='collapsible table' stickyHeader>
               <TableHead className={styles.tableHeader}>
@@ -315,21 +326,42 @@ export default function CollapsibleTable() {
               </TableHead>
               <TableBody>
                 {content?.map(row => (
-                  <Row key={row.id} row={row} previewPO={() => setPreviewPO(true)} />
+                  <Row
+                    key={row.id}
+                    row={row}
+                    previewPO={() => {
+                      setPreviewPO(true)
+                    }}
+                  />
                 ))}
               </TableBody>
               <TableFooter>
                 <TableRow>
                   <TablePagination
+                    // sx={{ display: 'flex', overflow: 'visible' }}
                     rowsPerPageOptions={[7, 10, 15]}
-                    colSpan={8}
+                    colSpan={2}
                     count={content?.length || 0}
                     rowsPerPage={pageSize}
-                    page={pageNumber + 1}
+                    page={pageNumber}
                     onPageChange={e => dispatch(setTableStateAction({ pageNumber: e.target.value - 1 }))}
-                    onRowsPerPageChange={e => dispatch(setTableStateAction(e.target.value))}
+                    onRowsPerPageChange={e => {
+                      dispatch(setTableStateAction(e.target.value))
+                      console.log(e.target.value)
+                    }}
                     //   ActionsComponent={TablePaginationActions}
                   />
+                  <Tooltip title='CREATE PO'>
+                    <Fab
+                      color='primary'
+                      aria-label='add'
+                      size='small'
+                      onClick={() => setShowPoForm(true)}
+                      // sx={{ position: 'relative', right: 0, bottom: 0 }}
+                    >
+                      <Add />
+                    </Fab>
+                  </Tooltip>
                 </TableRow>
               </TableFooter>
             </Table>
