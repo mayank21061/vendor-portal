@@ -103,9 +103,11 @@ const VerticalNavHeader = props => {
               d='M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z'
             />
           </svg>
-          <HeaderTitle style={{ lineHeight: '10px ', color: settings.mode === 'dark' ? 'rgba(208, 212, 241, 0.78)' : 'white' }}
+          <HeaderTitle
+            style={{ lineHeight: '10px ' }}
             h1
-            sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}>
+            sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}
+          >
             {themeConfig.templateName}
           </HeaderTitle>
         </LinkStyled>
@@ -127,7 +129,6 @@ const VerticalNavHeader = props => {
           onClick={() => saveSettings({ ...settings, navCollapsed: !navCollapsed })}
           sx={{
             p: 0,
-            color: 'white',
             backgroundColor: 'transparent !important',
             '& svg': {
               fontSize: '1.25rem',
