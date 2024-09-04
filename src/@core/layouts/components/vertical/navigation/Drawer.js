@@ -80,7 +80,7 @@ const Drawer = props => {
   delete userNavMenuProps.sx
   delete userNavMenuProps.PaperProps
 
-  const backgroundColor = settings.mode === 'dark' ? '' : navHover ? 'rgba(0, 0, 0, 0.5)' : `rgba(0, 0, 0, 0.5)`
+  // const backgroundColor = settings.mode === 'dark' ? '' : navHover ? 'rgba(0, 0, 0, 0.5)' : `rgba(0, 0, 0, 0.5)`
 
   return (
     <SwipeableDrawer
@@ -89,7 +89,7 @@ const Drawer = props => {
       {...(hidden ? { ...MobileDrawerProps } : { ...DesktopDrawerProps })}
       PaperProps={{
         sx: {
-          backgroundColor: backgroundColor,
+          // backgroundColor: backgroundColor,
           ...(!hidden && skin !== 'bordered' && { boxShadow: 2 }),
           width: navCollapsed && !navHover ? collapsedNavWidth : navWidth,
           borderRight: theme =>

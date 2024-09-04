@@ -74,8 +74,8 @@ const AppBarContent = props => {
     textDecoration: 'none',
     '& svg': {
       mr: 2.5,
-      fontSize: '1.5rem',
-      color: settings.mode === 'dark' ? '' : '#fff'
+      fontSize: '1.5rem'
+      // color: settings.mode === 'dark' ? '' : '#fff'
     }
   }
 
@@ -175,14 +175,11 @@ const AppBarContent = props => {
         <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
           {hidden ? (
             <IconButton sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
-              <Icon fontSize='1.5rem' icon='tabler:menu-2' color={settings.mode === 'dark' ? '' : '#fff'} />
+              <Icon fontSize='1.5rem' icon='tabler:menu-2' />
             </IconButton>
           ) : null}
         </Box>
-        <Typography
-          variant='body1'
-          sx={{ textTransform: 'uppercase', fontWeight: 600, color: settings.mode === 'dark' ? '' : '#ffffffd6' }}
-        >
+        <Typography variant='body1' sx={{ textTransform: 'uppercase', fontWeight: 600 }}>
           {router.pathname.split('/')[1] == 'poSummary'
             ? 'PO SUMMARY'
             : router.pathname.split('/')[1] == 'latestinfo'
@@ -247,7 +244,7 @@ const AppBarContent = props => {
                   id='demo-select-small'
                   value={filterType}
                   onChange={handleChangeFilter}
-                  sx={{ backgroundColor: 'white', borderRadius: '.5rem' }}
+                  sx={{ borderRadius: '.5rem' }}
                 >
                   {filters.map((item, index) => (
                     <MenuItem key={index} value={item}>

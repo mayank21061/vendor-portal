@@ -108,6 +108,7 @@ const VerticalNavHeader = props => {
             h1
             sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}
           >
+            sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}>
             {themeConfig.templateName}
           </HeaderTitle>
         </LinkStyled>
@@ -129,7 +130,6 @@ const VerticalNavHeader = props => {
           onClick={() => saveSettings({ ...settings, navCollapsed: !navCollapsed })}
           sx={{
             p: 0,
-            color: 'white',
             backgroundColor: 'transparent !important',
             '& svg': {
               fontSize: '1.25rem',
