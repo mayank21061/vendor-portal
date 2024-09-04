@@ -45,6 +45,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import Popper from '@mui/material/Popper'
 import { setTableStateAction } from 'src/redux/features/tableSlice'
 import PoSummaryForm from './PoSummaryForm'
+import { getFileAction } from 'src/redux/features/fileUrlSlice'
 function Row(props) {
   const dispatch = useDispatch()
   const { row } = props
@@ -144,7 +145,13 @@ function Row(props) {
                     </TableHead>
                     <TableBody>
                       {poInvoicesDetailsData?.map(historyRow => (
-                        <TableRow key={historyRow.date}>
+                        <TableRow
+                          key={historyRow.date}
+                          onDoubleClick={() => {
+                            dispatch(getFileAction(historyRow.invoiceurl))
+                            props.previewPO(true)
+                          }}
+                        >
                           <TableCell component='th' scope='row'>
                             {historyRow.invoiceNumber}
                           </TableCell>
@@ -338,9 +345,8 @@ export default function CollapsibleTable() {
               <TableFooter>
                 <TableRow>
                   <TablePagination
-                    // sx={{ display: 'flex', overflow: 'visible' }}
                     rowsPerPageOptions={[7, 10, 15]}
-                    colSpan={2}
+                    colSpan={7}
                     count={content?.length || 0}
                     rowsPerPage={pageSize}
                     page={pageNumber}
@@ -351,21 +357,21 @@ export default function CollapsibleTable() {
                     }}
                     //   ActionsComponent={TablePaginationActions}
                   />
-                  <Tooltip title='CREATE PO'>
-                    <Fab
-                      color='primary'
-                      aria-label='add'
-                      size='small'
-                      onClick={() => setShowPoForm(true)}
-                      // sx={{ position: 'relative', right: 0, bottom: 0 }}
-                    >
-                      <Add />
-                    </Fab>
-                  </Tooltip>
                 </TableRow>
               </TableFooter>
             </Table>
           </TableContainer>
+          {/* <Tooltip title='CREATE PO'>
+            <Fab
+              color='primary'
+              aria-label='add'
+              size='small'
+              onClick={() => setShowPoForm(true)}
+              sx={{ position: 'relative', right: 0, bottom: 30 }}
+            >
+              <Add />
+            </Fab>
+          </Tooltip> */}
         </>
       ) : (
         ''
