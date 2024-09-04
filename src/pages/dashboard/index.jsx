@@ -24,11 +24,11 @@ const Dashboard = () => {
                   // backgroundColor: '#b0abab8f'
                 }}
               >
-                <Typography variant='h4' color='black'>
+                <Typography variant='h4' color='black' sx={{ paddingTop: '1rem' }}>
                   Total Bills Created
                 </Typography>
               </div>
-              <div style={{ height: '18vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ height: '16vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Typography variant='h2' color='black'>
                   83
                 </Typography>
@@ -48,15 +48,15 @@ const Dashboard = () => {
                   // backgroundColor: '#b0abab8f'
                 }}
               >
-                <Typography variant='h4' color='black'>
+                <Typography variant='h4' color='black' sx={{ paddingTop: '1rem' }}>
                   Total Bills Passed
                 </Typography>
               </div>
-              <div style={{ height: '18vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ height: '16vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Typography variant='h2' color='black'>
                   82
                 </Typography>
-                <Typography variant='h2' color='green'>
+                <Typography variant='h2' color='#48BF40'>
                   {'(99%)'}
                 </Typography>
               </div>
@@ -75,15 +75,15 @@ const Dashboard = () => {
                   // backgroundColor: '#b0abab8f'
                 }}
               >
-                <Typography variant='h4' color='black'>
+                <Typography variant='h4' color='black' sx={{ paddingTop: '1rem' }}>
                   Total Bills Pending
                 </Typography>
               </div>
-              <div style={{ height: '18vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ height: '16vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Typography variant='h2' color='black'>
                   1
                 </Typography>
-                <Typography variant='h2' color='green'>
+                <Typography variant='h2' color='#48BF40'>
                   {'(1%)'}
                 </Typography>
               </div>

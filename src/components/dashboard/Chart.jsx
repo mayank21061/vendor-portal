@@ -130,10 +130,10 @@ export default function BarsDataset() {
       dataset={dataset}
       xAxis={[{ scaleType: 'band', dataKey: 'month' }]}
       series={[
-        { dataKey: 'eicApproved', label: 'Approved', valueFormatter },
-        { dataKey: 'submitted', label: 'Pending', valueFormatter },
-        { dataKey: 'paid', label: 'Completed', valueFormatter },
-        { dataKey: 'eicRejected', label: 'Rejected', valueFormatter }
+        { dataKey: 'eicApproved', label: 'Approved', valueFormatter, color: '#F89880' },
+        { dataKey: 'submitted', label: 'Pending', valueFormatter, color: '#D3D3D3' },
+        { dataKey: 'paid', label: 'Completed', valueFormatter, color: '#48BF40' },
+        { dataKey: 'eicRejected', label: 'Rejected', valueFormatter, color: '#FF2E2E' }
       ]}
       {...chartSetting}
     />
