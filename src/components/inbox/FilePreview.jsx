@@ -70,8 +70,7 @@ const FilePreview = ({ open, setOpen, rowData }) => {
         <Tooltip title='CLOSE'></Tooltip>
         <DialogContent sx={{ p: '0 !important' }} dividers>
           <Grid container height='100%'>
-            <Grid item xs={8} borderRight='1px solid whitesmoke' sx={{ bgColor: '#dcdcdc' }}>
-              {/* <HistoryTable /> */}
+            <Grid item xs={8} borderRight='1px solid whitesmoke' sx={{ backgroundColor: '#dcdcdc' }}>
               <RemarksHistory />
             </Grid>
             <Grid item xs={4}>

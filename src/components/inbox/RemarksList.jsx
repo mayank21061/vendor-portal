@@ -56,7 +56,13 @@ const RemarksList = () => {
   ]
   return (
     <div>
-      {data.map(item => (item.id % 2 == 0 ? <VendorMsg message={item.remarks} /> : <EicMsg message={item.remarks} />))}
+      {data.map(item =>
+        item.id % 2 == 0 ? (
+          <VendorMsg message={item.remarks} time={item.invoiceAmount} />
+        ) : (
+          <EicMsg message={item.remarks} time={item.invoiceAmount} />
+        )
+      )}
     </div>
   )
 }

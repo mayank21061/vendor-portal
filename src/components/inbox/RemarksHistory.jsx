@@ -4,10 +4,10 @@ import RemarksInput from './RemarksInput'
 
 const RemarksHistory = () => {
   return (
-    <div>
+    <>
       <RemarksList />
       <RemarksInput />
-    </div>
+    </>
   )
 }
 
