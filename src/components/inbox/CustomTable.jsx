@@ -35,6 +35,7 @@ import HistoryPreview from './HistoryPreview'
 import FilePreview from './FilePreview'
 import { getFileAction } from 'src/redux/features/fileUrlSlice'
 import { setTableStateAction } from 'src/redux/features/tableSlice'
+import { ClassNames } from '@emotion/react'
 
 const renderName = row => {
   if (row.avatar) {
@@ -173,8 +174,6 @@ const CustomTable = props => {
       headerName: 'PO NUMBER ',
       headerAlign: 'center',
       align: 'center',
-      headerClassName: styles.customheader,
-
       renderCell: ({ row }) => (
         <div
           style={{
@@ -203,7 +202,6 @@ const CustomTable = props => {
       minWidth: 170,
       headerName: 'Invoice Number',
       headerAlign: 'left',
-      headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
         <Box
@@ -235,7 +233,6 @@ const CustomTable = props => {
       minWidth: 170,
       headerName: 'Invoice Amount',
       headerAlign: 'left',
-      headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
         <Box
@@ -267,7 +264,6 @@ const CustomTable = props => {
       field: 'date',
       headerName: 'Recieved On',
       headerAlign: 'center',
-      headerClassName: styles.customheader,
 
       align: 'center',
       renderCell: ({ row }) => (
@@ -299,7 +295,6 @@ const CustomTable = props => {
       headerName: 'Recieved From ',
       headerAlign: 'center',
       align: 'center',
-      headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
         <div
@@ -330,7 +325,6 @@ const CustomTable = props => {
       headerName: 'status',
       headerAlign: 'center',
       align: 'center',
-      headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
         <div
@@ -354,127 +348,12 @@ const CustomTable = props => {
         </div>
       )
     }
-
-    // {
-    //   sortable: false,
-    //   field: 'actions',
-    //   headerName: '',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   headerClassName: styles.customheader,
-    //   renderCell: ({ row }) =>
-    //     hoverdRowId !== null &&
-    //     hoverdRowId === row.id && (
-    //       <>
-    //         <Tooltip title='View Details'>
-    //           <IconButton
-    //             onClick={() => {
-    //               handlePreviewFile(row.id)
-    //               dispatch(getFileAction({ fileUrl: row.invoiceurl }))
-    //             }}
-    //           >
-    //             <VisibilityIcon
-    //               style={{
-    //                 width: '1.2rem',
-    //                 height: '1.2rem',
-    //                 color: '#014361'
-    //               }}
-    //             />
-    //           </IconButton>
-    //         </Tooltip>
-    //         {/* <Tooltip title='History'>
-    //           <IconButton
-    //             onClick={() => {
-    //               handlePreviewHistory(row.id)
-    //             }}
-    //           >
-    //             <History
-    //               style={{
-    //                 width: '1.2rem',
-    //                 height: '1.2rem',
-    //                 color: '#014361'
-    //               }}
-    //             />
-    //           </IconButton>
-    //         </Tooltip> */}
-    //       </>
-    //     )
-    // }
   ]
 
   return (
     <>
       <Paper elevation={24} sx={{ height: '89vh', overflowY: 'auto' }}>
-        <Grid container spacing={2} sx={{}}>
-          {/* <Grid
-            item
-            xs={12}
-            style={{
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'flex-end'
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'end',
-                gap: '10px',
-                flexWrap: 'wrap',
-                marginTop: '.5rem'
-              }}
-            >
-              <div style={{ minWidth: '18vw' }}>
-                <DatePickerWrapper>
-                  <ReactDatePicker
-                    showYearDropdown
-                    isClearable
-                    selectsRange
-                    monthsShown={2}
-                    endDate={endDateRange}
-                    selected={startDateRange}
-                    startDate={startDateRange}
-                    shouldCloseOnSelect={false}
-                    id='date-range-picker-months'
-                    onChange={handleOnChangeRange}
-                    customInput={
-                      <CustomInput
-                        dates={dates}
-                        setDates={setDates}
-                        label='Select Date Range'
-                        end={endDateRange}
-                        start={startDateRange}
-                      />
-                    }
-                  />
-                </DatePickerWrapper>
-              </div>
-              <div style={{ minWidth: '20vw' }}>
-                <CustomTextField
-                  fullWidth
-                  value={value}
-                  placeholder='Search'
-                  onChange={e => handleFilter(e.target.value)}
-                  style={{ marginTop: '18px' }}
-                />
-              </div>
-              <FormControl sx={{ borderRadius: '.8rem', width: '10vw' }} size='small'>
-                <Select
-                  labelId='demo-select-small-label'
-                  id='demo-select-small'
-                  value={filterType}
-                  onChange={handleChangeFilter}
-                >
-                  {filters.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-          </Grid> */}
+        <Grid container spacing={2}>
           {inboxDataIsLoading ? (
             <Box sx={{ width: '100%', marginTop: '40px' }}>
               <LinearProgress />
