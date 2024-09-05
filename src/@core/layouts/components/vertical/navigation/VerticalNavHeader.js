@@ -104,7 +104,7 @@ const VerticalNavHeader = props => {
             />
           </svg>
           <HeaderTitle
-            style={{ lineHeight: '10px ', color: settings.mode === 'dark' ? 'rgba(208, 212, 241, 0.78)' : 'white' }}
+            style={{ lineHeight: '10px ' }}
             h1
             sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}
           >
