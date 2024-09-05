@@ -27,8 +27,8 @@
 }
 
 .tableHeader > tr > th {
-  padding: 10px;
-  font-weight: bold !important;
+  padding: 2px 10px 2px 10px;
+  /* font-weight: bold !important; */
 }
 
 .tableRow > td {
@@ -39,4 +39,31 @@
 .datePicker {
   /* background-color: red; */
   /* display: flex !important; */
+}
+
+.tableHeaderContainer {
+  display: flex;
+  align-items: center;
+}
+
+.tableHeaderContainer :nth-child(0) {
+  width: 20%;
+}
+.tableHeaderContainer :nth-child(1) {
+  width: 20%;
+}
+.tableHeaderContainer :nth-child(2) {
+  width: 20%;
+}
+.tableHeaderContainer :nth-child(3) {
+  width: 20%;
+}
+.tableHeaderContainer :nth-child(4) {
+  width: 20%;
+}
+.tableHeaderContainer :nth-child(5) {
+  width: 20%;
+}
+.tableHeaderContainer :nth-child(6) {
+  width: 20%;
 }

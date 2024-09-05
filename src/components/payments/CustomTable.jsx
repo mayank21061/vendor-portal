@@ -120,13 +120,6 @@ const CustomTable = props => {
     setEndDateRange(end)
   }
 
-  // const handleFilter = useCallback(
-  //   _debounce(searchText => {
-  //     setValue(searchText)
-  //   }, 1000),
-  //   []
-  // )
-
   const handleViewPDF = (e, rowData) => {
     setFileUrl(rowData.docUrl)
     seteventData(rowData)
@@ -158,10 +151,6 @@ const CustomTable = props => {
       field: 'no',
       headerName: 'Invoice no.',
       renderCell: ({ row }) => {
-        // const date = new Date(row.date)
-        // const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
-        // const formattedDate = date.toLocaleDateString('en-US', options)
-
         return (
           <Typography
             sx={{
@@ -173,8 +162,7 @@ const CustomTable = props => {
             {row.invoiceNumber}
           </Typography>
         )
-      },
-      headerClassName: styles.customheader
+      }
     },
     {
       flex: 0.1,
@@ -196,18 +184,13 @@ const CustomTable = props => {
             {formattedDate}
           </Typography>
         )
-      },
-      headerClassName: styles.customheader
+      }
     },
     {
       flex: 0.1,
       field: 'po',
       headerName: 'PO Number',
       renderCell: ({ row }) => {
-        // const date = new Date(row.date)
-        // const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
-        // const formattedDate = date.toLocaleDateString('en-US', options)
-
         return (
           <Typography
             sx={{
@@ -219,14 +202,13 @@ const CustomTable = props => {
             {row.poNumber}
           </Typography>
         )
-      },
-      headerClassName: styles.customheader
+      }
     },
     {
       flex: 0.1,
       field: 'amount',
       headerName: 'AMOUNT',
-      headerClassName: styles.customheader,
+
       renderCell: ({ row }) => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -251,7 +233,7 @@ const CustomTable = props => {
       flex: 0.15,
       field: 'bankDetails',
       headerName: 'BANK DETAILS',
-      headerClassName: styles.customheader,
+
       renderCell: ({ row }) => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -276,7 +258,7 @@ const CustomTable = props => {
       flex: 0.1,
       field: 'status',
       headerName: 'STATUS',
-      headerClassName: styles.customheader,
+
       renderCell: ({ row }) => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -297,52 +279,6 @@ const CustomTable = props => {
         )
       }
     }
-
-    // {
-    //   sortable: false,
-    //   flex: 0.1,
-    //   field: 'actions',
-    //   headerName: 'REASON FOR DELAY',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   headerClassName: styles.customheader,
-    //   renderCell: ({ row }) =>
-    //     hoverdRowId !== null &&
-    //     hoverdRowId === row.id && (
-    //       <>
-    //         <Tooltip title='Preview'>
-    //           <IconButton
-    //             onClick={event => {
-    //               handleViewPDF(event, row)
-    //             }}
-    //           >
-    //             <VisibilityIcon
-    //               style={{
-    //                 width: '1.2rem',
-    //                 height: '1.2rem',
-    //                 color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
-    //               }}
-    //             />
-    //           </IconButton>
-    //         </Tooltip>
-    //         <Tooltip title='Invoices'>
-    //           <IconButton
-    //             onClick={event => {
-    //               handleViewPDF(event, row)
-    //             }}
-    //           >
-    //             <Receipt
-    //               style={{
-    //                 width: '1.2rem',
-    //                 height: '1.2rem',
-    //                 color: row.priority === 'High' ? '#5F2120' : row.priority === 'Medium' ? '#663C00' : '#014361'
-    //               }}
-    //             />
-    //           </IconButton>
-    //         </Tooltip>
-    //       </>
-    //     )
-    // }
   ]
 
   return (
@@ -358,75 +294,7 @@ const CustomTable = props => {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}
-        >
-          {/* <Typography variant='h4' fontWeight='bold' sx={{ mt: 4 }}>
-              Payments
-            </Typography>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'end',
-                gap: '10px',
-                flexWrap: 'wrap',
-                marginTop: '.5rem'
-              }}
-            >
-              <div style={{ minWidth: '18vw' }}>
-                <DatePickerWrapper>
-                  <ReactDatePicker
-                    showYearDropdown
-                    isClearable
-                    selectsRange
-                    monthsShown={2}
-                    endDate={endDateRange}
-                    selected={startDateRange}
-                    startDate={startDateRange}
-                    shouldCloseOnSelect={false}
-                    id='date-range-picker-months'
-                    onChange={handleOnChangeRange}
-                    customInput={
-                      <CustomInput
-                        dates={dates}
-                        setDates={setDates}
-                        label='Select Date Range'
-                        end={endDateRange}
-                        start={startDateRange}
-                      />
-                    }
-                  />
-                </DatePickerWrapper>
-              </div>
-              <div style={{ minWidth: '20vw' }}>
-                <CustomTextField
-                  fullWidth
-                  value={value}
-                  placeholder='Search'
-                  onChange={e => setValue(e.target.value)}
-                  style={{ marginTop: '18px' }}
-                />
-              </div>
-              <FormControl sx={{ borderRadius: '.8rem', width: '10vw' }} size='small'>
-                <Select
-                  labelId='demo-select-small-label'
-                  id='demo-select-small'
-                  value={filterType}
-                  onChange={handleChangeFilter}
-                >
-                  {filters.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Tooltip title='CREATE INVOICE'>
-                <Fab color='primary' aria-label='add' size='small' onClick={() => setShowInvoicesForm(true)}>
-                  <Add />
-                </Fab>
-              </Tooltip>
-            </div> */}
-        </Grid>
+        ></Grid>
         {invoicesDataIsLoading ? (
           <Box sx={{ width: '100%', marginTop: '40px' }}>
             <LinearProgress />
@@ -474,9 +342,15 @@ const CustomTable = props => {
         <Fab
           color='primary'
           aria-label='add'
-          size='small'
+          // size='small'
           onClick={() => setShowInvoicesForm(true)}
-          sx={{ position: 'absolute', bottom: 12, right: 12 }}
+          sx={{
+            position: 'absolute',
+            bottom: '9px',
+            right: '1.1rem',
+            height: 37,
+            width: 37
+          }}
         >
           <Add />
         </Fab>
