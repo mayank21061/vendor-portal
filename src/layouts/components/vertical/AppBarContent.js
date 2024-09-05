@@ -101,6 +101,7 @@ const AppBarContent = props => {
   const [selectedRole, setSelectedRole] = useState({})
 
   useEffect(() => {
+    setValue('')
     dispatch(resetTableAction())
   }, [currentPath])
 

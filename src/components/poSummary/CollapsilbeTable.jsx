@@ -84,6 +84,7 @@ function Row(props) {
         onDoubleClick={e => {
           e.stopPropagation()
           props.previewPO()
+          dispatch(getFileAction({ fileUrl: row.url }))
         }}
       >
         <TableCell>{row.poNumber}</TableCell>
@@ -148,7 +149,7 @@ function Row(props) {
                         <TableRow
                           key={historyRow.date}
                           onDoubleClick={() => {
-                            dispatch(getFileAction(historyRow.invoiceurl))
+                            dispatch(getFileAction({ fileUrl: historyRow.invoiceurl }))
                             props.previewPO(true)
                           }}
                         >
