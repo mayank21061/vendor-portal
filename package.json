@@ -9,9 +9,7 @@
     "export": "next export",
     "lint": "eslint --fix \"src/**/*.{js,jsx}\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
-    "build:icons": "node src/iconify-bundle/bundle-icons-react.js",
-    "postinstall": "npm run download-webviewer",
-    "download-webviewer": "npx @pdftron/webviewer-downloader"
+    "build:icons": "node src/iconify-bundle/bundle-icons-react.js"
   },
   "dependencies": {
     "@babel/core": "7.21.5",
@@ -38,7 +36,6 @@
     "@mui/system": "5.12.1",
     "@mui/x-charts": "^7.6.1",
     "@mui/x-data-grid": "6.0.3",
-    "@pdftron/webviewer": "^10.11.1",
     "@popperjs/core": "2.11.7",
     "@reduxjs/toolkit": "1.9.5",
     "apexcharts-clevision": "3.28.5",
