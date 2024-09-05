@@ -94,15 +94,15 @@ const CustomTable = props => {
     return formattedDate
   }
 
-  useEffect(() => {
-    const payload = {
-      search: value,
-      fromDate: moment(startDateRange).format('YYYY-MM-DD'),
-      toDate: moment(endDateRange).format('YYYY-MM-DD'),
-      filterBy: filterType
-    }
-    if (startDateRange && endDateRange) dispatch(getInvoicesAction(payload))
-  }, [value, endDateRange, startDateRange, filterType])
+  // useEffect(() => {
+  //   const payload = {
+  //     search: value,
+  //     fromDate: moment(startDateRange).format('YYYY-MM-DD'),
+  //     toDate: moment(endDateRange).format('YYYY-MM-DD'),
+  //     filterBy: filterType
+  //   }
+  //   if (startDateRange && endDateRange) dispatch(getInvoicesAction(payload))
+  // }, [value, endDateRange, startDateRange, filterType])
 
   const getInvoicesDataDebounce = useCallback(
     _debounce((value, filterType) => {

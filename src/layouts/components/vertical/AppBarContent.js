@@ -141,6 +141,7 @@ const AppBarContent = props => {
       if (value) {
         getDebouceInvoices(value)
       } else {
+        console.log(pageNumber, pageSize, value, fromDate, toDate, filterType)
         dispatch(getInvoicesAction({ pageNumber, pageSize, search: value, fromDate, toDate, filterBy: filterType }))
       }
     }
