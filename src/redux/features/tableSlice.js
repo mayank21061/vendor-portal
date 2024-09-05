@@ -26,12 +26,13 @@ export const tableSlice = createSlice({
       state.toDate = todayDate
     },
     setTableStateAction(state, action) {
-      if (action.payload.pageNumber) state.pageNumber = action.payload.pageNumber
-      if (action.payload.pageSize) state.pageSize = action.payload.pageSize
-      if (action.payload.searchText) state.searchText = action.payload.searchText
-      if (action.payload.filterType) state.filterType = action.payload.filterType
-      if (action.payload.fromDate) state.fromDate = action.payload.fromDate
-      if (action.payload.toDate) state.toDate = action.payload.toDate
+      console.log(action.payload)
+      if (action.payload.pageNumber != null) state.pageNumber = action.payload.pageNumber
+      if (action.payload.pageSize != null) state.pageSize = action.payload.pageSize
+      if (action.payload.searchText != null) state.searchText = action.payload.searchText
+      if (action.payload.filterType != null) state.filterType = action.payload.filterType
+      if (action.payload.fromDate != null) state.fromDate = action.payload.fromDate
+      if (action.payload.toDate != null) state.toDate = action.payload.toDate
     }
   }
 })

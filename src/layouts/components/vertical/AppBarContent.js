@@ -44,6 +44,7 @@ import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import _debounce from 'lodash/debounce'
 import { resetTableAction, setTableStateAction } from 'src/redux/features/tableSlice'
 import { getInboxAction } from 'src/redux/features/inboxSlice'
+import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
 
 // const LatestInfoDropdown = dynamic(() => import('./LatestInfoDropdown'), {
 //   loading: () => (
@@ -116,6 +117,12 @@ const AppBarContent = props => {
     })
   )
 
+  const getDebouceInvoices = useCallback(
+    _debounce(search => {
+      dispatch(getInvoicesAction({ pageNumber, pageSize, search, fromDate, toDate, filterBy: filterType }))
+    })
+  )
+
   useEffect(() => {
     setUsers(localStorage.getItem('username'))
     if (currentPath == 'poSummary') {
@@ -129,6 +136,12 @@ const AppBarContent = props => {
         getDebounceInbox(value)
       } else {
         dispatch(getInboxAction({ pageNumber, pageSize, search: value, fromDate, toDate, filterBy: filterType }))
+      }
+    } else if (currentPath == 'invoices') {
+      if (value) {
+        getDebouceInvoices(value)
+      } else {
+        dispatch(getInvoicesAction({ pageNumber, pageSize, search: value, fromDate, toDate, filterBy: filterType }))
       }
     }
   }, [pageNumber, pageSize, filterType, fromDate, toDate, value, currentPath])
@@ -238,7 +251,10 @@ const AppBarContent = props => {
               </div>
             )}
             {router.pathname.split('/')[1] != 'dashboard' && (
-              <FormControl sx={{ borderRadius: '.8rem', width: '10vw', marginRight: '1rem' }} size='small'>
+              <FormControl
+                sx={{ borderRadius: '.8rem', width: '10vw', marginRight: '1rem', bgcolor: 'white' }}
+                size='small'
+              >
                 <Select
                   labelId='demo-select-small-label'
                   id='demo-select-small'

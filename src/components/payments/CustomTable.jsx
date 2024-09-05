@@ -36,6 +36,7 @@ import styles from './invoices.module.css'
 import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
 import UploadInvoices from './UploadInvoices'
 import _debounce from 'lodash/debounce'
+import { setTableStateAction } from 'src/redux/features/tableSlice'
 
 const renderName = row => {
   if (row.avatar) {
@@ -68,14 +69,13 @@ const CustomTable = props => {
   const dispatch = useDispatch()
   const theme = useTheme()
   const getFontColor = () => (theme.palette.mode === 'dark' ? '#fff' : 'text.primary')
-
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
   const [showInvoicesForm, setShowInvoicesForm] = useState(false)
   const data = useSelector(state => state.invoice.invoicesData?.content)
-  console.log(data)
-  const { invoicesDataIsLoading, invoicesDataIsError, invoicesDataError, invoicesDataIsSuccess } = useSelector(
-    state => state.invoice
-  )
+  const { invoicesDataIsLoading, invoicesDataIsError, invoicesDataError, invoicesDataIsSuccess, invoicesData } =
+    useSelector(state => state.invoice)
+  console.log(invoicesData)
+  const { pageNumber, pageSize } = useSelector(state => state.table)
 
   const [dates, setDates] = useState([])
   const [endDateRange, setEndDateRange] = useState(new Date())
@@ -459,9 +459,12 @@ const CustomTable = props => {
                     }
                   }
                 }}
+                rowCount={invoicesData?.totalElements}
                 pageSizeOptions={[7, 10, 25, 50]}
-                paginationModel={paginationModel}
-                onPaginationModelChange={setPaginationModel}
+                paginationModel={{ page: pageNumber, pageSize }}
+                onPaginationModelChange={e => {
+                  dispatch(setTableStateAction({ pageSize: e.pageSize, pageNumber: e.page }))
+                }}
               />
             </Paper>
           </Grid>

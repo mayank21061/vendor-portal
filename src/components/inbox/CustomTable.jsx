@@ -34,6 +34,7 @@ import { getInboxAction } from 'src/redux/features/inboxSlice'
 import HistoryPreview from './HistoryPreview'
 import FilePreview from './FilePreview'
 import { getFileAction } from 'src/redux/features/fileUrlSlice'
+import { setTableStateAction } from 'src/redux/features/tableSlice'
 
 const renderName = row => {
   if (row.avatar) {
@@ -73,61 +74,14 @@ const CustomInput = forwardRef((props, ref) => {
 
 const CustomTable = props => {
   const data = useSelector(state => state.inbox.inboxData?.content || [])
-  // const data = [
-  //   {
-  //     id: '1',
-  //     poNumber: '123456',
-  //     invoiceNumber: '789012',
-  //     invoiceAmount: '25000',
-  //     status: 'Pending',
-  //     deliveryPlant: 'Delhi'
-  //   },
-  //   {
-  //     id: '2',
-  //     poNumber: '654321',
-  //     invoiceNumber: '345678',
-  //     invoiceAmount: '30000',
-  //     status: 'Completed',
-  //     deliveryPlant: 'Mumbai'
-  //   },
-  //   {
-  //     id: '3',
-  //     poNumber: '112233',
-  //     invoiceNumber: '998877',
-  //     invoiceAmount: '15000',
-  //     status: 'In Progress',
-  //     deliveryPlant: 'Chennai'
-  //   },
-  //   {
-  //     id: '4',
-  //     poNumber: '445566',
-  //     invoiceNumber: '776655',
-  //     invoiceAmount: '40000',
-  //     status: 'Pending',
-  //     deliveryPlant: 'Kolkata'
-  //   },
-  //   {
-  //     id: '5',
-  //     poNumber: '778899',
-  //     invoiceNumber: '223344',
-  //     invoiceAmount: '50000',
-  //     status: 'Completed',
-  //     deliveryPlant: 'Bangalore'
-  //   },
-  //   {
-  //     id: '6',
-  //     poNumber: '990011',
-  //     invoiceNumber: '554433',
-  //     invoiceAmount: '35000',
-  //     status: 'In Progress',
-  //     deliveryPlant: 'Hyderabad'
-  //   }
-  // ]
+
   const theme = useTheme()
 
   const getFontColor = () => (theme.palette.mode === 'dark' ? '#fff' : 'text.primary')
 
   const { inboxDataIsLoading, inboxDataIsError, inboxDataError, inboxDataIsSuccess } = useSelector(state => state.inbox)
+  const { pageNumber, pageSize } = useSelector(state => state.table)
+  console.log(pageNumber, pageSize)
 
   const dispatch = useDispatch()
 
@@ -559,8 +513,10 @@ const CustomTable = props => {
                   }
                 }}
                 pageSizeOptions={[7, 10, 25, 50]}
-                paginationModel={paginationModel}
-                onPaginationModelChange={setPaginationModel}
+                paginationModel={{ page: pageNumber, pageSize }}
+                onPaginationModelChange={e =>
+                  dispatch(setTableStateAction({ pageSize: e.pageSize, pageNumber: e.page }))
+                }
               />
             </Grid>
           ) : (

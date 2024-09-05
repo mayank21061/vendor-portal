@@ -108,7 +108,6 @@ const VerticalNavHeader = props => {
             h1
             sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}
           >
-            sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}>
             {themeConfig.templateName}
           </HeaderTitle>
         </LinkStyled>

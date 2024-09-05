@@ -129,10 +129,10 @@ function Row(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant='h6' gutterBottom component='div'>
+              <Typography variant='h6' gutterBottom component='div' fontWeight={900}>
                 {poInvoicesDetailsDataIsSuccess && poInvoicesDetailsData.length > 0 ? 'Invoices' : 'No Invoices'}
               </Typography>
-              {poInvoicesDetailsData && (
+              {poInvoicesDetailsData?.length > 0 && (
                 <Paper elevation={10}>
                   <Table size='small' aria-label='purchases'>
                     <TableHead>
@@ -346,13 +346,13 @@ export default function CollapsibleTable() {
                 <TableRow>
                   <TablePagination
                     rowsPerPageOptions={[7, 10, 15]}
-                    colSpan={7}
+                    colSpan={8}
                     count={content?.length || 0}
                     rowsPerPage={pageSize}
                     page={pageNumber}
                     onPageChange={e => dispatch(setTableStateAction({ pageNumber: e.target.value - 1 }))}
                     onRowsPerPageChange={e => {
-                      dispatch(setTableStateAction(e.target.value))
+                      dispatch(setTableStateAction({ pageSize: e.target.value }))
                       console.log(e.target.value)
                     }}
                     //   ActionsComponent={TablePaginationActions}
@@ -378,7 +378,7 @@ export default function CollapsibleTable() {
       )}
 
       <Dialog open={previewPO} onClose={() => setPreviewPO(false)} fullWidth maxWidth='md'>
-        <DialogTitle id='customized-dialog-title'>PO Details</DialogTitle>
+        <DialogTitle id='customized-dialog-title'>Details</DialogTitle>
         <Tooltip title='CLOSE'>
           <IconButton
             aria-label='close'
