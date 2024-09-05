@@ -30,7 +30,7 @@ import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { Add, History } from '@mui/icons-material'
-import { getInboxAction } from 'src/redux/features/inboxSlice'
+import { getInboxAction, getInvoiceHistoryAction } from 'src/redux/features/inboxSlice'
 import HistoryPreview from './HistoryPreview'
 import FilePreview from './FilePreview'
 import { getFileAction } from 'src/redux/features/fileUrlSlice'
@@ -352,8 +352,8 @@ const CustomTable = props => {
 
   return (
     <>
-      <Paper elevation={24} sx={{ height: '89vh', overflowY: 'auto' }}>
-        <Grid container spacing={2}>
+      <Paper elevation={24} sx={{ m: 1 }}>
+        <Grid container spacing={0}>
           {inboxDataIsLoading ? (
             <Box sx={{ width: '100%', marginTop: '40px' }}>
               <LinearProgress />
@@ -374,6 +374,7 @@ const CustomTable = props => {
                 onRowDoubleClick={row => {
                   handlePreviewFile(row.row)
                   setSelectedRow(row.row)
+                  dispatch(getInvoiceHistoryAction({ invoiceNumber: row.row.invoiceNumber, id: row.row.id }))
                 }}
                 onRowSelectionModelChange={newRowSelectionModel => {
                   setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))

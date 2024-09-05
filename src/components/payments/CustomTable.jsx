@@ -285,68 +285,68 @@ const CustomTable = props => {
 
   return (
     <>
-      {/* <Paper elevation={24} sx={{ height: '85vh', overflowY: 'auto' }}> */}
-      <Grid container spacing={2}>
-        <Grid
-          item
-          xs={12}
-          style={{
-            display: 'flex',
-            width: '100%',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-        ></Grid>
-        {invoicesDataIsLoading ? (
-          <Box sx={{ width: '100%', marginTop: '40px' }}>
-            <LinearProgress />
-          </Box>
-        ) : invoicesDataIsError ? (
-          <>
-            <h1>{invoicesDataError}</h1>
-          </>
-        ) : invoicesDataIsSuccess ? (
-          <Grid item xs={12}>
-            <Paper elevation={10}>
-              <DataGrid
-                sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
-                rows={data || []}
-                rowHeight={62}
-                columnHeaderHeight={40}
-                columns={columns}
-                disableRowSelectionOnClick
-                getRowId={row => row.id}
-                onRowClick={params => console.log(params)}
-                onRowDoubleClick={params => {
-                  dispatch(getFileAction({ fileUrl: params.row.invoiceurl }))
-                  setPreviewPO(true)
-                }}
-                componentsProps={{
-                  row: {
-                    onMouseEnter: event => {
-                      const id = event.currentTarget.dataset.id
-                      const hoveredRow = data || [].find(row => row.id === Number(id))
-                      setHoveredId(id)
-                    },
-                    onMouseLeave: event => {
-                      setHoveredId(null)
+      <Paper elevation={24} sx={{ m: 1 }}>
+        <Grid container spacing={0}>
+          <Grid
+            item
+            xs={12}
+            style={{
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          ></Grid>
+          {invoicesDataIsLoading ? (
+            <Box sx={{ width: '100%', marginTop: '40px' }}>
+              <LinearProgress />
+            </Box>
+          ) : invoicesDataIsError ? (
+            <>
+              <h1>{invoicesDataError}</h1>
+            </>
+          ) : invoicesDataIsSuccess ? (
+            <Grid item xs={12}>
+              <Paper elevation={10}>
+                <DataGrid
+                  sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
+                  rows={data || []}
+                  rowHeight={62}
+                  columnHeaderHeight={40}
+                  columns={columns}
+                  disableRowSelectionOnClick
+                  getRowId={row => row.id}
+                  onRowClick={params => console.log(params)}
+                  onRowDoubleClick={params => {
+                    dispatch(getFileAction({ fileUrl: params.row.invoiceurl }))
+                    setPreviewPO(true)
+                  }}
+                  componentsProps={{
+                    row: {
+                      onMouseEnter: event => {
+                        const id = event.currentTarget.dataset.id
+                        const hoveredRow = data || [].find(row => row.id === Number(id))
+                        setHoveredId(id)
+                      },
+                      onMouseLeave: event => {
+                        setHoveredId(null)
+                      }
                     }
-                  }
-                }}
-                rowCount={invoicesData?.totalElements}
-                pageSizeOptions={[7, 10, 25, 50]}
-                paginationModel={{ page: pageNumber, pageSize }}
-                onPaginationModelChange={e => {
-                  dispatch(setTableStateAction({ pageSize: e.pageSize, pageNumber: e.page }))
-                }}
-              />
-            </Paper>
-          </Grid>
-        ) : (
-          ''
-        )}
-      </Grid>
-      {/* </Paper> */}
+                  }}
+                  rowCount={invoicesData?.totalElements}
+                  pageSizeOptions={[7, 10, 25, 50]}
+                  paginationModel={{ page: pageNumber, pageSize }}
+                  onPaginationModelChange={e => {
+                    dispatch(setTableStateAction({ pageSize: e.pageSize, pageNumber: e.page }))
+                  }}
+                />
+              </Paper>
+            </Grid>
+          ) : (
+            ''
+          )}
+        </Grid>
+      </Paper>
       <Tooltip title='CREATE INVOICE'>
         <Fab
           color='primary'

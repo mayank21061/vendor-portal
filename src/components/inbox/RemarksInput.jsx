@@ -2,8 +2,11 @@ import { AttachFile, Send } from '@mui/icons-material'
 import { Box, Button, Chip, IconButton, TextField, Tooltip } from '@mui/material'
 import React, { useRef, useState } from 'react'
 import styles from './inbox.module.css'
+import { useDispatch } from 'react-redux'
+import { forwardRemarksAction } from 'src/redux/features/inboxSlice'
 
 const RemarksInput = () => {
+  const dispatch = useDispatch()
   const [note, setNote] = useState('')
   const [files, setFiles] = useState(null)
   const fileInputRef = useRef(null)
@@ -18,6 +21,13 @@ const RemarksInput = () => {
 
   const handleFileChange = e => {
     setFiles(e.target.files[0])
+  }
+
+  const handleSubmit = () => {
+    const formData = new FormData()
+    formData.append('remarks', note)
+    formData.append('file', files)
+    dispatch(forwardRemarksAction({ data: formData }))
   }
 
   return (
@@ -48,7 +58,7 @@ const RemarksInput = () => {
           />
         </>
       )}
-      <IconButton color='inherit' type='submit' variant='contained' size='small'>
+      <IconButton color='inherit' onClick={e => handleSubmit()} variant='contained' size='small'>
         <Send />
       </IconButton>
     </div>

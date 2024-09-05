@@ -19,9 +19,10 @@ import {
 } from '@mui/material'
 import { useDispatch } from 'react-redux'
 import { Close } from '@mui/icons-material'
-// import { forwardInvoice } from '../../redux/actions/inboxData';
+import { forwardRemarksAction } from 'src/redux/features/inboxSlice'
 
-const ForwardDialog = ({ open, onClose, id }) => {
+const ForwardDialog = ({ open, onClose, id, ...rest }) => {
+  console.log(rest)
   const dispatch = useDispatch()
   const [receiver, setReceiver] = useState('')
   const [note, setNote] = useState('')
@@ -51,14 +52,14 @@ const ForwardDialog = ({ open, onClose, id }) => {
     setFiles(Array.from(files))
   }
 
-  //   const handleForwardClick = () => {
-  //     const formData = new FormData();
-  //     formData.append('id', id);
-  //     formData.append('remarks', note);
-  //     formData.append('receievedBy', receiver);
-  //     dispatch(forwardInvoice(formData, id));
-  //     onClose();
-  //   };
+  const handleForwardClick = () => {
+    const formData = new FormData()
+    formData.append('id', id)
+    formData.append('remarks', note)
+    formData.append('receievedBy', receiver)
+    dispatch(forwardRemarksAction({ data: formData, invoiceId: id }))
+    onClose()
+  }
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
@@ -121,7 +122,8 @@ const ForwardDialog = ({ open, onClose, id }) => {
           <Grid item>
             <Button
               onClick={e => {
-                e.stopPropagation()
+                console.log(e)
+                // e.stopPropagation()
                 handleForwardClick()
               }}
               color='primary'

@@ -50,8 +50,9 @@ const PdfViewer = () => {
   // }, [pdfBlobUrl])
 
   return (
-    <div>
+    <div style={{ height: '100%' }}>
       <PdfViewerComponent
+        style={{ height: '100%' }}
         ref={pdfViewerRef}
         id='pdfViewer'
         serviceUrl='https://ej2services.syncfusion.com/production/web-services/api/pdfviewer' // Ensure this is correct
