@@ -31,12 +31,14 @@ import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
-import { Add, Receipt } from '@mui/icons-material'
+import { Add, Close, Receipt } from '@mui/icons-material'
 import styles from './invoices.module.css'
 import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
 import UploadInvoices from './UploadInvoices'
 import _debounce from 'lodash/debounce'
 import { setTableStateAction } from 'src/redux/features/tableSlice'
+import PdfViewer from '../PdfViewer'
+import { getFileAction } from 'src/redux/features/fileUrlSlice'
 
 const renderName = row => {
   if (row.avatar) {
@@ -315,6 +317,10 @@ const CustomTable = props => {
                 disableRowSelectionOnClick
                 getRowId={row => row.id}
                 onRowClick={params => console.log(params)}
+                onRowDoubleClick={params => {
+                  dispatch(getFileAction({ fileUrl: params.row.invoiceurl }))
+                  setPreviewPO(true)
+                }}
                 componentsProps={{
                   row: {
                     onMouseEnter: event => {
@@ -409,6 +415,27 @@ const CustomTable = props => {
               <Typography variant='inherit'>{eventData?.description}</Typography>
             </Grid>
           </Grid>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={previewPO} onClose={() => setPreviewPO(false)} fullWidth maxWidth='md'>
+        <DialogTitle id='customized-dialog-title'>Details</DialogTitle>
+        <Tooltip title='CLOSE'>
+          <IconButton
+            aria-label='close'
+            onClick={() => setPreviewPO(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: theme => theme.palette.grey[500]
+            }}
+          >
+            <Close />
+          </IconButton>
+        </Tooltip>
+
+        <DialogContent dividers sx={{ height: '80vh' }}>
+          <PdfViewer />
         </DialogContent>
       </Dialog>
       <UploadInvoices open={showInvoicesForm} setOpen={setShowInvoicesForm} />
