@@ -2,7 +2,7 @@ const navigation = () => [
   {
     title: 'Dashboard',
     path: '/dashboard',
-    icon: 'tabler:smart-home'
+    icon: 'tabler:device-desktop-analytics'
   },
 
   {
@@ -13,7 +13,7 @@ const navigation = () => [
   {
     path: '/poSummary',
     title: 'PO Summary',
-    icon: 'tabler:shield'
+    icon: 'tabler:briefcase'
   },
   {
     path: '/invoices',

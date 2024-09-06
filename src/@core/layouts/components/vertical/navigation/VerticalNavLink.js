@@ -114,11 +114,13 @@ const VerticalNavLink = ({
             }
           }}
           sx={{
+            justifyContent: 'center',
+            m: 1,
             py: 2,
             ...(item.disabled ? { pointerEvents: 'none' } : { cursor: 'pointer' }),
-            px: navCollapsed && !navHover ? (collapsedNavWidth - navigationBorderWidth - 22 - 28) / 8 : 4,
+            // px: navCollapsed && !navHover ? (collapsedNavWidth - navigationBorderWidth - 22 - 28) / 8 : 4,
             '& .MuiTypography-root, & svg': {
-              color: 'white'
+              // color: 'white'
             }
           }}
         >

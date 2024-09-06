@@ -479,7 +479,7 @@ const CustomTable = props => {
       </Paper>
       {/* ---------- view events  detail dialog */}
       <Dialog open={previewPO} onClose={() => setPreviewPO(false)} fullWidth maxWidth='md'>
-        <DialogTitle id='customized-dialog-title'>PO Details</DialogTitle>
+        <DialogTitle id='customized-dialog-title'>Details</DialogTitle>
         <Tooltip title='CLOSE'>
           <IconButton
             aria-label='close'

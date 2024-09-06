@@ -1,101 +1,65 @@
-import { CircularProgress } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+// components/PdfViewer.js
+import React, { useEffect, useRef, useState } from 'react'
+import { PdfViewerComponent } from '@syncfusion/ej2-react-pdfviewer'
 import { useSelector } from 'react-redux'
 
-export default function PdfViewer() {
-  const viewerRef = useRef(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const fileData = useSelector(state => state.file.fileData)
+const PdfViewer = () => {
+  const pdfViewerRef = useRef(null)
+  const { fileData, fileDataIsSuccess } = useSelector(state => state.file)
+  const [pdfBlobUrl, setPdfBlobUrl] = useState('')
 
-  const downloadBlob = (blob, filename) => {
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+  function arrayBufferToBase64(arrayBuffer) {
+    // Convert ArrayBuffer to a binary string
+    const uint8Array = new Uint8Array(arrayBuffer)
+    let binaryString = ''
+    for (let i = 0; i < uint8Array.byteLength; i++) {
+      binaryString += String.fromCharCode(uint8Array[i])
+    }
+
+    // Encode binary string to Base64
+    return btoa(binaryString)
   }
 
   useEffect(() => {
-    const initializeViewer = async () => {
-      if (!fileData) return
+    if (fileDataIsSuccess && fileData) {
+      // Convert ArrayBuffer to Base64
+      const base64 = arrayBufferToBase64(fileData)
 
-      try {
-        const WebViewer = (await import('@pdftron/webviewer')).default
+      // Create a Blob URL from Base64
+      // const blobUrl = base64ToBlobUrl(base64, 'application/pdf')
 
-        WebViewer(
-          {
-            path: '/webviewer/lib',
-            licenseKey: 'demo:1723009532106:7e7959410300000000cea9ba88d3d46cbf78c57e456d68bdacb7905378',
-            initialDoc: '/sample.pdf'
-          },
-          viewerRef.current
-        )
-          .then(instance => {
-            if (fileData instanceof Blob) {
-              instance.UI.loadDocument(fileData, { filename: 'myfile.pdf' })
-            } else if (fileData instanceof ArrayBuffer) {
-              const blob = new Blob([fileData], { type: 'application/pdf' })
-              console.log(blob)
-              instance.UI.loadDocument(blob, { filename: 'myfile.pdf' })
-            } else if (fileData && typeof fileData.blob === 'function') {
-              fileData.blob().then(blob => {
-                instance.UI.loadDocument(blob, { filename: 'myfile.pdf' })
-              })
-            } else {
-              throw new Error('Unsupported fileData format')
-            }
+      // Set the Blob URL to state
+      pdfViewerRef.current.load('data:application/pdf;base64,' + base64, null)
+      // setPdfBlobUrl(blobUrl)
 
-            setLoading(false)
-          })
-          .catch(e => {
-            console.error('Error initializing WebViewer:', e)
-            setError('Error initializing PDF viewer. The file might not be linearized or supported.')
-            setLoading(false)
-          })
-      } catch (error) {
-        console.error('Error loading WebViewer module:', error)
-        setError('Failed to load the PDF viewer module.')
-        setLoading(false)
+      // Cleanup the Blob URL when component unmounts or fileData changes
+      return () => {
+        // URL.revokeObjectURL(blobUrl)
       }
     }
+  }, [fileData, fileDataIsSuccess])
 
-    initializeViewer()
-  }, [fileData])
+  // useEffect(() => {
+  //   if (pdfViewerRef.current && pdfBlobUrl) {
+  //     try {
+  //       pdfViewerRef.current.load(pdfBlobUrl)
+  //     } catch (e) {
+  //       console.error('Error loading PDF:', e)
+  //     }
+  //   }
+  // }, [pdfBlobUrl])
 
   return (
-    <>
-      {loading && (
-        <div
-          style={{
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <CircularProgress />
-        </div>
-      )}
-      {error && (
-        <div
-          style={{
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: 'red'
-          }}
-        >
-          {error}
-        </div>
-      )}
-      <div className='MyComponent' style={{ height: '100%' }}>
-        <div className='webviewer' ref={viewerRef} style={{ height: '100%' }}></div>
-      </div>
-    </>
+    <div style={{ height: '100%' }}>
+      <PdfViewerComponent
+        style={{ height: '100%' }}
+        ref={pdfViewerRef}
+        id='pdfViewer'
+        serviceUrl='https://ej2services.syncfusion.com/production/web-services/api/pdfviewer' // Ensure this is correct
+        documentPath={pdfBlobUrl}
+      />
+    </div>
   )
 }
+
+export default PdfViewer

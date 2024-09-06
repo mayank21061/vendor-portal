@@ -72,7 +72,7 @@ const BlankLayoutAppBar = () => {
               d='M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z'
             />
           </svg>
-          <Typography variant='h4' sx={{ ml: 2.5, fontWeight: 700, lineHeight: '24px' }}>
+          <Typography variant='h4' sx={{ ml: 2.5, fontWeight: 600, lineHeight: '24px' }}>
             {themeConfig.templateName}
           </Typography>
         </LinkStyled>

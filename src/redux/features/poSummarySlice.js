@@ -20,7 +20,13 @@ const initialState = {
   poInvoicesDataIsLoading: false,
   poInvoicesDataIsError: false,
   poInvoicesDataError: '',
-  poInvoicesDataIsSuccess: false
+  poInvoicesDataIsSuccess: false,
+
+  poInvoicesDetailsData: '',
+  poInvoicesDetailsDataIsLoading: false,
+  poInvoicesDetailsDataIsError: false,
+  poInvoicesDetailsDataError: '',
+  poInvoicesDetailsDataIsSuccess: false
 }
 
 export const getPoSummaryAction = createAsyncThunkWithTokenRefresh(
@@ -54,6 +60,18 @@ export const getPoInvoicesAction = createAsyncThunkWithTokenRefresh(
   }
 )
 
+export const getPoInvoicesDetailsAction = createAsyncThunkWithTokenRefresh(
+  'poSummary/getPoInvoicesDetailsAction',
+  async (token, currentUser, payload) => {
+    console.log(payload)
+    const headers = {}
+    return axios.get(
+      `/call/vendor/Vendorportal/poSummary/invoiceagainstpo/?poNumber=${payload.poNumber}`,
+      createAxiosConfig(token, currentUser, headers)
+    )
+  }
+)
+
 export const poSummarySlice = createSlice({
   name: 'poSummary',
   initialState,
@@ -78,6 +96,13 @@ export const poSummarySlice = createSlice({
       state.poInvoicesDataIsError = false
       state.poInvoicesDataError = ''
       state.poInvoicesDataIsSuccess = false
+    },
+    resetGetInvoicesDetails(state) {
+      state.poInvoicesDetailsData = ''
+      state.poInvoicesDetailsDataIsLoading = false
+      state.poInvoicesDetailsDataIsError = false
+      state.poInvoicesDetailsDataError = ''
+      state.poInvoicesDetailsDataIsSuccess = false
     }
   },
   extraReducers(builder) {
@@ -145,6 +170,28 @@ export const poSummarySlice = createSlice({
         state.poInvoicesDataIsError = true
         state.poInvoicesDataError = action.error.message
         state.poInvoicesDataIsSuccess = false
+      })
+
+      .addCase(getPoInvoicesDetailsAction.pending, state => {
+        state.poInvoicesDetailsData = ''
+        state.poInvoicesDetailsDataIsLoading = true
+        state.poInvoicesDetailsDataIsError = false
+        state.poInvoicesDetailsDataError = ''
+        state.poInvoicesDetailsDataIsSuccess = false
+      })
+      .addCase(getPoInvoicesDetailsAction.fulfilled, (state, action) => {
+        state.poInvoicesDetailsData = action.payload
+        state.poInvoicesDetailsDataIsLoading = false
+        state.poInvoicesDetailsDataIsError = false
+        state.poInvoicesDetailsDataError = ''
+        state.poInvoicesDetailsDataIsSuccess = true
+      })
+      .addCase(getPoInvoicesDetailsAction.rejected, (state, action) => {
+        state.poInvoicesDetailsData = ''
+        state.poInvoicesDetailsDataIsLoading = false
+        state.poInvoicesDetailsDataIsError = true
+        state.poInvoicesDetailsDataError = action.error.message
+        state.poInvoicesDetailsDataIsSuccess = false
       })
 
     //

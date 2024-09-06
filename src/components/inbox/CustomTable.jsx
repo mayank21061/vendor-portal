@@ -30,10 +30,12 @@ import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { Add, History } from '@mui/icons-material'
-import { getInboxAction } from 'src/redux/features/inboxSlice'
+import { getInboxAction, getInvoiceHistoryAction } from 'src/redux/features/inboxSlice'
 import HistoryPreview from './HistoryPreview'
 import FilePreview from './FilePreview'
 import { getFileAction } from 'src/redux/features/fileUrlSlice'
+import { setTableStateAction } from 'src/redux/features/tableSlice'
+import { ClassNames } from '@emotion/react'
 
 const renderName = row => {
   if (row.avatar) {
@@ -73,61 +75,14 @@ const CustomInput = forwardRef((props, ref) => {
 
 const CustomTable = props => {
   const data = useSelector(state => state.inbox.inboxData?.content || [])
-  // const data = [
-  //   {
-  //     id: '1',
-  //     poNumber: '123456',
-  //     invoiceNumber: '789012',
-  //     invoiceAmount: '25000',
-  //     status: 'Pending',
-  //     deliveryPlant: 'Delhi'
-  //   },
-  //   {
-  //     id: '2',
-  //     poNumber: '654321',
-  //     invoiceNumber: '345678',
-  //     invoiceAmount: '30000',
-  //     status: 'Completed',
-  //     deliveryPlant: 'Mumbai'
-  //   },
-  //   {
-  //     id: '3',
-  //     poNumber: '112233',
-  //     invoiceNumber: '998877',
-  //     invoiceAmount: '15000',
-  //     status: 'In Progress',
-  //     deliveryPlant: 'Chennai'
-  //   },
-  //   {
-  //     id: '4',
-  //     poNumber: '445566',
-  //     invoiceNumber: '776655',
-  //     invoiceAmount: '40000',
-  //     status: 'Pending',
-  //     deliveryPlant: 'Kolkata'
-  //   },
-  //   {
-  //     id: '5',
-  //     poNumber: '778899',
-  //     invoiceNumber: '223344',
-  //     invoiceAmount: '50000',
-  //     status: 'Completed',
-  //     deliveryPlant: 'Bangalore'
-  //   },
-  //   {
-  //     id: '6',
-  //     poNumber: '990011',
-  //     invoiceNumber: '554433',
-  //     invoiceAmount: '35000',
-  //     status: 'In Progress',
-  //     deliveryPlant: 'Hyderabad'
-  //   }
-  // ]
+
   const theme = useTheme()
 
   const getFontColor = () => (theme.palette.mode === 'dark' ? '#fff' : 'text.primary')
 
   const { inboxDataIsLoading, inboxDataIsError, inboxDataError, inboxDataIsSuccess } = useSelector(state => state.inbox)
+  const { pageNumber, pageSize } = useSelector(state => state.table)
+  console.log(pageNumber, pageSize)
 
   const dispatch = useDispatch()
 
@@ -219,8 +174,6 @@ const CustomTable = props => {
       headerName: 'PO NUMBER ',
       headerAlign: 'center',
       align: 'center',
-      headerClassName: styles.customheader,
-
       renderCell: ({ row }) => (
         <div
           style={{
@@ -249,7 +202,6 @@ const CustomTable = props => {
       minWidth: 170,
       headerName: 'Invoice Number',
       headerAlign: 'left',
-      headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
         <Box
@@ -281,7 +233,6 @@ const CustomTable = props => {
       minWidth: 170,
       headerName: 'Invoice Amount',
       headerAlign: 'left',
-      headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
         <Box
@@ -311,9 +262,8 @@ const CustomTable = props => {
       flex: 0.1,
       minWidth: 150,
       field: 'date',
-      headerName: 'Invoice DATE',
+      headerName: 'Recieved On',
       headerAlign: 'center',
-      headerClassName: styles.customheader,
 
       align: 'center',
       renderCell: ({ row }) => (
@@ -341,42 +291,10 @@ const CustomTable = props => {
     {
       flex: 0.1,
       minWidth: 50,
-      field: 'status',
-      headerName: 'status',
-      headerAlign: 'center',
-      align: 'center',
-      headerClassName: styles.customheader,
-
-      renderCell: ({ row }) => (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          <Typography
-            sx={{
-              color: hoverdRowId == row.id ? 'black' : getFontColor(),
-              fontWeight: hoverdRowId == row.id ? 600 : 500
-            }}
-          >
-            {row.status}
-          </Typography>
-        </div>
-      )
-    },
-    {
-      flex: 0.1,
-      minWidth: 50,
       field: 'referenceNo',
-      headerName: 'EIC ',
+      headerName: 'Recieved From ',
       headerAlign: 'center',
       align: 'center',
-      headerClassName: styles.customheader,
 
       renderCell: ({ row }) => (
         <div
@@ -399,127 +317,43 @@ const CustomTable = props => {
           </Typography>
         </div>
       )
+    },
+    {
+      flex: 0.1,
+      minWidth: 50,
+      field: 'status',
+      headerName: 'status',
+      headerAlign: 'center',
+      align: 'center',
+
+      renderCell: ({ row }) => (
+        <div
+          style={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+        >
+          <Typography
+            sx={{
+              color: hoverdRowId == row.id ? 'black' : getFontColor(),
+              fontWeight: hoverdRowId == row.id ? 600 : 500
+            }}
+          >
+            {row.status}
+          </Typography>
+        </div>
+      )
     }
-    // {
-    //   sortable: false,
-    //   field: 'actions',
-    //   headerName: '',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   headerClassName: styles.customheader,
-    //   renderCell: ({ row }) =>
-    //     hoverdRowId !== null &&
-    //     hoverdRowId === row.id && (
-    //       <>
-    //         <Tooltip title='View Details'>
-    //           <IconButton
-    //             onClick={() => {
-    //               handlePreviewFile(row.id)
-    //               dispatch(getFileAction({ fileUrl: row.invoiceurl }))
-    //             }}
-    //           >
-    //             <VisibilityIcon
-    //               style={{
-    //                 width: '1.2rem',
-    //                 height: '1.2rem',
-    //                 color: '#014361'
-    //               }}
-    //             />
-    //           </IconButton>
-    //         </Tooltip>
-    //         {/* <Tooltip title='History'>
-    //           <IconButton
-    //             onClick={() => {
-    //               handlePreviewHistory(row.id)
-    //             }}
-    //           >
-    //             <History
-    //               style={{
-    //                 width: '1.2rem',
-    //                 height: '1.2rem',
-    //                 color: '#014361'
-    //               }}
-    //             />
-    //           </IconButton>
-    //         </Tooltip> */}
-    //       </>
-    //     )
-    // }
   ]
 
   return (
     <>
-      <Paper elevation={24} sx={{ height: '89vh', overflowY: 'auto' }}>
-        <Grid container spacing={2} sx={{}}>
-          {/* <Grid
-            item
-            xs={12}
-            style={{
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'flex-end'
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'end',
-                gap: '10px',
-                flexWrap: 'wrap',
-                marginTop: '.5rem'
-              }}
-            >
-              <div style={{ minWidth: '18vw' }}>
-                <DatePickerWrapper>
-                  <ReactDatePicker
-                    showYearDropdown
-                    isClearable
-                    selectsRange
-                    monthsShown={2}
-                    endDate={endDateRange}
-                    selected={startDateRange}
-                    startDate={startDateRange}
-                    shouldCloseOnSelect={false}
-                    id='date-range-picker-months'
-                    onChange={handleOnChangeRange}
-                    customInput={
-                      <CustomInput
-                        dates={dates}
-                        setDates={setDates}
-                        label='Select Date Range'
-                        end={endDateRange}
-                        start={startDateRange}
-                      />
-                    }
-                  />
-                </DatePickerWrapper>
-              </div>
-              <div style={{ minWidth: '20vw' }}>
-                <CustomTextField
-                  fullWidth
-                  value={value}
-                  placeholder='Search'
-                  onChange={e => handleFilter(e.target.value)}
-                  style={{ marginTop: '18px' }}
-                />
-              </div>
-              <FormControl sx={{ borderRadius: '.8rem', width: '10vw' }} size='small'>
-                <Select
-                  labelId='demo-select-small-label'
-                  id='demo-select-small'
-                  value={filterType}
-                  onChange={handleChangeFilter}
-                >
-                  {filters.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-          </Grid> */}
+      <Paper elevation={24} sx={{ m: 1 }}>
+        <Grid container spacing={0}>
           {inboxDataIsLoading ? (
             <Box sx={{ width: '100%', marginTop: '40px' }}>
               <LinearProgress />
@@ -531,13 +365,17 @@ const CustomTable = props => {
           ) : inboxDataIsSuccess ? (
             <Grid item xs={12}>
               <DataGrid
-                sx={{ height: '89vh' }}
+                sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
                 rows={data || []}
                 rowHeight={62}
                 columnHeaderHeight={40}
                 columns={columns}
                 disableRowSelectionOnClick
-                onRowDoubleClick={row => handlePreviewFile(row.row)}
+                onRowDoubleClick={row => {
+                  handlePreviewFile(row.row)
+                  setSelectedRow(row.row)
+                  dispatch(getInvoiceHistoryAction({ invoiceNumber: row.row.invoiceNumber, id: row.row.id }))
+                }}
                 onRowSelectionModelChange={newRowSelectionModel => {
                   setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
                 }}
@@ -555,8 +393,10 @@ const CustomTable = props => {
                   }
                 }}
                 pageSizeOptions={[7, 10, 25, 50]}
-                paginationModel={paginationModel}
-                onPaginationModelChange={setPaginationModel}
+                paginationModel={{ page: pageNumber, pageSize }}
+                onPaginationModelChange={e =>
+                  dispatch(setTableStateAction({ pageSize: e.pageSize, pageNumber: e.page }))
+                }
               />
             </Grid>
           ) : (
@@ -565,7 +405,7 @@ const CustomTable = props => {
         </Grid>
       </Paper>
       <HistoryPreview open={previewHistory} setOpen={setPreviewHistory} />
-      <FilePreview open={previewFile} setOpen={setPreviewFile} />
+      <FilePreview open={previewFile} setOpen={setPreviewFile} rowData={selectedRow} />
     </>
   )
 }

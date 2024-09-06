@@ -22,12 +22,13 @@ import UserDropdown from './components/shared-components/UserDropdown'
 import backgroundImage from '../../assets/newimage.jpg'
 
 const VerticalLayoutWrapper = styled('div')(({ settings }) => {
-  const backgroundImageSrc =  `url(${backgroundImage?.src})`
+  const backgroundImageSrc = `url(${backgroundImage?.src})`
 
   return {
     height: '100%',
     display: 'flex',
-    backgroundImage: backgroundImageSrc,
+    // backgroundImage: backgroundImageSrc,
+    // backgroundColor: '#f8f8f8',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
     backgroundSize: 'cover'

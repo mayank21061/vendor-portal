@@ -44,6 +44,7 @@ import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
 import _debounce from 'lodash/debounce'
 import { resetTableAction, setTableStateAction } from 'src/redux/features/tableSlice'
 import { getInboxAction } from 'src/redux/features/inboxSlice'
+import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
 
 // const LatestInfoDropdown = dynamic(() => import('./LatestInfoDropdown'), {
 //   loading: () => (
@@ -74,8 +75,8 @@ const AppBarContent = props => {
     textDecoration: 'none',
     '& svg': {
       mr: 2.5,
-      fontSize: '1.5rem',
-      color: settings.mode === 'dark' ? '' : '#fff'
+      fontSize: '1.5rem'
+      // color: settings.mode === 'dark' ? '' : '#fff'
     }
   }
 
@@ -100,6 +101,7 @@ const AppBarContent = props => {
   const [selectedRole, setSelectedRole] = useState({})
 
   useEffect(() => {
+    setValue('')
     dispatch(resetTableAction())
   }, [currentPath])
 
@@ -116,6 +118,12 @@ const AppBarContent = props => {
     })
   )
 
+  const getDebouceInvoices = useCallback(
+    _debounce(search => {
+      dispatch(getInvoicesAction({ pageNumber, pageSize, search, fromDate, toDate, filterBy: filterType }))
+    })
+  )
+
   useEffect(() => {
     setUsers(localStorage.getItem('username'))
     if (currentPath == 'poSummary') {
@@ -129,6 +137,13 @@ const AppBarContent = props => {
         getDebounceInbox(value)
       } else {
         dispatch(getInboxAction({ pageNumber, pageSize, search: value, fromDate, toDate, filterBy: filterType }))
+      }
+    } else if (currentPath == 'invoices') {
+      if (value) {
+        getDebouceInvoices(value)
+      } else {
+        console.log(pageNumber, pageSize, value, fromDate, toDate, filterType)
+        dispatch(getInvoicesAction({ pageNumber, pageSize, search: value, fromDate, toDate, filterBy: filterType }))
       }
     }
   }, [pageNumber, pageSize, filterType, fromDate, toDate, value, currentPath])
@@ -157,7 +172,10 @@ const AppBarContent = props => {
     dispatch(setTableStateAction({ filterType: e.target.value }))
   }
 
-  const filters = ['All', 'New', 'Pending', 'Closed']
+  const filters =
+    currentPath === 'invoices'
+      ? ['All', 'Submitted', 'With EIC', 'EIC Approved', 'With Finance', 'Finance Approved', 'With Bank', 'Paid']
+      : ['All', 'New', 'Pending', 'Closed']
 
   return (
     <>
@@ -172,14 +190,11 @@ const AppBarContent = props => {
         <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
           {hidden ? (
             <IconButton sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
-              <Icon fontSize='1.5rem' icon='tabler:menu-2' color={settings.mode === 'dark' ? '' : '#fff'} />
+              <Icon fontSize='1.5rem' icon='tabler:menu-2' />
             </IconButton>
           ) : null}
         </Box>
-        <Typography
-          variant='body1'
-          sx={{ textTransform: 'uppercase', fontWeight: 600, color: settings.mode === 'dark' ? '' : '#ffffffd6' }}
-        >
+        <Typography variant='body1' sx={{ textTransform: 'uppercase', fontWeight: 600 }}>
           {router.pathname.split('/')[1] == 'poSummary'
             ? 'PO SUMMARY'
             : router.pathname.split('/')[1] == 'latestinfo'
@@ -238,13 +253,16 @@ const AppBarContent = props => {
               </div>
             )}
             {router.pathname.split('/')[1] != 'dashboard' && (
-              <FormControl sx={{ borderRadius: '.8rem', width: '10vw', marginRight: '1rem' }} size='small'>
+              <FormControl
+                sx={{ borderRadius: '.8rem', width: '10vw', marginRight: '1rem', bgcolor: 'white' }}
+                size='small'
+              >
                 <Select
                   labelId='demo-select-small-label'
                   id='demo-select-small'
                   value={filterType}
                   onChange={handleChangeFilter}
-                  sx={{ backgroundColor: 'white', borderRadius: '.5rem' }}
+                  sx={{ borderRadius: '.5rem' }}
                 >
                   {filters.map((item, index) => (
                     <MenuItem key={index} value={item}>

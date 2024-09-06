@@ -73,7 +73,7 @@ const LayoutAppBar = props => {
         sx={{
           display: 'flex',
           flexGrow: 1,
-          background: background
+          // background: background
         }}
       >
         <AppBar position='static'>
