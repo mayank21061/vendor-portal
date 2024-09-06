@@ -280,12 +280,12 @@ export default function CollapsibleTable() {
                     <TableCell align='left'>
                       {'PO Date'}
                       <IconButton onClick={handleClick('bottom')}>
-                        <CalendarMonth />
+                        <CalendarMonth sx={{ fontSize: 'medium' }} />
                       </IconButton>
                     </TableCell>
                     <Popper
                       // Note: The following zIndex style is specifically for documentation purposes and may not be necessary in your application.
-                      sx={{ zIndex: 1200, width: "45vw", paddingLeft: "10rem" }}
+                      sx={{ zIndex: 1200, width: '45vw', paddingLeft: '10rem' }}
                       open={open}
                       anchorEl={anchorEl}
                       placement={placement}

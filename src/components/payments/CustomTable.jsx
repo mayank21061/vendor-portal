@@ -13,11 +13,13 @@ import {
   DialogContent,
   DialogTitle,
   Fab,
+  Fade,
   FormControl,
   Grid,
   IconButton,
   MenuItem,
   Paper,
+  Popper,
   Select,
   Tooltip,
   useTheme
@@ -31,14 +33,12 @@ import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { getPoSummaryAction } from 'src/redux/features/poSummarySlice'
-import { Add, Close, Receipt } from '@mui/icons-material'
+import { Add, CalendarMonth, Receipt } from '@mui/icons-material'
 import styles from './invoices.module.css'
 import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
 import UploadInvoices from './UploadInvoices'
 import _debounce from 'lodash/debounce'
 import { setTableStateAction } from 'src/redux/features/tableSlice'
-import PdfViewer from '../PdfViewer'
-import { getFileAction } from 'src/redux/features/fileUrlSlice'
 
 const renderName = row => {
   if (row.avatar) {
@@ -79,9 +79,6 @@ const CustomTable = props => {
   console.log(invoicesData)
   const { pageNumber, pageSize } = useSelector(state => state.table)
 
-  const [dates, setDates] = useState([])
-  const [endDateRange, setEndDateRange] = useState(new Date())
-  const [startDateRange, setStartDateRange] = useState(new Date())
   const [hoverdRowId, setHoveredId] = useState(null)
   const [eventData, seteventData] = useState({})
   const [showeventDetail, setShoweventDetail] = useState(false)
@@ -89,6 +86,11 @@ const CustomTable = props => {
   const [filterType, setFilterType] = useState('All')
   const [previewPO, setPreviewPO] = useState(false)
   const [fileUrl, setFileUrl] = useState(null)
+  const { toDate, fromDate } = useSelector(state => state.table)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [open, setOpen] = useState(false)
+  const [placement, setPlacement] = useState()
+  const [dates, setDates] = useState([])
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -96,31 +98,12 @@ const CustomTable = props => {
     return formattedDate
   }
 
-  // useEffect(() => {
-  //   const payload = {
-  //     search: value,
-  //     fromDate: moment(startDateRange).format('YYYY-MM-DD'),
-  //     toDate: moment(endDateRange).format('YYYY-MM-DD'),
-  //     filterBy: filterType
-  //   }
-  //   if (startDateRange && endDateRange) dispatch(getInvoicesAction(payload))
-  // }, [value, endDateRange, startDateRange, filterType])
-
   const getInvoicesDataDebounce = useCallback(
     _debounce((value, filterType) => {
       dispatch(getInvoicesAction(value, filterType))
     }, 1000),
     []
   )
-
-  const handleOnChangeRange = dates => {
-    const [start, end] = dates
-    if (start !== null && end !== null) {
-      setDates(dates)
-    }
-    setStartDateRange(start)
-    setEndDateRange(end)
-  }
 
   const handleViewPDF = (e, rowData) => {
     setFileUrl(rowData.docUrl)
@@ -147,6 +130,22 @@ const CustomTable = props => {
     'Paid'
   ]
 
+  const handleClick = newPlacement => event => {
+    setAnchorEl(event.currentTarget)
+    setOpen(prev => placement !== newPlacement || !prev)
+    setPlacement(newPlacement)
+  }
+
+  const handleOnChangeRange = dates => {
+    const [start, end] = dates
+    if (start !== null && end !== null) {
+      setDates(dates)
+    }
+    dispatch(setTableStateAction({ fromDate: start, toDate: end }))
+    // setStartDateRange(start)
+    // setEndDateRange(end)
+  }
+
   const columns = [
     {
       flex: 0.1,
@@ -169,7 +168,15 @@ const CustomTable = props => {
     {
       flex: 0.1,
       field: 'date',
-      headerName: 'DATE',
+      renderHeader: () => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Typography sx={{ marginRight: '4px' }}>DATE</Typography>
+
+          <IconButton onClick={handleClick('bottom')}>
+            <CalendarMonth sx={{ fontSize: 'medium' }} />
+          </IconButton>
+        </div>
+      ),
       renderCell: ({ row }) => {
         const date = new Date(row.invoiceDate)
         const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }
@@ -285,68 +292,64 @@ const CustomTable = props => {
 
   return (
     <>
-      <Paper elevation={24} sx={{ m: 1 }}>
-        <Grid container spacing={0}>
-          <Grid
-            item
-            xs={12}
-            style={{
-              display: 'flex',
-              width: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          ></Grid>
-          {invoicesDataIsLoading ? (
-            <Box sx={{ width: '100%', marginTop: '40px' }}>
-              <LinearProgress />
-            </Box>
-          ) : invoicesDataIsError ? (
-            <>
-              <h1>{invoicesDataError}</h1>
-            </>
-          ) : invoicesDataIsSuccess ? (
-            <Grid item xs={12}>
-              <Paper elevation={10}>
-                <DataGrid
-                  sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
-                  rows={data || []}
-                  rowHeight={62}
-                  columnHeaderHeight={40}
-                  columns={columns}
-                  disableRowSelectionOnClick
-                  getRowId={row => row.id}
-                  onRowClick={params => console.log(params)}
-                  onRowDoubleClick={params => {
-                    dispatch(getFileAction({ fileUrl: params.row.invoiceurl }))
-                    setPreviewPO(true)
-                  }}
-                  componentsProps={{
-                    row: {
-                      onMouseEnter: event => {
-                        const id = event.currentTarget.dataset.id
-                        const hoveredRow = data || [].find(row => row.id === Number(id))
-                        setHoveredId(id)
-                      },
-                      onMouseLeave: event => {
-                        setHoveredId(null)
-                      }
+      {/* <Paper elevation={24} sx={{ height: '85vh', overflowY: 'auto' }}> */}
+      <Grid container spacing={2}>
+        <Grid
+          item
+          xs={12}
+          style={{
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
+        ></Grid>
+        {invoicesDataIsLoading ? (
+          <Box sx={{ width: '100%', marginTop: '40px' }}>
+            <LinearProgress />
+          </Box>
+        ) : invoicesDataIsError ? (
+          <>
+            <h1>{invoicesDataError}</h1>
+          </>
+        ) : invoicesDataIsSuccess ? (
+          <Grid item xs={12}>
+            <Paper elevation={10}>
+              <DataGrid
+                sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
+                rows={data || []}
+                rowHeight={62}
+                columnHeaderHeight={40}
+                columns={columns}
+                disableRowSelectionOnClick
+                getRowId={row => row.id}
+                onRowClick={params => console.log(params)}
+                componentsProps={{
+                  row: {
+                    onMouseEnter: event => {
+                      const id = event.currentTarget.dataset.id
+                      const hoveredRow = data || [].find(row => row.id === Number(id))
+                      setHoveredId(id)
+                    },
+                    onMouseLeave: event => {
+                      setHoveredId(null)
                     }
-                  }}
-                  rowCount={invoicesData?.totalElements}
-                  pageSizeOptions={[7, 10, 25, 50]}
-                  paginationModel={{ page: pageNumber, pageSize }}
-                  onPaginationModelChange={e => {
-                    dispatch(setTableStateAction({ pageSize: e.pageSize, pageNumber: e.page }))
-                  }}
-                />
-              </Paper>
-            </Grid>
-          ) : (
-            ''
-          )}
-        </Grid>
-      </Paper>
+                  }
+                }}
+                rowCount={invoicesData?.totalElements}
+                pageSizeOptions={[7, 10, 25, 50]}
+                paginationModel={{ page: pageNumber, pageSize }}
+                onPaginationModelChange={e => {
+                  dispatch(setTableStateAction({ pageSize: e.pageSize, pageNumber: e.page }))
+                }}
+              />
+            </Paper>
+          </Grid>
+        ) : (
+          ''
+        )}
+      </Grid>
+      {/* </Paper> */}
       <Tooltip title='CREATE INVOICE'>
         <Fab
           color='primary'
@@ -417,28 +420,51 @@ const CustomTable = props => {
           </Grid>
         </DialogContent>
       </Dialog>
-      <Dialog open={previewPO} onClose={() => setPreviewPO(false)} fullWidth maxWidth='md'>
-        <DialogTitle id='customized-dialog-title'>Details</DialogTitle>
-        <Tooltip title='CLOSE'>
-          <IconButton
-            aria-label='close'
-            onClick={() => setPreviewPO(false)}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: theme => theme.palette.grey[500]
-            }}
-          >
-            <Close />
-          </IconButton>
-        </Tooltip>
-
-        <DialogContent dividers sx={{ height: '80vh' }}>
-          <PdfViewer />
-        </DialogContent>
-      </Dialog>
       <UploadInvoices open={showInvoicesForm} setOpen={setShowInvoicesForm} />
+
+      {/* ---------------- popover for calander  */}
+
+      <Popper
+        // Note: The following zIndex style is specifically for documentation purposes and may not be necessary in your application.
+        sx={{ zIndex: 1200, width: '45vw', paddingLeft: '10rem' }}
+        open={open}
+        anchorEl={anchorEl}
+        placement={placement}
+        transition
+      >
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Box width={250}>
+              <Paper>
+                <DatePickerWrapper>
+                  <ReactDatePicker
+                    className={styles.datePicker}
+                    showYearDropdown
+                    isClearable
+                    selectsRange
+                    monthsShown={2}
+                    endDate={new Date(toDate)}
+                    selected={new Date(fromDate)}
+                    startDate={new Date(fromDate)}
+                    shouldCloseOnSelect={false}
+                    id='date-range-picker-months'
+                    onChange={handleOnChangeRange}
+                    customInput={
+                      <CustomInput
+                        dates={dates}
+                        setDates={setDates}
+                        label='Select Date Range'
+                        end={new Date(toDate)}
+                        start={new Date(fromDate)}
+                      />
+                    }
+                  />
+                </DatePickerWrapper>
+              </Paper>
+            </Box>
+          </Fade>
+        )}
+      </Popper>
     </>
   )
 }

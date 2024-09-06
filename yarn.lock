@@ -928,7 +928,7 @@
   dependencies:
     tslib "^2.4.0"
 
-"@syncfusion/ej2-base@~26.2.10":
+"@syncfusion/ej2-base@^26.2.10", "@syncfusion/ej2-base@~26.2.10":
   version "26.2.10"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-base/-/ej2-base-26.2.10.tgz#49b7bb04416974d64bc3c2c3dd5915be93766545"
   integrity sha512-i7TCvXGNsHmCoLA9AlHn3dIAyH8Bce6KCZUGshJS0EKu623SkVKjvWVWtgfar75/8SbTGWZQlGqEW5egYm3uTA==

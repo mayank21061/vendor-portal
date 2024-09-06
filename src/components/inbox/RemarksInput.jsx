@@ -1,5 +1,5 @@
 import { AttachFile, Send } from '@mui/icons-material'
-import { Box, Button, Chip, IconButton, TextField, Tooltip } from '@mui/material'
+import { Box, Button, Chip, IconButton, TextareaAutosize, TextField, Tooltip } from '@mui/material'
 import React, { useRef, useState } from 'react'
 import styles from './inbox.module.css'
 import { useDispatch } from 'react-redux'
@@ -32,7 +32,15 @@ const RemarksInput = () => {
 
   return (
     <div className={styles.inputActions}>
-      <input name='message' multiline type='text' value={note} onChange={e => setNote(e.target.value)} />
+      <TextareaAutosize
+        name='message'
+        minRows={2}
+        maxRows={4}
+        placeholder='Add your reply here'
+        type='text'
+        value={note}
+        onChange={e => setNote(e.target.value)}
+      />
       {files != null ? (
         <Chip label={files.name} onDelete={() => setFiles(null)} />
       ) : (

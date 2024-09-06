@@ -11,11 +11,13 @@ import {
   DialogContent,
   DialogTitle,
   Fab,
+  Fade,
   FormControl,
   Grid,
   IconButton,
   MenuItem,
   Paper,
+  Popper,
   Select,
   Tooltip,
   useTheme
@@ -29,8 +31,8 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
-import { Add, History } from '@mui/icons-material'
-import { getInboxAction, getInvoiceHistoryAction } from 'src/redux/features/inboxSlice'
+import { Add, CalendarMonth, History } from '@mui/icons-material'
+import { getInboxAction } from 'src/redux/features/inboxSlice'
 import HistoryPreview from './HistoryPreview'
 import FilePreview from './FilePreview'
 import { getFileAction } from 'src/redux/features/fileUrlSlice'
@@ -87,6 +89,7 @@ const CustomTable = props => {
   const dispatch = useDispatch()
 
   const [dates, setDates] = useState([])
+  const { toDate, fromDate } = useSelector(state => state.table)
   const [endDateRange, setEndDateRange] = useState(new Date())
   const [startDateRange, setStartDateRange] = useState(new Date())
   const [hoverdRowId, setHoveredId] = useState(null)
@@ -102,6 +105,9 @@ const CustomTable = props => {
   const [previewFile, setPreviewFile] = useState(false)
   const [previewHistory, setPreviewHistory] = useState(false)
   const [selectedRow, setSelectedRow] = useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [open, setOpen] = useState(false)
+  const [placement, setPlacement] = useState()
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
@@ -124,8 +130,8 @@ const CustomTable = props => {
     if (start !== null && end !== null) {
       setDates(dates)
     }
-    setStartDateRange(start)
-    setEndDateRange(end)
+    // setStartDateRange(start)
+    // setEndDateRange(end)
   }
 
   const handleFilter = val => {
@@ -165,6 +171,12 @@ const CustomTable = props => {
   console.log(hoverdRowId)
 
   const filters = ['All', 'New', 'Pending', 'Closed']
+
+  const handleClick = newPlacement => event => {
+    setAnchorEl(event.currentTarget)
+    setOpen(prev => placement !== newPlacement || !prev)
+    setPlacement(newPlacement)
+  }
 
   const columns = [
     {
@@ -262,7 +274,14 @@ const CustomTable = props => {
       flex: 0.1,
       minWidth: 150,
       field: 'date',
-      headerName: 'Recieved On',
+      renderHeader: () => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Typography sx={{ fontWeight: 'bold', marginRight: '4px' }}>Recieved On</Typography>
+          <IconButton onClick={handleClick('bottom')}>
+            <CalendarMonth sx={{ fontSize: 'medium' }} />
+          </IconButton>
+        </div>
+      ),
       headerAlign: 'center',
 
       align: 'center',
@@ -352,8 +371,8 @@ const CustomTable = props => {
 
   return (
     <>
-      <Paper elevation={24} sx={{ m: 1 }}>
-        <Grid container spacing={0}>
+      <Paper elevation={24} sx={{ height: '89vh', overflowY: 'auto' }}>
+        <Grid container spacing={2}>
           {inboxDataIsLoading ? (
             <Box sx={{ width: '100%', marginTop: '40px' }}>
               <LinearProgress />
@@ -374,7 +393,6 @@ const CustomTable = props => {
                 onRowDoubleClick={row => {
                   handlePreviewFile(row.row)
                   setSelectedRow(row.row)
-                  dispatch(getInvoiceHistoryAction({ invoiceNumber: row.row.invoiceNumber, id: row.row.id }))
                 }}
                 onRowSelectionModelChange={newRowSelectionModel => {
                   setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
@@ -406,6 +424,50 @@ const CustomTable = props => {
       </Paper>
       <HistoryPreview open={previewHistory} setOpen={setPreviewHistory} />
       <FilePreview open={previewFile} setOpen={setPreviewFile} rowData={selectedRow} />
+
+      {/* --------------- poper for calnder  */}
+
+      <Popper
+        // Note: The following zIndex style is specifically for documentation purposes and may not be necessary in your application.
+        sx={{ zIndex: 1200, width: '45vw', paddingLeft: '10rem' }}
+        open={open}
+        anchorEl={anchorEl}
+        placement={placement}
+        transition
+      >
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Box width={250}>
+              <Paper>
+                <DatePickerWrapper>
+                  <ReactDatePicker
+                    className={styles.datePicker}
+                    showYearDropdown
+                    isClearable
+                    selectsRange
+                    monthsShown={2}
+                    endDate={new Date(toDate)}
+                    selected={new Date(fromDate)}
+                    startDate={new Date(fromDate)}
+                    shouldCloseOnSelect={false}
+                    id='date-range-picker-months'
+                    onChange={handleOnChangeRange}
+                    customInput={
+                      <CustomInput
+                        dates={dates}
+                        setDates={setDates}
+                        label='Select Date Range'
+                        end={new Date(toDate)}
+                        start={new Date(fromDate)}
+                      />
+                    }
+                  />
+                </DatePickerWrapper>
+              </Paper>
+            </Box>
+          </Fade>
+        )}
+      </Popper>
     </>
   )
 }

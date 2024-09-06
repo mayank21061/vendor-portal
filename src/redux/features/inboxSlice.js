@@ -17,7 +17,7 @@ const initialState = {
   forwardRemarksDataError: '',
   forwardRemarksDataIsSuccess: false,
 
-  invoiceHistoryData: '',
+  invoiceHistoryData: [],
   invoiceHistoryDataIsLoading: false,
   invoiceHistoryDataIsError: false,
   invoiceHistoryDataError: '',
@@ -42,7 +42,7 @@ export const getInvoiceHistoryAction = createAsyncThunkWithTokenRefresh(
     const headers = { ...payload } // Adjust the value as needed
     const username = localStorage.getItem('username')
     return axios.get(
-      `/call/vendor/Vendorportal/Inbox/History/${payload.invoiceNumber}`,
+      `/call/vendor/Vendorportal/Inbox/History/?invoiceNumber=${payload.invoiceNumber}`,
       createAxiosConfig(token, currentUser, headers)
     )
   }
@@ -125,7 +125,7 @@ export const inboxSlice = createSlice({
           (state.forwardRemarksDataIsSuccess = false)
       })
       .addCase(getInvoiceHistoryAction.pending, state => {
-        ;(state.invoiceHistoryData = ''),
+        ;(state.invoiceHistoryData = []),
           (state.invoiceHistoryDataIsLoading = true),
           (state.invoiceHistoryDataIsError = false),
           (state.invoiceHistoryDataError = ''),
@@ -139,7 +139,7 @@ export const inboxSlice = createSlice({
           (state.invoiceHistoryDataIsSuccess = true)
       })
       .addCase(getInvoiceHistoryAction.rejected, (state, action) => {
-        ;(state.invoiceHistoryData = ''),
+        ;(state.invoiceHistoryData = []),
           (state.invoiceHistoryDataIsLoading = false),
           (state.invoiceHistoryDataIsError = true),
           (state.invoiceHistoryDataError = action.error.message),

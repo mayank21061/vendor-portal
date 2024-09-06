@@ -37,9 +37,9 @@
   width: 65%;
 }
 
-.inputActions > input {
-  border: none;
-  outline: none;
+.inputActions > textarea {
+  /* border: none;
+  outline: none; */
   width: 91%;
   background-color: white;
 }
