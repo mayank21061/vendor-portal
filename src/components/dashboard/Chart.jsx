@@ -1,15 +1,5 @@
-import * as React from 'react'
-import { BarChart } from '@mui/x-charts/BarChart'
-import { axisClasses } from '@mui/x-charts/ChartsAxis'
-
-const chartSetting = {
-  height: 350,
-  sx: {
-    [`.${axisClasses.left} .${axisClasses.label}`]: {
-      transform: 'translate(-20px, 0)'
-    }
-  }
-}
+import React from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const dataset = [
   {
@@ -122,20 +112,19 @@ const dataset = [
   }
 ]
 
-const valueFormatter = value => `${value}`
-
 export default function BarsDataset() {
   return (
-    <BarChart
-      dataset={dataset}
-      xAxis={[{ scaleType: 'band', dataKey: 'month' }]}
-      series={[
-        { dataKey: 'eicApproved', label: 'Approved', valueFormatter, color: '#F89880' },
-        { dataKey: 'submitted', label: 'Pending', valueFormatter, color: '#D3D3D3' },
-        { dataKey: 'paid', label: 'Completed', valueFormatter, color: '#48BF40' },
-        { dataKey: 'eicRejected', label: 'Rejected', valueFormatter, color: '#FF2E2E' }
-      ]}
-      {...chartSetting}
-    />
+    <ResponsiveContainer width="100%" height={350}>
+    <BarChart data={dataset}>
+      <XAxis dataKey="month" />
+      <YAxis />
+      <Tooltip formatter={(value) => `${value}`} />
+      <Legend />
+      <Bar dataKey="eicApproved" name="Approved" fill="#F89880" />
+      <Bar dataKey="submitted" name="Pending" fill="#D3D3D3" />
+      <Bar dataKey="paid" name="Completed" fill="#48BF40" />
+      <Bar dataKey="eicRejected" name="Rejected" fill="#FF2E2E" />
+    </BarChart>
+  </ResponsiveContainer>
   )
 }
