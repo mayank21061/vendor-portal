@@ -2,6 +2,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { PdfViewerComponent } from '@syncfusion/ej2-react-pdfviewer'
 import { useSelector } from 'react-redux'
+import {registerLicense} from "@syncfusion/ej2-base"
+
+registerLicense("Ngo9BigBOggjHTQxAR8/V1NCaF1cWWhAYVFwWmFZfVpgcF9FYFZVTWYuP1ZhSXxXdk1hXn9ac3VVRWNaUkQ=")
 
 const PdfViewer = () => {
   const pdfViewerRef = useRef(null)
