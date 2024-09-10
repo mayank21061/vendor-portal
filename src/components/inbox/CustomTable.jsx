@@ -83,7 +83,8 @@ const CustomTable = props => {
 
   const getFontColor = () => (theme.palette.mode === 'dark' ? '#fff' : 'text.primary')
 
-  const { inboxDataIsLoading, inboxDataIsError, inboxDataError, inboxDataIsSuccess } = useSelector(state => state.inbox)
+  const { inboxDataIsLoading, inboxDataIsError, inboxDataError, inboxDataIsSuccess, forwardRemarksDataIsSuccess } =
+    useSelector(state => state.inbox)
   const { pageNumber, pageSize } = useSelector(state => state.table)
   console.log(pageNumber, pageSize)
 
@@ -117,14 +118,10 @@ const CustomTable = props => {
   }
 
   useEffect(() => {
-    const payload = {
-      search: value,
-      fromDate: moment(startDateRange).format('YYYY-MM-DD'),
-      toDate: moment(endDateRange).format('YYYY-MM-DD'),
-      filterBy: filterType
+    if (forwardRemarksDataIsSuccess) {
+      setPreviewFile(false)
     }
-    // if (startDateRange && endDateRange) dispatch(getInboxAction(payload))
-  }, [value, endDateRange, startDateRange, filterType, paginationModel])
+  }, [forwardRemarksDataIsSuccess])
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates

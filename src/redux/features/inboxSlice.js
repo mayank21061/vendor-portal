@@ -116,6 +116,7 @@ export const inboxSlice = createSlice({
           (state.forwardRemarksDataIsError = false),
           (state.forwardRemarksDataError = ''),
           (state.forwardRemarksDataIsSuccess = true)
+        toast('Remarks uploaded success', { type: 'success' })
       })
       .addCase(forwardRemarksAction.rejected, (state, action) => {
         ;(state.forwardRemarksData = ''),
