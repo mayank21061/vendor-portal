@@ -31,10 +31,18 @@
   /* font-weight: bold !important; */
 }
 
+.tableRow:hover > td {
+  color: black;
+  font-weight: 700;
+}
+
+.tableRow:hover > td > button {
+  color: black;
+  /* font-weight: 500; */
+}
+
 .tableRow {
-  /* height: 1rem;
-  background-color: rgb(255, 180, 109);
-  cursor: pointer; */
+  cursor: pointer !important;
 }
 
 .datePicker {
