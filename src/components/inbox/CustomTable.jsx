@@ -278,7 +278,7 @@ const CustomTable = props => {
       field: 'date',
       renderHeader: () => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Typography sx={{ fontWeight: 'bold', marginRight: '4px' }}>Recieved On</Typography>
+          <Typography sx={{ textTransform: 'uppercase', marginRight: '4px', fontSize: 14 }}>Recieved On</Typography>
           <IconButton onClick={handleClick('bottom')}>
             <CalendarMonth sx={{ fontSize: 'medium' }} />
           </IconButton>

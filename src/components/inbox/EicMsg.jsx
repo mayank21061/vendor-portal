@@ -23,7 +23,18 @@ const EicMsg = ({ message, time }) => {
         >
           {message}
         </Typography>
-        <Typography sx={{ textAlign: 'right', color: 'black', fontSize: 8, pr: 1, mt: 0 }}>{time}</Typography>
+        <Typography
+          sx={{
+            textAlign: 'right',
+            color: 'black',
+            fontSize: 8,
+            pr: 1,
+            mt: 0,
+            mr: 2
+          }}
+        >
+          {time}
+        </Typography>
       </Box>
     </Box>
   )

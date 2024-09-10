@@ -4,6 +4,7 @@ import EicMsg from './EicMsg'
 import { useSelector } from 'react-redux'
 
 const RemarksList = () => {
+  const data = useSelector(state => state.inbox.invoiceHistoryData?.history)
   const { invoiceHistoryData, invoiceHistoryDataIsSuccess } = useSelector(state => state.inbox)
   console.log(invoiceHistoryData)
   // const data = [
@@ -60,11 +61,11 @@ const RemarksList = () => {
   return (
     <div>
       {invoiceHistoryDataIsSuccess &&
-        invoiceHistoryData?.map(item =>
-          item.id % 2 == 0 ? (
-            <VendorMsg message={item.remarks} time={item.invoiceAmount} />
+        data?.map(item =>
+          item.sent ? (
+            <VendorMsg message={item.invoicehistory.remarks} time={item.forwardRevertDate} />
           ) : (
-            <EicMsg message={item.remarks} time={item.invoiceAmount} />
+            <EicMsg message={item.invoicehistory.remarks} time={item.forwardRevertDate} />
           )
         )}
     </div>

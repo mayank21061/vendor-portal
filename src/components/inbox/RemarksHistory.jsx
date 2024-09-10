@@ -2,11 +2,11 @@ import React from 'react'
 import RemarksList from './RemarksList'
 import RemarksInput from './RemarksInput'
 
-const RemarksHistory = () => {
+const RemarksHistory = ({ rowData }) => {
   return (
     <>
       <RemarksList />
-      <RemarksInput />
+      <RemarksInput rowData={rowData} />
     </>
   )
 }

@@ -5,7 +5,8 @@ import styles from './inbox.module.css'
 import { useDispatch } from 'react-redux'
 import { forwardRemarksAction } from 'src/redux/features/inboxSlice'
 
-const RemarksInput = () => {
+const RemarksInput = ({ rowData }) => {
+  console.log(rowData)
   const dispatch = useDispatch()
   const [note, setNote] = useState('')
   const [files, setFiles] = useState(null)
@@ -27,7 +28,7 @@ const RemarksInput = () => {
     const formData = new FormData()
     formData.append('remarks', note)
     formData.append('file', files)
-    dispatch(forwardRemarksAction({ data: formData }))
+    dispatch(forwardRemarksAction({ id: rowData.id, data: formData }))
   }
 
   return (

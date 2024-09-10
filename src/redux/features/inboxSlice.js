@@ -52,7 +52,7 @@ export const forwardRemarksAction = createAsyncThunkWithTokenRefresh(
   'inbox/forwardRemarksAction',
   async (token, currentUser, payload) => {
     const username = localStorage.getItem('username')
-    const headers = { id: payload.invoiceId, username } // Adjust the value as needed
+    const headers = { id: payload.id, username } // Adjust the value as needed
     return axios.post(
       `/call/vendor/Vendorportal/forwardinvoice`,
       payload.data,

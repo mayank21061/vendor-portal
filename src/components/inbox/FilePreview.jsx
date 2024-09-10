@@ -71,7 +71,7 @@ const FilePreview = ({ open, setOpen, rowData }) => {
         <DialogContent sx={{ p: '0 !important' }} dividers>
           <Grid container height='100%'>
             <Grid item xs={8} borderRight='1px solid whitesmoke' sx={{ backgroundColor: '#dcdcdc' }}>
-              <RemarksHistory />
+              <RemarksHistory rowData={rowData} />
             </Grid>
             <Grid item xs={4}>
               <PdfViewer />

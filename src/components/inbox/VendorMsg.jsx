@@ -29,7 +29,8 @@ const VendorMsg = ({ message, time }) => {
             color: 'black',
             fontSize: 8,
             pr: 1,
-            mt: 0
+            mt: 0,
+            mr: 2
           }}
         >
           {time}
