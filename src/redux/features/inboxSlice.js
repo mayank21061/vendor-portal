@@ -39,7 +39,7 @@ export const getInboxAction = createAsyncThunkWithTokenRefresh(
 export const getInvoiceHistoryAction = createAsyncThunkWithTokenRefresh(
   'inbox/getInvoiceHistoryAction',
   async (token, currentUser, payload) => {
-    const headers = { ...payload } // Adjust the value as needed
+    const headers = { id: payload.id } // Adjust the value as needed
     const username = localStorage.getItem('username')
     return axios.get(
       `/call/vendor/Vendorportal/Inbox/History/?invoiceNumber=${payload.invoiceNumber}`,

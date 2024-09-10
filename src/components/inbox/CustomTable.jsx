@@ -32,12 +32,13 @@ import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { Add, CalendarMonth, History } from '@mui/icons-material'
-import { getInboxAction } from 'src/redux/features/inboxSlice'
+import { getInboxAction, getInvoiceHistoryAction } from 'src/redux/features/inboxSlice'
 import HistoryPreview from './HistoryPreview'
 import FilePreview from './FilePreview'
 import { getFileAction } from 'src/redux/features/fileUrlSlice'
 import { setTableStateAction } from 'src/redux/features/tableSlice'
 import { ClassNames } from '@emotion/react'
+import { rowsMetaStateInitializer } from '@mui/x-data-grid/internals'
 
 const renderName = row => {
   if (row.avatar) {
@@ -162,9 +163,10 @@ const CustomTable = props => {
     setPreviewHistory(true)
   }
 
-  const handlePreviewFile = id => {
-    console.log(id)
-    dispatch(getFileAction({ fileUrl: id.invoiceurl }))
+  const handlePreviewFile = row => {
+    console.log(row)
+    dispatch(getFileAction({ fileUrl: row.invoiceurl }))
+    dispatch(getInvoiceHistoryAction({ id: row.id, invoiceNumber: row.invoiceNumber }))
     setPreviewFile(true)
   }
 
