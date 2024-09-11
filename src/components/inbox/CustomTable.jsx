@@ -31,14 +31,15 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import ReactDatePicker from 'react-datepicker'
 import format from 'date-fns/format'
 import VisibilityIcon from '@mui/icons-material/Visibility'
-import { Add, CalendarMonth, History } from '@mui/icons-material'
+import { Add, CalendarMonth, Delete, History } from '@mui/icons-material'
 import { getInboxAction, getInvoiceHistoryAction } from 'src/redux/features/inboxSlice'
 import HistoryPreview from './HistoryPreview'
 import FilePreview from './FilePreview'
-import { getFileAction } from 'src/redux/features/fileUrlSlice'
+import { getFileAction, resetFileAction } from 'src/redux/features/fileUrlSlice'
 import { setTableStateAction } from 'src/redux/features/tableSlice'
 import { ClassNames } from '@emotion/react'
 import { rowsMetaStateInitializer } from '@mui/x-data-grid/internals'
+import { blue } from '@mui/material/colors'
 
 const renderName = row => {
   if (row.avatar) {
@@ -86,7 +87,6 @@ const CustomTable = props => {
   const { inboxDataIsLoading, inboxDataIsError, inboxDataError, inboxDataIsSuccess, forwardRemarksDataIsSuccess } =
     useSelector(state => state.inbox)
   const { pageNumber, pageSize } = useSelector(state => state.table)
-  console.log(pageNumber, pageSize)
 
   const dispatch = useDispatch()
 
@@ -110,12 +110,30 @@ const CustomTable = props => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [open, setOpen] = useState(false)
   const [placement, setPlacement] = useState()
+  const [checkedRowDetails, setCheckedRowDetails] = useState([])
+  const [pdfUrl, setPdfUrl] = useState('')
 
   const formatDate = dateString => {
     const formattedDate = moment(dateString).format('DD/MM/YYYY h:mm A')
 
     return formattedDate
   }
+
+  useEffect(() => {
+    console.log(checkedRowDetails)
+  }, [checkedRowDetails])
+
+  useEffect(() => {
+    if (pdfUrl) {
+      dispatch(getFileAction({ fileUrl: data?.[0]?.invoiceurl }))
+    }
+  }, [pdfUrl])
+
+  useEffect(() => {
+    if (data?.length) {
+      setPdfUrl(data?.[0]?.invoiceurl)
+    }
+  }, [data])
 
   useEffect(() => {
     if (forwardRemarksDataIsSuccess) {
@@ -150,24 +168,15 @@ const CustomTable = props => {
     setFilterType(e.target.value)
   }
 
-  const handleViewInvoices = (e, rowData) => {
-    setPreviewInvoices(true)
-    console.log(rowData)
-  }
-
-  const handlePreviewHistory = id => {
-    console.log(id)
-    setPreviewHistory(true)
-  }
-
   const handlePreviewFile = row => {
+    // dispatch(resetFileAction())
+    // setPdfUrl('')
     console.log(row)
+    setFileUrl(row.invoiceurl)
     dispatch(getFileAction({ fileUrl: row.invoiceurl }))
     dispatch(getInvoiceHistoryAction({ id: row.id, invoiceNumber: row.invoiceNumber }))
     setPreviewFile(true)
   }
-
-  console.log(hoverdRowId)
 
   const filters = ['All', 'New', 'Pending', 'Closed']
 
@@ -383,18 +392,24 @@ const CustomTable = props => {
           ) : inboxDataIsSuccess ? (
             <Grid item xs={12}>
               <DataGrid
+                checkboxSelection
                 sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
                 rows={data || []}
                 rowHeight={62}
                 columnHeaderHeight={40}
                 columns={columns}
                 disableRowSelectionOnClick
+                onRowClick={row => {
+                  setPdfUrl(row.row.invoiceurl)
+                  // dispatch(getFileAction({ fileUrl: row.row.invoiceurl }))
+                }}
                 onRowDoubleClick={row => {
                   handlePreviewFile(row.row)
                   setSelectedRow(row.row)
                 }}
                 onRowSelectionModelChange={newRowSelectionModel => {
-                  setCheckedRowDetails(newRowSelectionModel.map(index => data[index]))
+                  // console.log(newRowSelectionModel.map(index => data[index].id))
+                  setCheckedRowDetails(newRowSelectionModel)
                 }}
                 getRowId={row => row.id}
                 componentsProps={{
@@ -415,6 +430,15 @@ const CustomTable = props => {
                   dispatch(setTableStateAction({ pageSize: e.pageSize, pageNumber: e.page }))
                 }
               />
+              <Fab
+                size='small'
+                variant='contained'
+                color='primary'
+                disabled={checkedRowDetails.length == 0}
+                sx={{ position: 'absolute', bottom: 10, right: 20 }}
+              >
+                <Delete />
+              </Fab>
             </Grid>
           ) : (
             ''

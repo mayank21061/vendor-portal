@@ -35,8 +35,8 @@ const RemarksInput = ({ rowData }) => {
     <div className={styles.inputActions}>
       <TextareaAutosize
         name='message'
-        minRows={2}
-        maxRows={4}
+        minRows={3}
+        maxRows={10}
         placeholder='Add your reply here'
         type='text'
         value={note}

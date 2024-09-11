@@ -63,9 +63,9 @@ const RemarksList = () => {
       {invoiceHistoryDataIsSuccess &&
         data?.map(item =>
           item.sent ? (
-            <VendorMsg message={item.invoicehistory.remarks} time={item.forwardRevertDate} />
+            <VendorMsg message={item.invoicehistory.remarks} time={item.forwardRevertDate} key={item.id} />
           ) : (
-            <EicMsg message={item.invoicehistory.remarks} time={item.forwardRevertDate} />
+            <EicMsg message={item.invoicehistory.remarks} time={item.forwardRevertDate} key={item.id} />
           )
         )}
     </div>

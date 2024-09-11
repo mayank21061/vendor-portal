@@ -30,7 +30,6 @@ const PdfViewer = dynamic(() => import('../PdfViewer'), { ssr: false })
 
 const FilePreview = ({ open, setOpen, rowData }) => {
   const [showForwardForm, setShowForwardForm] = useState(false)
-  console.log(rowData)
 
   return (
     <div>

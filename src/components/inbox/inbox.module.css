@@ -27,6 +27,8 @@
 }
 
 .inputActions {
+  display: flex;
+  align-items: center;
   background-color: white;
   margin: 0.5rem;
   border-radius: 0.7rem;
@@ -38,10 +40,13 @@
 }
 
 .inputActions > textarea {
+  flex: 1;
   /* border: none;
   outline: none; */
-  width: 91%;
+  /* width: 91%; */
   background-color: white;
+  border-color: gray;
+  outline-color: gray;
 }
 
 .historyPreview {

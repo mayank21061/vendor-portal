@@ -1,6 +1,21 @@
-// components/PdfViewer.js
+// // components/PdfViewer.js
 import React, { useEffect, useRef, useState } from 'react'
-import { PdfViewerComponent } from '@syncfusion/ej2-react-pdfviewer'
+import {
+  PdfViewerComponent,
+  Toolbar,
+  Magnification,
+  Navigation,
+  LinkAnnotation,
+  BookmarkView,
+  ThumbnailView,
+  Print,
+  TextSelection,
+  Annotation,
+  TextSearch,
+  FormFields,
+  FormDesigner,
+  Inject
+} from '@syncfusion/ej2-react-pdfviewer'
 import { useSelector } from 'react-redux'
 import { registerLicense } from '@syncfusion/ej2-base'
 
@@ -9,6 +24,8 @@ registerLicense('Ngo9BigBOggjHTQxAR8/V1NCaF1cWWhAYVFwWmFZfVpgcF9FYFZVTWYuP1ZhSXx
 const PdfViewer = () => {
   const pdfViewerRef = useRef(null)
   const { fileData, fileDataIsSuccess } = useSelector(state => state.file)
+
+  console.log(fileData, fileDataIsSuccess)
   const [pdfBlobUrl, setPdfBlobUrl] = useState('')
 
   function arrayBufferToBase64(arrayBuffer) {
@@ -32,7 +49,11 @@ const PdfViewer = () => {
       // const blobUrl = base64ToBlobUrl(base64, 'application/pdf')
 
       // Set the Blob URL to state
-      pdfViewerRef.current.load('data:application/pdf;base64,' + base64, null)
+      try {
+        pdfViewerRef.current.load('data:application/pdf;base64,' + base64, null)
+      } catch (e) {
+        console.log(e)
+      }
       // setPdfBlobUrl(blobUrl)
 
       // Cleanup the Blob URL when component unmounts or fileData changes
@@ -57,12 +78,55 @@ const PdfViewer = () => {
       <PdfViewerComponent
         style={{ height: '100%' }}
         ref={pdfViewerRef}
+        enableToolbar
         id='pdfViewer'
-        serviceUrl='https://ej2services.syncfusion.com/production/web-services/api/pdfviewer' // Ensure this is correct
+        serviceUrl='http://11.0.0.50:6001/api/pdfviewer' // Ensure this is correct
         documentPath={pdfBlobUrl}
-      />
+      >
+        <Inject
+          services={[
+            Toolbar,
+            Magnification,
+            Navigation,
+            TextSelection,
+            TextSearch
+            // Annotation,
+            // LinkAnnotation,
+            // BookmarkView,
+            // ThumbnailView,
+            // Print,
+            // FormFields,
+            // FormDesigner
+          ]}
+        />
+      </PdfViewerComponent>
     </div>
   )
 }
 
 export default PdfViewer
+
+// import * as ReactDOM from 'react-dom';
+// import * as React from 'react';
+// import  { PdfViewerComponent, Toolbar, Magnification, Navigation, LinkAnnotation, BookmarkView,
+//          ThumbnailView, Print, TextSelection, Annotation, TextSearch, FormFields, FormDesigner, Inject } from '@syncfusion/ej2-react-pdfviewer';
+
+// export function App() {
+//   return (
+//   <div>
+//     <div className='control-section'>
+//       {/* Render the PDF Viewer */}
+//       <PdfViewerComponent
+//         id="container"
+//         documentPath="https://cdn.syncfusion.com/content/pdf/pdf-succinctly.pdf"
+//         resourceUrl="https://cdn.syncfusion.com/ej2/24.1.41/dist/ej2-pdfviewer-lib"
+//         style={{ 'height': '640px' }}>
+
+//           <Inject services={[ Toolbar, Magnification, Navigation, Annotation, LinkAnnotation, BookmarkView, ThumbnailView,
+//                                    Print, TextSelection, TextSearch, FormFields, FormDesigner]} />
+//       </PdfViewerComponent>
+//     </div>
+//   </div>);
+// }
+// const root = ReactDOM.createRoot(document.getElementById('sample'));
+// root.render(<App />);
