@@ -148,6 +148,8 @@ const CustomTable = props => {
 
   const columns = [
     {
+      sortable: false,
+
       flex: 0.1,
       field: 'no',
       headerName: 'Invoice no.',
@@ -166,6 +168,8 @@ const CustomTable = props => {
       }
     },
     {
+      sortable: false,
+
       flex: 0.1,
       field: 'date',
       renderHeader: () => (
@@ -196,6 +200,8 @@ const CustomTable = props => {
       }
     },
     {
+      sortable: false,
+
       flex: 0.1,
       field: 'po',
       headerName: 'PO Number',
@@ -214,6 +220,8 @@ const CustomTable = props => {
       }
     },
     {
+      sortable: false,
+
       flex: 0.1,
       field: 'amount',
       headerName: 'AMOUNT',
@@ -239,6 +247,8 @@ const CustomTable = props => {
       }
     },
     {
+      sortable: false,
+
       flex: 0.15,
       field: 'bankDetails',
       headerName: 'BANK DETAILS',
@@ -316,6 +326,7 @@ const CustomTable = props => {
           <Grid item xs={12}>
             <Paper elevation={10}>
               <DataGrid
+                disableColumnMenu
                 sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
                 rows={data || []}
                 rowHeight={62}

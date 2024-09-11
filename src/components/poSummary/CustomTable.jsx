@@ -169,6 +169,7 @@ const CustomTable = props => {
 
   const columns = [
     {
+      sortable: false,
       flex: 0.15,
       field: 'no',
       headerName: 'NUMBER',
@@ -186,6 +187,7 @@ const CustomTable = props => {
       headerClassName: styles.customheader
     },
     {
+      sortable: false,
       flex: 0.15,
       field: 'date',
       headerName: 'DATE',
@@ -203,6 +205,7 @@ const CustomTable = props => {
       headerClassName: styles.customheader
     },
     {
+      sortable: false,
       flex: 0.2,
       field: 'description',
       headerName: 'DESCRIPTION',
@@ -220,6 +223,7 @@ const CustomTable = props => {
       headerClassName: styles.customheader
     },
     {
+      sortable: false,
       flex: 0.15,
       field: 'deliveryDate',
       headerName: 'DELIVERY DATE',
@@ -246,6 +250,7 @@ const CustomTable = props => {
       }
     },
     {
+      sortable: false,
       flex: 0.15,
       field: 'eic',
       headerName: 'EIC',
@@ -266,6 +271,7 @@ const CustomTable = props => {
       }
     },
     {
+      sortable: false,
       flex: 0.1,
       field: 'status',
       headerName: 'STATUS',
@@ -286,6 +292,7 @@ const CustomTable = props => {
       }
     },
     {
+      sortable: false,
       flex: 0.1,
       field: 'amount',
       headerName: 'AMOUNT',
@@ -441,6 +448,7 @@ const CustomTable = props => {
             <Grid item xs={12}>
               <Paper elevation={10}>
                 <DataGrid
+                  disableColumnMenu
                   sx={{ height: '70vh' }}
                   rows={content || []}
                   rowHeight={62}

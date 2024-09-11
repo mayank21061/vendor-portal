@@ -188,10 +188,11 @@ const CustomTable = props => {
 
   const columns = [
     {
+      sortable: false,
       flex: 0.1,
-      minWidth: 130,
+      minWidth: 100,
       field: 'poNumber',
-      headerName: 'PO NUMBER ',
+      headerName: 'PO Number ',
       headerAlign: 'center',
       align: 'center',
       renderCell: ({ row }) => (
@@ -217,9 +218,10 @@ const CustomTable = props => {
       )
     },
     {
+      sortable: false,
       flex: 0.1,
       field: 'invoiceNumber',
-      minWidth: 170,
+      minWidth: 135,
       headerName: 'Invoice Number',
       headerAlign: 'left',
 
@@ -248,9 +250,10 @@ const CustomTable = props => {
       )
     },
     {
+      sortable: false,
       flex: 0.1,
       field: 'invoiceAmount',
-      minWidth: 170,
+      minWidth: 150,
       headerName: 'Invoice Amount',
       headerAlign: 'left',
 
@@ -279,8 +282,9 @@ const CustomTable = props => {
       )
     },
     {
+      sortable: false,
       flex: 0.1,
-      minWidth: 150,
+      minWidth: 170,
       field: 'date',
       renderHeader: () => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -316,8 +320,9 @@ const CustomTable = props => {
       )
     },
     {
+      sortable: false,
       flex: 0.1,
-      minWidth: 50,
+      minWidth: 150,
       field: 'referenceNo',
       headerName: 'Recieved From ',
       headerAlign: 'center',
@@ -346,10 +351,11 @@ const CustomTable = props => {
       )
     },
     {
+      sortable: false,
       flex: 0.1,
       minWidth: 50,
       field: 'status',
-      headerName: 'status',
+      headerName: 'Status',
       headerAlign: 'center',
       align: 'center',
 
@@ -392,6 +398,7 @@ const CustomTable = props => {
           ) : inboxDataIsSuccess ? (
             <Grid item xs={12}>
               <DataGrid
+                disableColumnMenu
                 checkboxSelection
                 sx={{ height: '89vh', '.MuiDataGrid-footerContainer': { justifyContent: 'flex-start' } }}
                 rows={data || []}
