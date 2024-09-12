@@ -80,7 +80,7 @@ const PdfViewer = () => {
         ref={pdfViewerRef}
         enableToolbar
         id='pdfViewer'
-        serviceUrl='http://11.0.0.50:6001/api/pdfviewer' // Ensure this is correct
+        serviceUrl='/getFileSF/api/pdfviewer' // Ensure this is correct
         documentPath={pdfBlobUrl}
       >
         <Inject

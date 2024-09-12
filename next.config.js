@@ -167,6 +167,12 @@ module.exports = {
         destination: isDevelopment
           ? `${process.env.NEXT_PUBLIC_GATEWAY_DEV_URL}/call/vendor/Vendorportal/Inbox/History/:invoiceNumber*`
           : `${process.env.NEXT_PUBLIC_GATEWAY_PROD_URL}/call/vendor/Vendorportal/Inbox/History/:invoiceNumber*`
+      },
+      {
+        source: '/getFileSF/:any*',
+        destination: isDevelopment
+          ? `http://syncfusion-vendor.apps.ocp4.pacosta.com/:any*`
+          : `http://syncfusion-vendor.apps.ocp4.pacosta.com/:any*`
       }
     ]
   }

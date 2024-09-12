@@ -115,13 +115,15 @@ const AppBarContent = props => {
   const getDebounceInbox = useCallback(
     _debounce(search => {
       dispatch(getInboxAction({ pageNumber, pageSize, search, fromDate, toDate, filterBy: filterType }))
-    })
+    }, 1000),
+    []
   )
 
   const getDebouceInvoices = useCallback(
     _debounce(search => {
       dispatch(getInvoicesAction({ pageNumber, pageSize, search, fromDate, toDate, filterBy: filterType }))
-    })
+    }, 1000),
+    []
   )
 
   useEffect(() => {

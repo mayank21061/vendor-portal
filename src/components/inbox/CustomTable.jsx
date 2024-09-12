@@ -40,6 +40,7 @@ import { setTableStateAction } from 'src/redux/features/tableSlice'
 import { ClassNames } from '@emotion/react'
 import { rowsMetaStateInitializer } from '@mui/x-data-grid/internals'
 import { blue } from '@mui/material/colors'
+import dayjs from 'dayjs'
 
 const renderName = row => {
   if (row.avatar) {
@@ -86,12 +87,11 @@ const CustomTable = props => {
 
   const { inboxDataIsLoading, inboxDataIsError, inboxDataError, inboxDataIsSuccess, forwardRemarksDataIsSuccess } =
     useSelector(state => state.inbox)
-  const { pageNumber, pageSize } = useSelector(state => state.table)
+  const { pageNumber, pageSize, toDate, fromDate } = useSelector(state => state.table)
 
   const dispatch = useDispatch()
 
   const [dates, setDates] = useState([])
-  const { toDate, fromDate } = useSelector(state => state.table)
   const [endDateRange, setEndDateRange] = useState(new Date())
   const [startDateRange, setStartDateRange] = useState(new Date())
   const [hoverdRowId, setHoveredId] = useState(null)
@@ -143,6 +143,12 @@ const CustomTable = props => {
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
+    const startDate = `${new Date(start).getFullYear()}-${new Date(start).getMonth() + 1}-${new Date(start).getDate()}`
+    const endDate = `${new Date(end).getFullYear()}-${new Date(end).getMonth() + 1}-${new Date(end).getDate()}`
+    const formDate = new Date(start).format('YYYY-MM-DD')
+    const toDate = dayjs(end).format('YYYY-MM-DD')
+    console.log({ startDate, endDate })
+    dispatch(setTableStateAction({ formDate: startDate, toDate: endDate }))
     if (start !== null && end !== null) {
       setDates(dates)
     }
@@ -171,7 +177,6 @@ const CustomTable = props => {
   const handlePreviewFile = row => {
     // dispatch(resetFileAction())
     // setPdfUrl('')
-    console.log(row)
     setFileUrl(row.invoiceurl)
     dispatch(getFileAction({ fileUrl: row.invoiceurl }))
     dispatch(getInvoiceHistoryAction({ id: row.id, invoiceNumber: row.invoiceNumber }))
@@ -476,9 +481,9 @@ const CustomTable = props => {
                     isClearable
                     selectsRange
                     monthsShown={2}
-                    endDate={new Date(toDate)}
-                    selected={new Date(fromDate)}
-                    startDate={new Date(fromDate)}
+                    endDate={toDate && new Date(toDate)}
+                    selected={fromDate && new Date(fromDate)}
+                    startDate={fromDate && new Date(fromDate)}
                     shouldCloseOnSelect={false}
                     id='date-range-picker-months'
                     onChange={handleOnChangeRange}
