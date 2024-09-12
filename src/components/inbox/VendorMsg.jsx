@@ -1,15 +1,33 @@
 import { Box, Typography } from '@mui/material'
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { getChatFileAction } from 'src/redux/features/fileUrlSlice'
 
-const VendorMsg = ({ message, time }) => {
+const VendorMsg = ({ message, time, fileName, fileUrl }) => {
+  const dispatch = useDispatch()
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', m: 4, color: 'white' }}>
       <Box
         sx={{
           bgcolor: '#70f870',
-          borderRadius: '.7rem .7rem 0rem .7rem'
+          borderRadius: '.7rem .7rem 0rem .7rem',
+          p: 1
         }}
       >
+        {fileUrl && (
+          <Typography
+            sx={{
+              color: 'black',
+              backgroundColor: '#8a868657',
+              p: 2,
+              borderRadius: '.5rem',
+              cursor: 'pointer'
+            }}
+            onClick={() => dispatch(getChatFileAction({ fileUrl }))}
+          >
+            {fileName || 'file.pdf'}
+          </Typography>
+        )}
         <Typography
           sx={{
             color: 'black',
