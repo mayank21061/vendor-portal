@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux'
 import { forwardRemarksAction } from 'src/redux/features/inboxSlice'
 
 const RemarksInput = ({ rowData }) => {
-  console.log(rowData)
   const dispatch = useDispatch()
   const [note, setNote] = useState('')
   const [files, setFiles] = useState(null)

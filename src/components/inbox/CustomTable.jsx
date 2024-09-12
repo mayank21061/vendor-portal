@@ -35,7 +35,7 @@ import { Add, CalendarMonth, Delete, History } from '@mui/icons-material'
 import { getInboxAction, getInvoiceHistoryAction } from 'src/redux/features/inboxSlice'
 import HistoryPreview from './HistoryPreview'
 import FilePreview from './FilePreview'
-import { getFileAction, resetFileAction } from 'src/redux/features/fileUrlSlice'
+import { getChatFileAction, getFileAction, resetFileAction } from 'src/redux/features/fileUrlSlice'
 import { setTableStateAction } from 'src/redux/features/tableSlice'
 import { ClassNames } from '@emotion/react'
 import { rowsMetaStateInitializer } from '@mui/x-data-grid/internals'
@@ -125,7 +125,7 @@ const CustomTable = props => {
 
   useEffect(() => {
     if (pdfUrl) {
-      dispatch(getFileAction({ fileUrl: data?.[0]?.invoiceurl }))
+      dispatch(getFileAction({ fileUrl: pdfUrl }))
     }
   }, [pdfUrl])
 
@@ -143,15 +143,10 @@ const CustomTable = props => {
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
-    const startDate = `${new Date(start).getFullYear()}-${new Date(start).getMonth() + 1}-${new Date(start).getDate()}`
-    const endDate = `${new Date(end).getFullYear()}-${new Date(end).getMonth() + 1}-${new Date(end).getDate()}`
-    const formDate = new Date(start).format('YYYY-MM-DD')
-    const toDate = dayjs(end).format('YYYY-MM-DD')
-    console.log({ startDate, endDate })
-    dispatch(setTableStateAction({ formDate: startDate, toDate: endDate }))
     if (start !== null && end !== null) {
       setDates(dates)
     }
+    dispatch(setTableStateAction({ fromDate: start, toDate: end }))
     // setStartDateRange(start)
     // setEndDateRange(end)
   }
@@ -177,8 +172,8 @@ const CustomTable = props => {
   const handlePreviewFile = row => {
     // dispatch(resetFileAction())
     // setPdfUrl('')
-    setFileUrl(row.invoiceurl)
-    dispatch(getFileAction({ fileUrl: row.invoiceurl }))
+    // setFileUrl(row.invoiceurl)
+    dispatch(getChatFileAction({ fileUrl: row.invoiceurl }))
     dispatch(getInvoiceHistoryAction({ id: row.id, invoiceNumber: row.invoiceNumber }))
     setPreviewFile(true)
   }
@@ -442,15 +437,16 @@ const CustomTable = props => {
                   dispatch(setTableStateAction({ pageSize: e.pageSize, pageNumber: e.page }))
                 }
               />
-              <Fab
-                size='small'
-                variant='contained'
-                color='primary'
-                disabled={checkedRowDetails.length == 0}
-                sx={{ position: 'absolute', bottom: 10, right: 20 }}
-              >
-                <Delete />
-              </Fab>
+              {checkedRowDetails.length > 0 && (
+                <Fab
+                  size='small'
+                  variant='contained'
+                  color='primary'
+                  sx={{ position: 'absolute', bottom: 10, right: 20 }}
+                >
+                  <Delete />
+                </Fab>
+              )}
             </Grid>
           ) : (
             ''
@@ -481,9 +477,9 @@ const CustomTable = props => {
                     isClearable
                     selectsRange
                     monthsShown={2}
-                    endDate={toDate && new Date(toDate)}
-                    selected={fromDate && new Date(fromDate)}
-                    startDate={fromDate && new Date(fromDate)}
+                    endDate={new Date(toDate)}
+                    selected={new Date(fromDate)}
+                    startDate={new Date(fromDate)}
                     shouldCloseOnSelect={false}
                     id='date-range-picker-months'
                     onChange={handleOnChangeRange}

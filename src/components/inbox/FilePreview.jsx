@@ -17,6 +17,7 @@ import {
   Fab,
   Grid,
   IconButton,
+  LinearProgress,
   Tooltip,
   Typography
 } from '@mui/material'
@@ -25,11 +26,13 @@ import React, { useState } from 'react'
 import ForwardDialog from './ForwardDialog'
 import HistoryTable from './HistoryTable'
 import RemarksHistory from './RemarksHistory'
+import { useSelector } from 'react-redux'
 
-const PdfViewer = dynamic(() => import('../PdfViewer'), { ssr: false })
+const PdfViewer = dynamic(() => import('./PdfViewerIb'), { ssr: false })
 
 const FilePreview = ({ open, setOpen, rowData }) => {
   const [showForwardForm, setShowForwardForm] = useState(false)
+  const { fileDataIsLoading, fileDataIsSuccess } = useSelector(state => state.file)
 
   return (
     <div>
@@ -66,14 +69,13 @@ const FilePreview = ({ open, setOpen, rowData }) => {
             </IconButton>
           </Box>
         </DialogTitle>
-        <Tooltip title='CLOSE'></Tooltip>
         <DialogContent sx={{ p: '0 !important' }} dividers>
           <Grid container height='100%'>
             <Grid item xs={8} borderRight='1px solid whitesmoke' sx={{ backgroundColor: '#dcdcdc' }}>
               <RemarksHistory rowData={rowData} />
             </Grid>
             <Grid item xs={4}>
-              <PdfViewer />
+              {fileDataIsLoading ? <LinearProgress /> : fileDataIsSuccess ? <PdfViewer /> : ''}
             </Grid>
           </Grid>
         </DialogContent>

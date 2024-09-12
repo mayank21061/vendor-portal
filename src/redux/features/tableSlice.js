@@ -22,17 +22,18 @@ export const tableSlice = createSlice({
       state.pageSize = 7
       state.searchText = ''
       state.filterType = 'All'
-      state.fromDate = '2024-01-01'
+      state.fromDate = todayDate
       state.toDate = todayDate
     },
     setTableStateAction(state, action) {
-      console.log(action.payload)
+      console.log(dayjs(action.payload.toDate).format('YYYY-MM-DD'))
+      console.log(dayjs(action.payload.fromDate).format('YYYY/MM/DD'))
       if (action.payload.pageNumber != null) state.pageNumber = action.payload.pageNumber
       if (action.payload.pageSize != null) state.pageSize = action.payload.pageSize
       if (action.payload.searchText != null) state.searchText = action.payload.searchText
       if (action.payload.filterType != null) state.filterType = action.payload.filterType
-      if (action.payload.fromDate != null) state.fromDate = action.payload.fromDate
-      if (action.payload.toDate != null) state.toDate = action.payload.toDate
+      if (action.payload.fromDate != null) state.fromDate = dayjs(action.payload.fromDate).format('YYYY-MM-DD') || null
+      if (action.payload.toDate != null) state.toDate = dayjs(action.payload.toDate).format('YYYY-MM-DD') || null
     }
   }
 })

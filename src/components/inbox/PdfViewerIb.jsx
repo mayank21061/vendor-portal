@@ -23,9 +23,9 @@ registerLicense('Ngo9BigBOggjHTQxAR8/V1NCaF1cWWhAYVFwWmFZfVpgcF9FYFZVTWYuP1ZhSXx
 
 const PdfViewer = () => {
   const pdfViewerRef = useRef(null)
-  const { fileData, fileDataIsSuccess } = useSelector(state => state.file)
+  const { chatFileData, chatFileDataIsSuccess } = useSelector(state => state.file)
 
-  console.log(fileData, fileDataIsSuccess)
+  console.log(chatFileData, chatFileDataIsSuccess)
   const [pdfBlobUrl, setPdfBlobUrl] = useState('')
 
   function arrayBufferToBase64(arrayBuffer) {
@@ -41,9 +41,9 @@ const PdfViewer = () => {
   }
 
   useEffect(() => {
-    if (fileDataIsSuccess && fileData) {
+    if (chatFileDataIsSuccess && chatFileData) {
       // Convert ArrayBuffer to Base64
-      const base64 = arrayBufferToBase64(fileData)
+      const base64 = arrayBufferToBase64(chatFileData)
 
       // Create a Blob URL from Base64
       // const blobUrl = base64ToBlobUrl(base64, 'application/pdf')
@@ -56,13 +56,13 @@ const PdfViewer = () => {
       }
       // setPdfBlobUrl(blobUrl)
 
-      // Cleanup the Blob URL when component unmounts or fileData changes
+      // Cleanup the Blob URL when component unmounts or chatFileData changes
       return () => {
         // pdfViewerRef.current?.destroy()
         pdfViewerRef.current?.unload()
       }
     }
-  }, [fileData, fileDataIsSuccess])
+  }, [chatFileData, chatFileDataIsSuccess])
 
   // useEffect(() => {
   //   if (pdfViewerRef.current && pdfBlobUrl) {
@@ -80,7 +80,7 @@ const PdfViewer = () => {
         style={{ height: '100%' }}
         ref={pdfViewerRef}
         enableToolbar
-        id='pdfViewer'
+        id='pdfViewer2'
         serviceUrl='/getFileSF/api/pdfviewer' // Ensure this is correct
         documentPath={pdfBlobUrl}
       >
