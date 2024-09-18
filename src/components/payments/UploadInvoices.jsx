@@ -249,7 +249,10 @@ const UploadInvoice = ({ open, setOpen, rowData }) => {
                     aria-labelledby='demo-row-radio-buttons-group-label'
                     name='row-radio-buttons-group'
                     sx={{ ml: 1 }}
-                    onChange={event => formik.setFieldValue('isagainstLC', Boolean(event.target.value))}
+                    onChange={event => {
+                      console.log(event.target.value)
+                      formik.setFieldValue('isagainstLC', event.target.value)
+                    }}
                     value={formik.values.isagainstLC}
                   >
                     <FormControlLabel value={true} control={<Radio />} label='Yes' />
@@ -294,7 +297,7 @@ const UploadInvoice = ({ open, setOpen, rowData }) => {
                     aria-labelledby='demo-row-radio-buttons-group-label'
                     name='row-radio-buttons-group'
                     sx={{ ml: 1 }}
-                    onChange={event => formik.setFieldValue('isGst', Boolean(event.target.value))}
+                    onChange={event => formik.setFieldValue('isGst', event.target.value)}
                     value={formik.values.isGst}
                   >
                     <FormControlLabel value={true} control={<Radio />} label='Yes' />
@@ -365,7 +368,7 @@ const UploadInvoice = ({ open, setOpen, rowData }) => {
                   size='small'
                   label='Factor Unit Number'
                   name='factoryunitnumber'
-                  disabled={!formik.values.isTredExchangePayment}
+                  disabled={formik.values.isTredExchangePayment == false}
                   value={formik.values.factoryunitnumber}
                   onChange={formik.handleChange}
                 />
@@ -377,7 +380,7 @@ const UploadInvoice = ({ open, setOpen, rowData }) => {
                   size='small'
                   label='MDCC Number'
                   name='mdccnumber'
-                  disabled={!formik.values.isMDCCPayment}
+                  disabled={formik.values.isMDCCPayment == false}
                   value={formik.values.mdccnumber}
                   onChange={formik.handleChange}
                 />

@@ -35,7 +35,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 // import { setCurrentUser } from 'src/redux/features/userSlice'
 // import { darkmodefunc } from 'src/redux/features/darkMode'
-// import NotificationBar from './Notifaction'
+import NotificationBar from './NotificationBar'
 // import { getNotificationsAction } from 'src/redux/features/notificationsSlice'
 import dynamic from 'next/dynamic'
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -304,7 +304,9 @@ const AppBarContent = props => {
       <div>
         <div>
           <Drawer open={state} anchor='right' onClose={notifactionClose} sx={{ width: '100px' }}>
-            <Box sx={{ width: '190px' }}>{/* <NotificationBar /> */}</Box>
+            <Box sx={{ width: '190px' }}>
+              <NotificationBar />
+            </Box>
           </Drawer>
         </div>
       </div>

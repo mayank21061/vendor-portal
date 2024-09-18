@@ -14,6 +14,7 @@ import poNumberReducer from './features/dashboardSlice'
 import registerationReducer from './features/registrationSlice'
 import fileUrlReducer from './features/fileUrlSlice'
 import tableReducer from './features/tableSlice'
+import notificationsReducer from './features/notificationsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -29,7 +30,8 @@ export const store = configureStore({
     invoice: invoiceUserReducer,
     registration: registerationReducer,
     file: fileUrlReducer,
-    table: tableReducer
+    table: tableReducer,
+    notifications: notificationsReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
