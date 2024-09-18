@@ -45,6 +45,8 @@ import _debounce from 'lodash/debounce'
 import { resetTableAction, setTableStateAction } from 'src/redux/features/tableSlice'
 import { getInboxAction } from 'src/redux/features/inboxSlice'
 import { getInvoicesAction } from 'src/redux/features/dashboardSlice'
+import SockJS from 'sockjs-client'
+import { over } from 'stompjs'
 
 // const LatestInfoDropdown = dynamic(() => import('./LatestInfoDropdown'), {
 //   loading: () => (
@@ -64,8 +66,60 @@ const AppBarContent = props => {
   // const [filterType, setFilterType] = useState('All')
   const currentPath = router.pathname.split('/')[1]
   const { pageNumber, pageSize, searchText, filterType, fromDate, toDate } = useSelector(state => state.table)
-  console.log(pageNumber, pageSize, searchText, filterType, fromDate, toDate)
 
+  const [stompClient, setStompClient] = useState('')
+  const [connected, setConnected] = useState(false)
+  const [userId, setUserId] = useState('')
+
+  let userDetails = null
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Safe to use localStorage
+      userDetails = localStorage.getItem('userData')
+      // Do something with the item
+    }
+  }, [])
+
+  useEffect(() => {
+    if (userDetails) {
+      const userData = JSON.parse(userDetails)
+      setUserId(userData?.data?.[0]?.username)
+    }
+  }, [userDetails])
+
+  useEffect(() => {
+    if (stompClient) {
+      stompClient.debug = null
+      stompClient.connect({}, onConnected, onError)
+    } else if (userId) {
+      connect()
+    }
+  }, [stompClient, userId])
+
+  const connect = async () => {
+    console.log('connect')
+    let Sock = new SockJS('http://socket-test.apps.ocp4.pacosta.com/socket')
+    let client = over(Sock)
+    setStompClient(client)
+  }
+
+  const onConnected = () => {
+    console.log(stompClient)
+    setConnected(true)
+    try {
+      stompClient.subscribe(`/user/${userId}/private`, event => console.log('notification', event))
+    } catch (e) {
+      console.log(e)
+    } finally {
+      console.log('finally')
+    }
+    console.log('on connected', stompClient)
+  }
+
+  const onError = err => {
+    toast(err, { type: 'error' })
+  }
   const styles = {
     py: 1.75,
     width: '100%',
