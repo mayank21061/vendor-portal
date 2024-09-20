@@ -2,7 +2,8 @@
 import { Typography } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
-import TickPlacementBars from 'src/components/dashboard/Chart'
+import PieChart from 'src/components/dashboard/PieChart'
+import TickPlacementBars from 'src/components/dashboard/BarChart'
 import InvoiceTable from 'src/components/dashboard/InvoiceTable'
 import PersistLogin from 'src/components/PersistLogin'
 
@@ -90,9 +91,14 @@ const Dashboard = () => {
             </div>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Paper elevation={3} sx={{ padding: 2 }}>
             <TickPlacementBars />
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Paper elevation={3} sx={{ padding: 2 }}>
+            <PieChart />
           </Paper>
         </Grid>
       </Grid>

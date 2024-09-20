@@ -328,27 +328,27 @@ export const dashboardSlice = createSlice({
         toast(action.error.message, { type: 'error' })
       })
 
-    // .addCase(getPoDetailsAction.pending, state => {
-    //   state.poDetailsData = {}
-    //   state.poDetailsDataIsLoading = true
-    //   state.poDetailsDataIsError = false
-    //   state.poDetailsDataError = ''
-    //   state.poDetailsDataIsSuccess = false
-    // })
-    // .addCase(getPoDetailsAction.fulfilled, (state, action) => {
-    //   state.poDetailsData = action.payload
-    //   state.poDetailsDataIsLoading = false
-    //   state.poDetailsDataIsError = false
-    //   state.poDetailsDataError = ''
-    //   state.poDetailsDataIsSuccess = true
-    // })
-    // .addCase(getPoDetailsAction.rejected, (state, action) => {
-    //   state.poDetailsData = {}
-    //   state.poDetailsDataIsLoading = false
-    //   state.poDetailsDataIsError = true
-    //   state.poDetailsDataError = action.error.message
-    //   state.poDetailsDataIsSuccess = false
-    // })
+      .addCase(getPoDetailsAction.pending, state => {
+        state.poDetailsData = {}
+        state.poDetailsDataIsLoading = true
+        state.poDetailsDataIsError = false
+        state.poDetailsDataError = ''
+        state.poDetailsDataIsSuccess = false
+      })
+      .addCase(getPoDetailsAction.fulfilled, (state, action) => {
+        state.poDetailsData = action.payload
+        state.poDetailsDataIsLoading = false
+        state.poDetailsDataIsError = false
+        state.poDetailsDataError = ''
+        state.poDetailsDataIsSuccess = true
+      })
+      .addCase(getPoDetailsAction.rejected, (state, action) => {
+        state.poDetailsData = {}
+        state.poDetailsDataIsLoading = false
+        state.poDetailsDataIsError = true
+        state.poDetailsDataError = action.error.message
+        state.poDetailsDataIsSuccess = false
+      })
   }
 })
 
